@@ -1,0 +1,15 @@
+---
+layout: page
+title: "About"
+description: "关于 roife"
+header-img: "img/about-bg.jpg"
+sidebar: true
+---
+
+<!-- Chinese Version -->
+<div class="zh post-container">
+    {%- capture about_zh -%}{%- include about/zh.md -%}{%- endcapture -%}
+    {{ about_zh | markdownify }}
+</div>
+
+{%- include comments.html -%}

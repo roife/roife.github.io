@@ -1,0 +1,38 @@
+@import "variables.less";
+
+.image-cover-modal {
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  position: fixed;
+  z-index: 30;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(50, 50, 50, 0.9);
+  transition: opacity ease 100ms;
+  pointer-events: none;
+}
+.model-shown {
+  pointer-events: all;
+  opacity: 1;
+}
+.image-cover-modal-content {
+  display: block;
+  margin: auto;
+}
+.image-cover-modal-container {
+  padding: 5%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media only screen and (max-width: 45rem) {
+  .image-cover-modal-content {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
