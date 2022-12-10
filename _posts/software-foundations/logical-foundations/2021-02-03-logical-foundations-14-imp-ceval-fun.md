@@ -5,7 +5,7 @@ subtitle: "An Evaluation Function For Imp"
 author: "roife"
 date: 2021-02-03
 
-tags: ["Software Foundations@读书笔记", "SF | Logical Foundations@读书笔记", "读书笔记@Tags", "程序语言理论@Tags", "Coq@编程语言", "形式化验证@程序语言理论", "未完成@Tags"]
+tags: ["Software Foundations@读书笔记", "SF | Logical Foundations@读书笔记", "读书笔记@Tags", "程序语言理论@Tags", "Coq@编程语言", "形式化验证@程序语言理论"]
 lang: zh
 catalog: true
 header-image: ""

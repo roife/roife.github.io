@@ -5,7 +5,7 @@ subtitle: "Simple Imperative Programs"
 author: "roife"
 date: 2021-01-31
 
-tags: ["Software Foundations@读书笔记", "SF | Logical Foundations@读书笔记", "读书笔记@Tags", "程序语言理论@Tags", "Coq@编程语言", "形式化验证@程序语言理论", "解释器@编译", "编译@Tags", "未完成@Tags"]
+tags: ["Software Foundations@读书笔记", "SF | Logical Foundations@读书笔记", "读书笔记@Tags", "程序语言理论@Tags", "Coq@编程语言", "形式化验证@程序语言理论", "解释器@编译", "编译@Tags"]
 lang: zh
 catalog: true
 header-image: ""

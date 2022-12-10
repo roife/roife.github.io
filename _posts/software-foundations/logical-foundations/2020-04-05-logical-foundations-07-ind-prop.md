@@ -5,7 +5,7 @@ subtitle: "Inductively Defined Propositions"
 author: "roife"
 date: 2020-04-05
 
-tags: ["Software Foundations@读书笔记", "SF | Logical Foundations@读书笔记", "读书笔记@Tags", "程序语言理论@Tags", "Coq@编程语言", "形式化验证@程序语言理论", "正则表达式@形式语言", "形式语言@Tags", "未完成@Tags"]
+tags: ["Software Foundations@读书笔记", "SF | Logical Foundations@读书笔记", "读书笔记@Tags", "程序语言理论@Tags", "Coq@编程语言", "形式化验证@程序语言理论", "正则表达式@形式语言", "形式语言@Tags"]
 lang: zh
 catalog: true
 header-image: ""
@@ -815,18 +815,8 @@ Qed.
 ### star
 
 ```coq
-(** **** Exercise: 3 stars, optional (star_ne)  *)
 (** [a::s] matches [Star re] iff [s = s0 ++ s1], where [a::s0] matches
-    [re] and [s1] matches [Star re]. Like [app_ne], this observation is
-    critical, so understand it, prove it, and keep it in mind.
-    Hint: you'll need to perform induction. There are quite a few
-    reasonable candidates for [Prop]'s to prove by induction. The only one
-    that will work is splitting the [iff] into two implications and
-    proving one by induction on the evidence for [a :: s =~ Star re]. The
-    other implication can be proved without induction.
-    In order to prove the right property by induction, you'll need to
-    rephrase [a :: s =~ Star re] to be a [Prop] over general variables,
-    using the [remember] tactic.  *)
+    [re] and [s1] matches [Star re].  *)
 
 Lemma star_ne : forall (a : ascii) s re,
     a :: s =~ Star re <->
@@ -867,9 +857,7 @@ Qed.
 Definition refl_matches_eps m :=
   forall re : @reg_exp ascii, reflect ([ ] =~ re) (m re).
 
-(** **** Exercise: 2 stars, optional (match_eps)  *)
-(** Complete the definition of [match_eps] so that it tests if a given
-    regex matches the empty string: *)
+(** It tests if a given regex matches the empty string: *)
 Fixpoint match_eps (re: @reg_exp ascii) : bool := match re with
   | EmptyStr => true
   | Star _ => true
@@ -877,12 +865,8 @@ Fixpoint match_eps (re: @reg_exp ascii) : bool := match re with
   | Union re1 re2 => (match_eps re1) || (match_eps re2)
   | _ => false
   end.
-(** [] *)
 
-(** **** Exercise: 3 stars, optional (match_eps_refl)  *)
-(** Now, prove that [match_eps] indeed tests if a given regex matches
-    the empty string.  (Hint: You'll want to use the reflection lemmas
-    [ReflectT] and [ReflectF].) *)
+(** Prove that [match_eps] indeed tests if a given regex matches the empty string. *)
 Lemma match_eps_refl : refl_matches_eps match_eps.
 Proof.
   unfold refl_matches_eps.
@@ -972,23 +956,7 @@ Fixpoint derive (a : ascii) (re : @reg_exp ascii) : @reg_exp ascii :=
   | Star r => App (derive a r) (Star r)
   end.
 
-(** **** Exercise: 4 stars, optional (derive_corr)  *)
-(** Prove that [derive] in fact always derives strings.
-    Hint: one proof performs induction on [re], although you'll need
-    to carefully choose the property that you prove by induction by
-    generalizing the appropriate terms.
-    Hint: if your definition of [derive] applies [match_eps] to a
-    particular regex [re], then a natural proof will apply
-    [match_eps_refl] to [re] and destruct the result to generate cases
-    with assumptions that the [re] does or does not match the empty
-    string.
-    Hint: You can save quite a bit of work by using lemmas proved
-    above. In particular, to prove many cases of the induction, you
-    can rewrite a [Prop] over a complicated regex (e.g., [s =~ Union
-    re0 re1]) to a Boolean combination of [Prop]'s over simple
-    regex's (e.g., [s =~ re0 \/ s =~ re1]) using lemmas given above
-    that are logical equivalences. You can then reason about these
-    [Prop]'s naturally using [intro] and [destruct]. *)
+(** Prove that [derive] in fact always derives strings. *)
 Lemma derive_corr : derives derive.
 Proof.
   unfold derives.
@@ -1060,15 +1028,7 @@ Fixpoint regex_match (s : string) (re : @reg_exp ascii) : bool :=
   | h::t => regex_match t (derive h re)
   end.
 
-(** Finally, prove that [regex_match] in fact matches regexes.
-    Hint: if your definition of [regex_match] applies [match_eps] to
-    regex [re], then a natural proof applies [match_eps_refl] to [re]
-    and destructs the result to generate cases in which you may assume
-    that [re] does or does not match the empty string.
-    Hint: if your definition of [regex_match] applies [derive] to
-    character [x] and regex [re], then a natural proof applies
-    [derive_corr] to [x] and [re] to prove that [x :: s =~ re] given
-    [s =~ derive x re], and vice versa. *)
+(** Finally, prove that [regex_match] in fact matches regexes. *)
 Theorem regex_refl : matches_regex regex_match.
 Proof.
   unfold matches_regex. intros.
