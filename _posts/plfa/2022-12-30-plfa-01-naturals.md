@@ -165,12 +165,12 @@ inc (n I) = (inc n) O
 inc (n O) = n I
 inc ⟨⟩  = ⟨⟩ I
 
-to : Bin → ℕ
-to ⟨⟩    = 0
-to (n I) = (2 * (to n)) + 1
-to (n O) = 2 * (to n)
+from : Bin → ℕ
+from ⟨⟩    = 0
+from (n I) = (2 * (from n)) + 1
+from (n O) = 2 * (from n)
 
-from : ℕ → Bin
-from 0       = ⟨⟩ O
-from (suc n) = inc (from n)
+to : ℕ → Bin
+to 0       = ⟨⟩
+to (suc n) = inc (to n)
 ```
