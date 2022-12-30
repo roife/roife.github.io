@@ -5,7 +5,7 @@ subtitle: "自然数和归纳类型"
 author: "roife"
 date: 2022-12-30
 
-tags: ["Agda@编程语言", "读书笔记@Tags", "PLFA@读书笔记", "Dependent Type@程序语言理论", "形式化验证@程序语言理论", "类型系统@程序语言理论", "程序语言理论@Tags"]
+tags: ["Agda@编程语言", "读书笔记@Tags", "Programming Language Foundations in Agda@读书笔记", "Dependent Type@程序语言理论", "形式化验证@程序语言理论", "类型系统@程序语言理论", "程序语言理论@Tags"]
 lang: zh
 catalog: true
 header-image: ""
