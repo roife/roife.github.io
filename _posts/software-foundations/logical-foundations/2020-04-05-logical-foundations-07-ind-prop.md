@@ -59,8 +59,9 @@ Inductive even' : nat -> Prop :=
 
 - even 的类型为 `nat -> Prop`，即 property of numbers. 其中 H 也被称为 `evidence`
 - `nat` 定义出现在 `:` 右侧，称为 `index`; 而 polymorphic list 中的 `X : Type` 出现在 `:` 左侧，称为 `parameter`
-  - 对于 parameter 而言，`list X` 表示一个泛型，它的所有 constructor 中的 X 都必须相同
-  - 对于 index 而言，`even nat` 是一个 type family，其 constructor 的参数个数和类型都没有限制。同一个类型的 constructor 可以携带不同的 index，例如 `even 4 = ev_SS (ev_SS ev_0)`
+  - 对于 parameter 而言，`list X` 表示一个泛型，这个类型所有的 constructor 中都有 `X`，且 constructor 中的 `X` 与类型签名中的 `X` 相同（全局的）
+  - 对于 index 而言，`even nat` 是一个 type family，对于同一个类型，不同的 constructor 可以有不同的 index，例如 `even 4 = ev_SS (ev_SS ev_0)`（局部的）
+  - Parameters 还能方便停机检查，所以可以的情况下应该尽量使用 parameters
 
 ``` coq
 Theorem ev_4 : even 4.

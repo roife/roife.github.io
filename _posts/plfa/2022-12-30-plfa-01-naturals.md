@@ -167,10 +167,10 @@ inc ⟨⟩  = ⟨⟩ I
 
 from : Bin → ℕ
 from ⟨⟩    = 0
-from (n I) = (2 * (from n)) + 1
+from (n I) = 2 * (from n) + 1
 from (n O) = 2 * (from n)
 
 to : ℕ → Bin
-to 0       = ⟨⟩
+to 0       = ⟨⟩ O
 to (suc n) = inc (to n)
 ```
