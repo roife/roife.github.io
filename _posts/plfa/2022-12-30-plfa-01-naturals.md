@@ -30,7 +30,7 @@ header-style: text
 
 ## 导入模块
 
-用 `import x as y` 可以将模块导入当前作用域，用 `open y using z` 可以将模块中的名称添加到当前作用域。
+用 `import x as y` 可以将模块导入当前作用域，用 `open y using z` 可以将模块中的名称添加到当前作用域，用 `renaming (a to b; c to d)` 可以进行重命名。
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -39,6 +39,14 @@ open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
 ```
 
 运算符中的 `_` 表示项，例如此处 `begin_` 的 `begin` 是前缀运算符，`_≡_` 是中缀运算符。
+
+当然 `import` 和 `open` 也可以放在一起：
+
+```agda
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_;_^_)
+
+open import Level using (Level; _⊔_) renaming (zero to lzero; suc to lsuc)
+```
 
 ## 优先级
 
@@ -56,6 +64,12 @@ infixl 7  _*_
 ## hole
 
 用 `?` 可以表示一个 hole，让 agda 来补全。
+
+## totality
+
+在传统的静态类型语言中，用户无需使用编译器就能写代码。然后，编译器在不运行代码的情况下进行检查。
+
+在 DT 中，如果编译器想要检查一个证明 `f 1 = 0`，那么 type checker 就必须对 `f` 进行求值。因此为了保证停机，定理证明器都要求是所有的函数是 total 的。
 
 # 自然数
 

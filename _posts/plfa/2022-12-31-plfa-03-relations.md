@@ -34,11 +34,15 @@ infix 4 _≤_
 
 从依赖函数的角度，constructor `s≤s` 可以看成将命题 `m ≤ n` 转换成 `suc m ≤ suc n`。
 
+此外，这里 `_<_` 的优先级为 4，低于算术运算的优先级，而且结合方式为 `infix`，因此像 `1 < 2 < 3` 这样的定义是不合法的。
+
 ## Indexed datatype
 
 在 `_≤_` 的定义中，`z≤n` 和 `s≤s` 是 constructor，`zero ≤ n`、`m ≤ n` 和 `suc m ≤ suc n` 是具体的类型。
 
-其中，`m` 和 `n` 是 indices。
+其中，`m n : ℕ` 是 indices，分别对应着 `_≤_` 的左边和右边。Indices 在类型中出现时，类型的签名为 `x → Set` 的形式，表示这个类型需要加上参数。
+
+注意，类型中的 indices 和 constructor 中参数的并不对应，例如 `z≤n` 只有一个参数，但是这个类型有两个 indices，这是因为其中一个 indices 在定义中提供了（即左边的 `zero`）。但是一般会让二者顺序相同。
 
 ## Implicit arguments
 
@@ -62,6 +66,15 @@ _ = s≤s {m = 1} {n = 3} (s≤s {m = 0} {n = 2} (z≤n {n = 2}))
 _ : 2 ≤ 4
 _ = s≤s {n = 3} (s≤s {n = 2} z≤n)
 ```
+
+除了隐式参数外，也可以用 `_` 来让 agda 显式推导一个项：
+
+```agda
++-identityʳ′ : ∀ {m : ℕ} → m + zero ≡ m
++-identityʳ′ = +-identityʳ _
+```
+
+如果推导失败，agda 会报错。
 
 ## Inversion
 
@@ -132,6 +145,8 @@ Inductive case 则利用了等式的 congruence。
 
 ## 完全性
 
+Agda 中的所有函数都必须是 total 的，但是关系（用 datatype 定义）可以不是。
+
 首先定义 totality（析取）：
 
 ```agda
@@ -148,7 +163,7 @@ data Total (m n : ℕ) : Set where
     → Total m n
 ```
 
-### Parameters 与 indices
+### Parameterized datatype
 
 这里的 `m` 和 `n` 与之前的 indices 定义有所不同，它们被定义为了 parameters。这也可以写成 indices 的形式：
 
@@ -166,9 +181,13 @@ data Total′ : ℕ → ℕ → Set where
     → Total′ m n
 ```
 
+类型里的每个 parameter 都转换成构造子的一个 implicit argument，并且用了全称量词。
+
+从类型签名中可以发现，使用 parameters 时，类型签名为 `Set`；使用 indices 时，类型签名为 `ℕ → ℕ → Set`。
+
 ### Totality 的证明
 
-证明 `_≤_` 的 totality 需要用 `with` 语句讨论两种情况。`with` 关后面跟一个表达式以及多行 cases，每行以省略号（`...`）和一个竖线（`|`）开头，并且需要缩进。
+证明 `_≤_` 的 totality 需要用 `with` 语句讨论两种情况。
 
 ```agda
 ≤-total : ∀ (m n : ℕ) → Total m n
@@ -178,6 +197,10 @@ data Total′ : ℕ → ℕ → Set where
 ...                        | forward m≤n  =  forward (s≤s m≤n)
 ...                        | flipped n≤m  =  flipped (s≤s n≤m)
 ```
+
+### `with` 语句
+
+`with` 语句可以用于模式匹配。`with` 关键字的后面跟一个表达式以及多行 cases，每行以省略号（`...`）和一个竖线（`|`）开头，并且需要缩进。
 
 ### 辅助函数
 
