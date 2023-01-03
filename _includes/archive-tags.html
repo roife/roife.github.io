@@ -59,7 +59,7 @@
   {%- assign top_tag_doms = top_tag_doms | push: tag_dom -%}
 
   {%- capture sub_tag_collapse_dom -%}
-    <div class="collapse" id="{{ top_tag }}-sub-tags" data-parent="#tagcloud-container">
+    <div class="collapse" id="{{ top_tag }}-sub-tags" data-parent="#tagcloud-subtags-container">
       {%- if sub_tag_doms.size != 0 -%}
         <h5>「{{ top_tag }}」的子标签</h5>
         {{ sub_tag_doms | sort }}
@@ -79,9 +79,9 @@
 {{ top_tag_doms | sort }}
 
 {%- comment -%}WORKAROUND: https://github.com/twbs/bootstrap/issues/10966{%- endcomment -%}
-<div id="tagcloud-container">
+<div class="tagcloud-subtags-container" id="tagcloud-subtags-container">
   <div class="panel" style="box-shadow: none;">
-    <div class="collapse" id="ShowAll" data-parent="#tagcloud-container"></div>
+    <div class="collapse" id="ShowAll" data-parent="#tagcloud-subtags-container"></div>
     {{ sub_tag_collapse_doms }}
   </div>
 </div>

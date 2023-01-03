@@ -5,6 +5,7 @@
 @import "snackbar.less";
 @import "search.less";
 @import "clickable-image.less";
+@import "tag-cloud.less";
 
 @media (prefers-color-scheme: light) {
   @import "highlight-light.less";
@@ -812,7 +813,7 @@ footer {
       font-weight: 800;
       letter-spacing: 1px;
       padding: 10px;
-      background-color: white;
+      background-color: var(--background-color);
       border-radius: 0;
       @media only screen and (min-width: 768px) {
         font-size: 14px;
@@ -825,13 +826,13 @@ footer {
     }
     > a:hover,
     > a:focus {
-      color: white;
+      color: var(--background-color);
       background-color: @brand-primary;
       border: 1px solid @brand-primary;
 
       // V1.6 display title
       > span {
-        color: white;
+        color: var(--background-color);
       }
     }
   }
@@ -845,99 +846,6 @@ footer {
       background-color: var(--gray-dark);
       cursor: not-allowed;
     }
-  }
-}
-
-/* Hux add tags support */
-.d-none {
-  display: none !important;
-}
-.tags {
-  margin-bottom: -5px;
-  &.tags-sup {
-    a,
-    .tag {
-      padding: 0 10px 0 12px;
-    }
-  }
-  a,
-  .tag {
-    display: inline-block;
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 999em;
-    padding: 0 10px 0 10px;
-    color: rgba(255, 255, 255, 1);
-    line-height: 24px;
-    font-size: 12px;
-    text-decoration: none;
-    margin: 0 1px;
-    margin-bottom: 6px;
-    cursor: pointer;
-    > sup {
-      margin-left: -2px;
-      font-weight: 700;
-    }
-    &:hover,
-    &:active {
-      color: white;
-      border-color: white;
-      background-color: rgba(255, 255, 255, 0.4);
-      text-decoration: none;
-    }
-    @media only screen and (min-width: 768px) {
-      margin-right: 5px;
-    }
-  }
-}
-
-#tag-heading {
-  padding: 70px 0 60px;
-  @media only screen and (min-width: 768px) {
-    padding: 55px 0;
-  }
-}
-// tag_cloud
-#tag_cloud {
-  margin: 20px 0 15px 0;
-  a,
-  .tag {
-    transition-property: all;
-    transition-duration: 0.4s;
-    transition-timing-function: ease;
-    font-size: 14px;
-    border: none;
-    line-height: 28px;
-    margin: 0 2px;
-    margin-bottom: 8px;
-    background: #f3f5f5;
-    &:hover,
-    &:active,
-    &.focus {
-      background-color: @brand-primary !important;
-    }
-    &.focus {
-      box-shadow: rgba(0, 0, 0, 0.117647) 0 1px 6px,
-        rgba(0, 0, 0, 0.239216) 0 2px 6px;
-    }
-    &.tag-button--all {
-      font-weight: 700;
-      color: @brand-primary !important;
-      &:hover,
-      &:active,
-      &.focus {
-        background-color: #e4e4e4 !important;
-      }
-    }
-  }
-  @media only screen and (min-width: 768px) {
-    margin-bottom: 25px;
-  }
-}
-
-.tag-comments {
-  font-size: 12px;
-  @media only screen and (min-width: 768px) {
-    font-size: 14px;
   }
 }
 
