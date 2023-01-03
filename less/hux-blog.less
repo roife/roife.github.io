@@ -11,6 +11,8 @@
 
   :root {
     --background-color: #fff;
+    --gray-dark: lighten(black, 30%);
+    --gray-light: lighten(black, 65%);
   }
 }
 
@@ -19,6 +21,12 @@
 
   :root {
     --background-color: #000;
+    --gray-dark: lighten(black, 75%);
+    --gray-light: lighten(black, 50%);
+  }
+
+  hr {
+    border-top: 1px solid var(--gray-light);
   }
 }
 
@@ -28,7 +36,7 @@ body {
   .sans-serif;
   font-size: 16px;
   // Hux modify to 16px (Mobile First), and increase to 20px while 768+ width
-  color: @gray-dark;
+  color: var(--gray-dark);
   //-webkit-user-select:text; //对于 Blog 还是先不开启这句。
   overflow-x: hidden;
 
@@ -64,7 +72,7 @@ h4 {
   font-size: 21px;
 }
 a {
-  color: @gray-dark;
+  color: var(--gray-dark);
   &:hover,
   &:focus {
     color: @brand-primary;
@@ -447,11 +455,11 @@ samp {
         background-color: rgba(0, 0, 0, 0.05);
       }
       .icon-bar {
-        background-color: @gray-dark;
+        background-color: var(--gray-dark);
       }
     }
     .navbar-brand {
-      color: @gray-dark;
+      color: var(--gray-dark);
       &:hover,
       &:focus {
         color: @brand-primary;
@@ -460,7 +468,7 @@ samp {
     .nav {
       li {
         a {
-          color: @gray-dark;
+          color: var(--gray-dark);
           &:hover,
           &:focus {
             color: @brand-primary;
@@ -491,7 +499,7 @@ samp {
       -moz-transition: -moz-transform 0.3s;
       transition: transform 0.3s;
       .navbar-brand {
-        color: @gray-dark;
+        color: var(--gray-dark);
         &:hover,
         &:focus {
           color: @brand-primary;
@@ -500,7 +508,7 @@ samp {
       .nav {
         li {
           a {
-            color: @gray-dark;
+            color: var(--gray-dark);
             &:hover,
             &:focus {
               color: @brand-primary;
@@ -529,7 +537,7 @@ samp {
     .post-heading,
     .page-heading {
       padding: 85px 0 20px;
-      color: @gray-dark;
+      color: var(--gray-dark);
       .subheading {
         color: @gray-light;
         margin-bottom: 15px;
@@ -538,8 +546,8 @@ samp {
     .tags {
       a,
       .tag {
-        border-color: @gray-dark;
-        color: @gray-dark;
+        border-color: var(--gray-dark);
+        color: var(--gray-dark);
         &:hover,
         &:active {
           background-color: rgba(0, 0, 0, 0.05);
@@ -657,7 +665,7 @@ samp {
 
 .post-preview {
   > a {
-    color: @gray-dark;
+    color: var(--gray-dark);
     &:hover,
     &:focus {
       text-decoration: none;
@@ -685,7 +693,7 @@ samp {
     margin-top: 0;
     > a {
       text-decoration: none;
-      color: @gray-dark;
+      color: var(--gray-dark);
       &:hover,
       &:focus {
         color: @brand-primary;
@@ -813,7 +821,7 @@ footer {
     }
 
     > a {
-      color: @gray-dark;
+      color: var(--gray-dark);
     }
     > a:hover,
     > a:focus {
@@ -834,7 +842,7 @@ footer {
     > a:focus,
     > span {
       color: @brand-gray;
-      background-color: @gray-dark;
+      background-color: var(--gray-dark);
       cursor: not-allowed;
     }
   }
