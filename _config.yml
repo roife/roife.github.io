@@ -91,7 +91,6 @@ sidebar-avatar: /img/avatar-roife-ny.jpg      # use absolute URL, seeing it's us
 # Progressive Web Apps
 light-tab-theme-color: "#FFFFFF"
 dark-tab-theme-color: "#000000"
-service-worker: false
 
 
 # MathJax rendering for layout:page (e.g. post preview)

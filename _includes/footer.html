@@ -28,12 +28,6 @@
 <!-- Simple Jekyll Search -->
 <script src="{{ "/js/simple-jekyll-search.min.js" | prepend: site.baseurl }}"></script>
 
-<!-- Service Worker -->
-{%- if site.service-worker -%}
-<script src="{{ "/js/snackbar.js " | prepend: site.baseurl }}"></script>
-<script src="{{ "/js/sw-registration.js " | prepend: site.baseurl }}"></script>
-{%- endif -%}
-
 <!-- async load function -->
 <script>
     function async(u, c) {
