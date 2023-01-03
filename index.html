@@ -26,15 +26,24 @@ description: "roife 的魔法科见闻"
 <!-- Pager -->
 {%- if paginator.total_pages > 1 -%}
 <ul class="pager">
-    {%- if paginator.previous_page -%}
     <li class="previous">
-        <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&larr; Newer Posts</a>
+        <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}"
+            {%- unless paginator.previous_page -%}
+                style="visibility: hidden"
+            {%- endunless -%}>
+            &larr; Newer Posts
+        </a>
     </li>
-    {%- endif -%}
-    {%- if paginator.next_page -%}
+    <li>
+        <span style="border: none;">{{paginator.page}} / {{paginator.total_pages}}</span>
+    </li>
     <li class="next">
-        <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Older Posts &rarr;</a>
+        <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}"
+            {%- unless paginator.next_page -%}
+                style="visibility: hidden"
+            {%- endunless -%}>
+            Older Posts &rarr;
+        </a>
     </li>
-    {%- endif -%}
 </ul>
 {%- endif -%}
