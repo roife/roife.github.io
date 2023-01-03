@@ -143,7 +143,7 @@
 }
 .side-catalog .catalog-body .active {
   border-radius: 4px;
-  background-color: #f5f5f5;
+  background-color: var(--slight-bg-color);
 }
 .side-catalog .catalog-body .active a {
   color: #0085a1 !important;
@@ -330,7 +330,7 @@ button.paper-button {
   bottom: 0;
   left: 0;
   z-index: 100;
-  background: var(--background-color);
+  background: var(--bg-color);
   -webkit-transition: all 400ms cubic-bezier(0.32, 1, 0.23, 1);
   transition: all 400ms cubic-bezier(0.32, 1, 0.23, 1);
   -webkit-transform: translate(0, 100%);
@@ -378,7 +378,7 @@ button.paper-button {
   font-size: 30px;
   font-weight: bold;
   color: var(--gray-dark);
-  background-color: var(--background-color);
+  background-color: var(--bg-color);
 }
 @media only screen and (min-width: 768px) {
   .search-page #search-input {
@@ -444,7 +444,7 @@ button.paper-button {
   }
 }
 .tagcloud-subtags-container .panel {
-  background-color: var(--background-color);
+  background-color: var(--bg-color);
 }
 .d-none {
   display: none !important;
@@ -858,9 +858,12 @@ button.paper-button {
   }
   /* Landscape phones and down */
   :root {
-    --background-color: #fff;
+    --bg-color: #fff;
     --gray-dark: #4d4d4d;
     --gray-light: #a6a6a6;
+    --faded-bg-color: rgba(255, 255, 255, 0.9);
+    --slight-bg-color: #e6e6e6;
+    --slighter-bg-color: #ffffff;
   }
 }
 @media (prefers-color-scheme: light) and (max-width: 480px) {
@@ -1187,12 +1190,24 @@ button.paper-button {
   }
   /* Landscape phones and down */
   :root {
-    --background-color: #000;
+    --bg-color: #000;
     --gray-dark: #bfbfbf;
     --gray-light: #808080;
+    --faded-bg-color: rgba(40, 40, 40, 0.9);
+    --slight-bg-color: #1a1a1a;
+    --slighter-bg-color: #262626;
   }
   hr {
     border-top: 1px solid var(--gray-light);
+  }
+  code {
+    background-color: #330000;
+  }
+  .navbar-nav li a:hover {
+    color: var(--gray-dark) !important;
+  }
+  blockquote {
+    border-left: 5px solid var(--gray-light);
   }
 }
 @media (prefers-color-scheme: dark) and (max-width: 480px) {
@@ -1221,7 +1236,7 @@ body {
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--background-color);
+  background-color: var(--bg-color);
 }
 p {
   margin: 30px 0;
@@ -1358,10 +1373,10 @@ samp {
 .post-container h6 + p {
   margin-top: 20px;
 }
-.post-container h2::before {
+.post-container h1::after {
   content: " ";
   display: block;
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid var(--slight-bg-color);
   margin-top: 44px;
   margin-bottom: 30px;
 }
@@ -1467,7 +1482,7 @@ samp {
     position: absolute;
     right: 0;
     border: none;
-    background: white;
+    background: var(--slighter-bg-color);
     box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.2);
     box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.239216) 0px 1px 4px;
     border-radius: 2px;
@@ -1630,8 +1645,8 @@ samp {
     /* when the user scrolls down, we hide the header right above the viewport */
     position: fixed;
     top: -61px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-bottom: 1px solid #f2f2f2;
+    background-color: var(--faded-bg-color);
+    border-bottom: 1px solid var(--slight-bg-color);
     -webkit-transition: -webkit-transform 0.3s;
     -moz-transition: -moz-transform 0.3s;
     transition: transform 0.3s;
@@ -1706,7 +1721,7 @@ samp {
 .intro-header .post-heading,
 .intro-header .page-heading {
   padding: 85px 0 55px;
-  color: white;
+  color: #e6e6e6;
 }
 @media only screen and (min-width: 768px) {
   .intro-header .site-heading,
@@ -1952,7 +1967,7 @@ footer .copyright a:focus {
   font-weight: 800;
   letter-spacing: 1px;
   padding: 10px;
-  background-color: var(--background-color);
+  background-color: var(--bg-color);
   border-radius: 0;
 }
 @media only screen and (min-width: 768px) {
@@ -1967,13 +1982,13 @@ footer .copyright a:focus {
 }
 .pager li > a:hover,
 .pager li > a:focus {
-  color: var(--background-color);
+  color: var(--bg-color);
   background-color: #0085a1;
   border: 1px solid #0085a1;
 }
 .pager li > a:hover > span,
 .pager li > a:focus > span {
-  color: var(--background-color);
+  color: var(--bg-color);
 }
 .pager .disabled > a,
 .pager .disabled > a:hover,
