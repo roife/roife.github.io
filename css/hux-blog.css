@@ -536,7 +536,7 @@ button.paper-button {
 #tag_cloud .tag.tag-button--all:active,
 #tag_cloud a.tag-button--all.focus,
 #tag_cloud .tag.tag-button--all.focus {
-  background-color: #e4e4e4 !important;
+  background-color: var(--slighter-bg-color) !important;
 }
 @media only screen and (min-width: 768px) {
   #tag_cloud {
@@ -1211,6 +1211,9 @@ button.paper-button {
   }
   .fa-inverse {
     color: var(--bg-color) !important;
+  }
+  .tag-button--all {
+    background-color: var(--slight-bg-color) !important;
   }
 }
 @media (prefers-color-scheme: dark) and (max-width: 480px) {
