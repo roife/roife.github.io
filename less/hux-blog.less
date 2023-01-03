@@ -3,9 +3,24 @@
 @import "sidebar.less";
 @import "side-catalog.less";
 @import "snackbar.less";
-@import "highlight.less";
 @import "search.less";
 @import "clickable-image.less";
+
+@media (prefers-color-scheme: light) {
+  @import "highlight-light.less";
+
+  :root {
+    --background-color: #fff;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  @import "highlight-dark.less";
+
+  :root {
+    --background-color: #000;
+  }
+}
 
 // Global Components
 
@@ -20,6 +35,8 @@ body {
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  background-color: var(--background-color);
 }
 
 // -- Typography
