@@ -143,7 +143,7 @@
 }
 .side-catalog .catalog-body .active {
   border-radius: 4px;
-  background-color: var(--slight-bg-color);
+  background-color: var(--slighter-bg-color);
 }
 .side-catalog .catalog-body .active a {
   color: #0085a1 !important;
@@ -862,8 +862,8 @@ button.paper-button {
     --gray-dark: #4d4d4d;
     --gray-light: #a6a6a6;
     --faded-bg-color: rgba(255, 255, 255, 0.9);
-    --slight-bg-color: #e6e6e6;
-    --slighter-bg-color: #ffffff;
+    --slight-bg-color: #f2f2f2;
+    --slighter-bg-color: #e6e6e6;
   }
 }
 @media (prefers-color-scheme: light) and (max-width: 480px) {
@@ -883,7 +883,7 @@ button.paper-button {
   .highlight pre,
   .highlight code,
   .highlight .hll {
-    background-color: #373b41;
+    background-color: #1c1d21;
   }
   .highlight {
     background: #1d1f21;
@@ -1194,7 +1194,7 @@ button.paper-button {
     --gray-dark: #bfbfbf;
     --gray-light: #808080;
     --faded-bg-color: rgba(40, 40, 40, 0.9);
-    --slight-bg-color: #1a1a1a;
+    --slight-bg-color: #0d0d0d;
     --slighter-bg-color: #262626;
   }
   hr {
@@ -1209,6 +1209,9 @@ button.paper-button {
   blockquote {
     border-left: 5px solid var(--gray-light);
   }
+  .fa-inverse {
+    color: var(--bg-color) !important;
+  }
 }
 @media (prefers-color-scheme: dark) and (max-width: 480px) {
   .highlighter-rouge .highlight {
@@ -1221,6 +1224,11 @@ button.paper-button {
   }
   .highlighter-rouge .highlight table > tbody > tr > td > pre {
     padding: 14px 10px;
+  }
+}
+@media only screen and (max-width: 767px) and (prefers-color-scheme: dark) {
+  .navbar-default .navbar-collapse {
+    background-color: var(--slighter-bg-color) !important;
   }
 }
 body {
@@ -1316,7 +1324,7 @@ table.table > tbody th,
 table.table > thead th,
 table.table > tbody td,
 table.table > thead td {
-  border: 1px solid #eee !important;
+  border: 1px solid var(--slighter-bg-color) !important;
   white-space: nowrap;
 }
 @media screen and (max-width: 767px) {
@@ -1334,11 +1342,15 @@ pre,
 .table-responsive {
   -webkit-overflow-scrolling: touch;
 }
+pre {
+  background-color: var(--slight-bg-color);
+}
 pre code {
   display: block;
   width: auto;
   white-space: pre;
   word-wrap: normal;
+  color: var(--gray-dark);
 }
 code,
 kbd,
@@ -1376,7 +1388,7 @@ samp {
 .post-container h1::after {
   content: " ";
   display: block;
-  border-bottom: 1px solid var(--slight-bg-color);
+  border-bottom: 1px solid var(--slighter-bg-color);
   margin-top: 44px;
   margin-bottom: 30px;
 }
@@ -1481,8 +1493,8 @@ samp {
   .navbar-default .navbar-collapse {
     position: absolute;
     right: 0;
+    background: white;
     border: none;
-    background: var(--slighter-bg-color);
     box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.2);
     box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.239216) 0px 1px 4px;
     border-radius: 2px;
