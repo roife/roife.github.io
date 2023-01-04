@@ -60,6 +60,11 @@
 @media only screen and (max-width: 767px) and (prefers-color-scheme: dark) {
   .navbar-default .navbar-collapse {
     background-color: var(--slighter-bg-color) !important;
+    li {
+      a {
+        color: var(--gray-dark);
+      }
+    }
   }
 }
 
@@ -597,7 +602,7 @@ samp {
     }
   }
   background: no-repeat center center;
-  background-color: @brand-gray;
+  background-color: var(--slight-bg-color);
   background-attachment: scroll;
   .background-cover;
   // NOTE: Background images are set within the HTML using inline CSS!

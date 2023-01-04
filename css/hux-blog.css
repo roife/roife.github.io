@@ -511,7 +511,7 @@ button.paper-button {
   line-height: 28px;
   margin: 0 2px;
   margin-bottom: 8px;
-  background-color: var(--gray-dark);
+  background-color: var(--slighter-bg-color);
 }
 #tag_cloud a:hover,
 #tag_cloud .tag:hover,
@@ -1231,6 +1231,9 @@ button.paper-button {
   .navbar-default .navbar-collapse {
     background-color: var(--slighter-bg-color) !important;
   }
+  .navbar-default .navbar-collapse li a {
+    color: var(--gray-dark);
+  }
 }
 body {
   /* Hux learn from
@@ -1692,7 +1695,7 @@ samp {
 }
 .intro-header {
   background: no-repeat center center;
-  background-color: #a3a3a3;
+  background-color: var(--slight-bg-color);
   background-attachment: scroll;
   -webkit-background-size: cover;
   -moz-background-size: cover;
