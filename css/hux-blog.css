@@ -1640,7 +1640,7 @@ samp {
 }
 .navbar-custom.invert .nav li a:hover,
 .navbar-custom.invert .nav li a:focus {
-  color: #0085a1;
+  color: #0085a1 !important;
 }
 @media only screen and (min-width: 1170px) {
   .navbar-custom {
@@ -2078,7 +2078,7 @@ footer .copyright a:focus {
   background-color: inherit;
 }
 .navbar-default .navbar-toggle:active {
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.25) !important;
 }
 /* Hux customize Style for navBar button */
 .navbar-default .navbar-toggle {
