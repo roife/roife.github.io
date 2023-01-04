@@ -35,7 +35,7 @@
   }
 
   hr {
-    border-top: 1px solid var(--gray-light);
+    border-top: 1px solid var(--slighter-bg-color);
   }
 
   code {
@@ -53,6 +53,19 @@
 
   .tag-button--all {
     background-color: var(--slight-bg-color) !important;
+  }
+
+  img{
+    opacity: .8;
+  }
+
+  img[src$='.svg'] {
+    filter: invert(1);
+  }
+
+  img[src$='.png'] {
+    background-color: #ddd;
+    border: 2px;
   }
 }
 
