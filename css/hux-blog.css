@@ -481,7 +481,7 @@ button.paper-button {
 .tags .tag:active {
   color: white;
   border-color: white;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--slight-bg-color) !important;
   text-decoration: none;
 }
 @media only screen and (min-width: 768px) {
@@ -511,7 +511,7 @@ button.paper-button {
   line-height: 28px;
   margin: 0 2px;
   margin-bottom: 8px;
-  background: #f3f5f5;
+  background-color: var(--gray-dark);
 }
 #tag_cloud a:hover,
 #tag_cloud .tag:hover,
@@ -1191,20 +1191,18 @@ button.paper-button {
   /* Landscape phones and down */
   :root {
     --bg-color: #000;
-    --gray-dark: #bfbfbf;
-    --gray-light: #808080;
+    --gray-dark: #d9d9d9;
+    --gray-light: #999999;
     --faded-bg-color: rgba(40, 40, 40, 0.9);
-    --slight-bg-color: #0d0d0d;
-    --slighter-bg-color: #262626;
+    --slight-bg-color: #1a1a1a;
+    --slighter-bg-color: #333333;
   }
   hr {
     border-top: 1px solid var(--gray-light);
   }
   code {
-    background-color: #330000;
-  }
-  .navbar-nav li a:hover {
-    color: var(--gray-dark) !important;
+    background-color: var(--slight-bg-color);
+    color: #d8365f;
   }
   blockquote {
     border-left: 5px solid var(--gray-light);
@@ -1592,6 +1590,9 @@ samp {
 }
 .navbar-custom .nav li a:active {
   background: rgba(0, 0, 0, 0.12);
+}
+.navbar-custom .nav li a:hover {
+  color: #0085a1;
 }
 @media only screen and (min-width: 768px) {
   .navbar-custom {
