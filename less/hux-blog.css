@@ -1201,7 +1201,7 @@ button.paper-button {
     border-top: 1px solid var(--slighter-bg-color);
   }
   code {
-    background-color: var(--slighter-bg-color);
+    background-color: var(--slight-bg-color);
     color: #d8365f;
   }
   blockquote {
