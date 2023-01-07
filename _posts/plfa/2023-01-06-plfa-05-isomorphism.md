@@ -1,9 +1,9 @@
 ---
 layout: "post"
 title: "「PLFA」 05 Isomorphism"
-subtitle: "等价性"
+subtitle: "同构与嵌入"
 author: "roife"
-date: 2023-01-01
+date: 2023-01-06
 
 tags: ["Agda@编程语言", "读书笔记@Tags", "Programming Language Foundations in Agda@读书笔记", "Dependent Type@程序语言理论", "形式化验证@程序语言理论", "类型系统@程序语言理论", "程序语言理论@Tags"]
 lang: zh
@@ -82,7 +82,7 @@ same = extensionality (λ m → extensionality (λ n → same-app m n))
 
 # 同构
 
-如果两个集合有一一对应的关系，那么它们是**同构（isomorphic）的**。
+如果两个集合有一一对应的关系，那么它们是**同构的**（isomorphic）。
 
 ```agda
 infix 0 _≃_
