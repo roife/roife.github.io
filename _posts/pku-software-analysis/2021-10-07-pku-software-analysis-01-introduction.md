@@ -49,13 +49,13 @@ katex: true
 
 ## 是否存在确保无内存泄露的算法？
 
-- 设存在停机问题判断算法：`bool LeakFree(Program p)`
+- 设存在内存泄漏问题判断算法：`bool LeakFree(Program p)`
 - 给定程序
   ```c
   void Evil() {
       int a = malloc();
-      if (LeakFree(Evil)) return;
-      else free(a); // leak
+      if (LeakFree(Evil)) return; // leak
+      else free(a);
   }
   ```
 - 同理，会产生矛盾
