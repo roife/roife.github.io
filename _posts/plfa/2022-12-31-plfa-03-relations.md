@@ -451,7 +451,7 @@ to-can {suc n} = inc-keeps (to-can {n})
 
 ## `_+-Bin_`
 
-接下来，为了证明 `from-to` 命题，需要先定义 `Bin` 上的加法，并证明一些引理：
+接下来，为了证明 `to-from` 命题，需要先定义 `Bin` 上的加法，并证明一些引理：
 
 ```agda
 _+-Bin_ : Bin → Bin → Bin

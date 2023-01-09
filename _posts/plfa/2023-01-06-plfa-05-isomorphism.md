@@ -58,6 +58,8 @@ postulate
     → f ≡ g
 ```
 
+一般在证明两个函数等价时，都会用到 extensionality。
+
 ## 两种加法的等价性
 
 ```agda
