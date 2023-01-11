@@ -1,6 +1,6 @@
 ---
 layout: "post"
-title: "01 自然数"
+title: "自然数"
 subtitle: "Natural Numbers"
 author: "roife"
 date: 2022-01-18
