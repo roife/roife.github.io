@@ -80,7 +80,7 @@ header-style: text
 
 - \*const
   - 数字：1 2
-  - 布尔类型：\#t，\#f
+  - 布尔类型：`\#t`，`\#f`
   - 基本运算：cons，car，…（会被转换成 `'(primitive cons)`）
 - \*quote（这里先暂时不支持 'a 的写法）
 - \*identifier

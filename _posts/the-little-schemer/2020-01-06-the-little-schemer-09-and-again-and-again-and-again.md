@@ -143,7 +143,7 @@ header-style: text
 
 停机问题，即是否存在一个函数在有限时间内判断另一个函数会不会停机。
 
-首先假设存在这样的函数 `(will-stop? f)`，显然这必须是一个 total function，返回值为 \#f 或者 \#t
+首先假设存在这样的函数 `(will-stop? f)`，显然这必须是一个 total function，返回值为 `\#f` 或者 `\#t`
 
 下面再定义另外一个函数 `(last-try x)`
 
@@ -156,18 +156,15 @@ header-style: text
 
 然后运行 `(will-stop? last-try)`
 
-那么会发现如果希望计算出 `(will-stop? last-try)`，就必须先计算出 `(will-stop? last-try)`
-
-如果 `(will-stop? last-try)` 为 \#f，那么 `(and (will-stop? last-try) (eternity x))))` 也是 \#f，此时得到了 last-try 的值，也就是说 last-try 停机了，所以
-`(will-stop? last-try)` 的值为 \#t，矛盾。同理，如果假设为 \#t 仍然得到矛盾。
+如果 `(will-stop? last-try)` 为 `\#f`，此时得到了 last-try 的值为 `\#f`，也就是说 last-try 停机了，所以 `(will-stop? last-try)` 的值为 `\#t`，矛盾。同理，如果假设为 `\#t` 仍然得到矛盾。
 
 因此不存在 `(will-stop? f)` 这样的函数。
 
 > Thanks to Alan M. Turing Thanks to Kurt Gödel
 
-# applicative-order Y combinator
+# Applicative-order Y combinator
 
-首先回顾 length 函数
+- 首先回顾 length 函数：
 
 ```scheme
 (define length
@@ -177,175 +174,119 @@ header-style: text
      (else (add1 (length (cdr l)))))))
 ```
 
-## 展开递归
-
-考虑一个只能计算 null list 的 length0
+- 现在我们不能用 `define` 定义递归，但是我们还是想实现递归。假设有一个现成的 `self` 函数表示“当前定义的函数”，那么就可以直接用 `self` 进行定义了：
 
 ```scheme
 (lambda (l)
   (cond
    ((null? l) 0)
-   (else (add1 (eternity (cdr l))))))
+   (else (add1 (<self> (cdr l))))))
 ```
 
-它还可以进一步变化成 length1，可以计算长度小于等于 1 的函数
+- 但是这个 `self` 究竟是什么？我们还不知道，既然不能用 `<self>`，那么不妨将 `self` 参数化：
 
 ```scheme
-(lambda (l)
-  (cond
-   ((null? l) 0)
-   (else (add1 ((lambda (l) ;; 这里开始进一步变化
-                  (cond
-                   ((null? l) 0)
-                   (else (add1 (enterity (cdr l))))))
-                (cdr l))))))
+(lambda (self)
+  (lambda (l)
+    (cond
+     ((null? l) 0)
+     (else (add1 (self (cdr l)))))))
 ```
 
-同样还可以构造出 lengthN，但是没有递归所以无法计算任意长度的列表。但是可以发现展开的一部分内容是重复的，把这一部分抽象出来变成
-(lambda (l)) 后重写 length0
+- 为了方便，不妨给这段程序定义一个名字（这里虽然用了 `define`，但是没用它定义递归）：
 
 ```scheme
-((lambda (length)
-   (lambda (l)
-     (cond
-      ((null? l) 0)
-      (else (add1 (length (cdr l)))))))
- eternity)
-```
-
-同样可以写出 length1，length2…
-
-```scheme
-((lambda (f)
-   (lambda (l)
-     (cond
-      ((null? l) 0)
-      (else (add1 (f (cdr l)))))))
- ((lambda (g)
+(define length
+  (lambda (self)
     (lambda (l)
       (cond
        ((null? l) 0)
-       (else (add1 (g (cdr l)))))))
-  enternity))
+       (else (add1 (self (cdr l))))))))
 ```
 
-把主题部分独立成一个 lambda 函数后，尝试复用它，用 mk-length 来实现。
+我们想要让程序实现递归，那么不妨在调用时传入自身，即 `((length length) 3)`（这里已经定义了 `length`，所以可以直接用）。
+
+事实上，此时没有用到 `define`，而我们现在已经实现了递归调用！
+
+- 我们可以进一步把 `((length length) x)` 这个过程用高阶函数实现：
 
 ```scheme
-((lambda (mk-length)
-   (mk-length eternity))
- (lambda (length)
+((lambda (length)
+   (length length))
+ (lambda (self)
    (lambda (l)
      (cond
       ((null? l) 0)
-      (else (add1 (length (cdr l))))))))
+      (else (add1 (self (cdr l))))))))
 ```
 
-同样可以写出 length2，…
+- 但是这个函数还有一个问题，`self` 为 `(lambda (self) (lambda (l) ...))`，所以 `self` 调用的第一个参数应该是 `self`：
 
 ```scheme
-((lambda (mk-length)
-   (mk-length
-    (mk-length eternity)))
- (lambda (length)
+((lambda (length)
+   (length length))
+ (lambda (self)
    (lambda (l)
      (cond
       ((null? l) 0)
-      (else (add1 (length (cdr l))))))))
+      (else (add1 ((self self) (cdr l))))))))
 ```
 
-## 实现调用
-
-不难发现每次要把 eternity 传给 mk-length 的时候程序就到了尽头（即无法停机），但是我们希望这时能继续调用 mk-length 继续形成调用链（lengthN -\> lengthN-1 -\> … -\> length0），因此使用
-`(mk-length mk-length)` 就可以进行自我调用
-
-同时为了让代码看起来更一致，同时把 length 换成 mk-length
-
-这样就写出了 length0 (mk-length 只接受另一个函数，超过 0 的 list 会传入 `(cdr l)` 导致问题）
+- 上面的程序中，`(lambda (l) ...)` 和我们一开始的定义差不多，唯一的区别在于 `<self>` 变成了 `(self self)`。不妨和上面一步一样，将这里的 `(self self)` 再次进行提取出来：
 
 ```scheme
-((lambda (mk-length)
-   (mk-length mk-length))
- (lambda (mk-length)
-   (lambda (l)
-     (cond
-      ((null? l) 0)
-      (else (add1 (mk-length (cdr l)))))))) ;; MARK
-```
-
-现在想要多调用一层只要把 MARK 部位的 mk-length 换成 `(mk-length eternity)`
-
-```scheme
-((lambda (mk-length)
-   (mk-length mk-length))
- (lambda (mk-length)
-   (lambda (l)
-     (cond
-      ((null? l) 0)
-      (else (add1 ((mk-length eternity) (cdr l)))))))) ;; MARK
-```
-
-现在，函数展开后相当于两层 length 后出现了 eternity，如果要继续调用那么还要把这里的 eternity 改成 mk-length（注意这个 mk-length 的含义是 `(lambda (mk-length))` 这个部分）
-
-```scheme
-((lambda (mk-length)
-   (mk-length mk-length))
- (lambda (mk-length)
-   (lambda (l)
-     (cond
-      ((null? l) 0)
-      (else (add1 ((mk-length mk-length) (cdr l))))))))
-```
-
-新函数最大的区别是多了 `(mk-length mk-length)`，所以尝试把这一部分抽象出来
-
-```scheme
-((lambda (mk-length)
-   (mk-length mk-length))
- (lambda (mk-length)
-   ((lambda (length)
+((lambda (length)
+   (length length))
+ (lambda (self)
+   ((lambda (self-self)
       (lambda (l)
         (cond
          ((null? l) 0)
-         (else (add1 (length (cdr l)))))))
-    (mk-length mk-length))))
+         (else (add1 (self-self (cdr l)))))))
+    (self self))))
+
 ```
 
-但是这段代码无法停机，因为它会不断展开自身而无法进入计算（因为我们抽象并把调用自己的过程放到了外面，所以它会先展开，而不是和原来一样先计算）
-
-正确的做法是让这段在运行到这个位置时再进行展开，所以为了防止它提前计算，可以把这个封装成函数，在调用的时候才展开
+- 但是这段代码有一个问题：`(self self)` 这一步没法停机，会不断求值。因此我们需要用 `lambda` 进行包裹，以实现延迟计算：
 
 ```scheme
-((lambda (mk-length)
-   (mk-length mk-length))
- (lambda (mk-length)
-   ((lambda (length)
-      (lambda (l)
-        (cond
-         ((null? l) 0)
-         (else (add1 (length (cdr l)))))))
-    (lambda (x) (mk-length mk-length)))))
+((lambda (length)
+    (length length))
+  (lambda (self)
+    ((lambda (f)
+       (lambda (l)
+         (cond
+          ((null? l) 0)
+          (else (add1 (f (cdr l)))))))
+     (lambda (x) ((self self) x)))))
 ```
 
-## 提取应用序 Y 组合子
+此时中间的 `(lambda (l) ...)` 那一部分就和我们一开始的定义一模一样！并且仅仅靠外面这一层就实现了递归：
 
-最后，我们把计算的过程和函数组合的过程分开，就变成了
+```scheme
+((lambda (length)
+   (length length))
+ (lambda (self)
+   ((lambda (f) ...)
+    (lambda (x) ((self self) x)))))
+```
+
+- 最后，我们将外面这层包装抽象出来：
 
 ```scheme
 ((lambda (le)
-   ((lambda (mk-length)
-      (mk-length mk-length))
-    (lambda (mk-length)
-      (le (lambda (x) ((mk-length mk-length) x)))))) ;; applicative-order Y combinatior
-
- (lambda (length)
+   ((lambda (length)
+      (length length))
+    (lambda (self)
+      (le (lambda (x) ((self self) x))))))
+ (lambda (f)
    (lambda (l)
      (cond
       ((null? l) 0)
-      (else (+ 1 (length (cdr l))))))))
+      (else (add1 (f (cdr l))))))))
 ```
 
-所以我们就得到了 **Applicative-order Y combinator**
+- 我们就得到了 **Applicative-order Y combinator**：
 
 ```scheme
 (define Y
