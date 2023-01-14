@@ -142,6 +142,10 @@ header-style: text
 
 此处 `sym` 表示交换等式两边。
 
+## Section notation
+
+此处用的 `_+` 称为 section notation，含义为 `λ x → x + q`。
+
 # `rewrite`
 
 `rewrite _` 后面跟一个等式 `_`。当前命题中出现的“等式 `_` 的左边”都会被改写成“等式 `_` 的右边”。
