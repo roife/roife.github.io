@@ -5,7 +5,7 @@ subtitle: "Gödel's incompleteness theorems & Cantor's diagonal argument"
 author: "roife"
 date: 2022-02-03
 
-tags: ["代数@数学", "数学@Tags"]
+tags: ["逻辑@数学", "数学@Tags"]
 lang: zh
 catalog: true
 header-image: ""
