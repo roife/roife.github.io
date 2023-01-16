@@ -444,17 +444,17 @@ instance Applicative ((->) r) where
 ```haskell
 import Control.Applicative
 class MultiFunctor f where
-    -- 等价于 pure
+  -- 等价于 pure
   fmap0 :: a -> f a
 
-    -- 等价于 fmap
+  -- 等价于 fmap
   fmap1 :: (a -> b) -> f a -> f b
 
-    -- 用 pure 和 <*> 定义 fmap2
+  -- 用 pure 和 <*> 定义 fmap2
   fmap2 :: (a -> b -> c) -> f a -> f b -> f c
   fmap2 h x y = pure h <*> x <*> y
 
-    -- 有了前面的 3 个函数就可以定义任意多元的 fmap
+  -- 有了前面的 3 个函数就可以定义任意多元的 fmap
   fmap3 :: (a -> b -> c -> d) -> f a -> f b -> f c -> f d
   fmap3 h x y z = fmap2 ($) (fmap2 h x y) z
 
