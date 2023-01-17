@@ -888,4 +888,4 @@ class Bifunctor p where
 
 # Typeclasses 层次
 
-![Hierarchy](/img/in-post/post-haskell/typeclasses-hierarchy.png)
+![Hierarchy](/img/in-post/post-haskell/typeclasses-hierarchy.svg)
