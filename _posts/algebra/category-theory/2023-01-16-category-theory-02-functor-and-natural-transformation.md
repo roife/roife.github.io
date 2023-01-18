@@ -17,7 +17,7 @@ katex: true
 
 ## 函子的定义
 
-前面关注的都是对象间的态射，下面关注范畴（要求是小范畴）间的态射——**函子**（functor）。
+前面关注的都是对象间的态射，下面关注范畴（小范畴）间的态射——**函子**（functor）。
 由于函子也是态射，因此也满足态射的定律。
 
 函子的定义如下：
@@ -56,6 +56,24 @@ class Functor f where
 ```
 
 其中，`a -> b` 中的箭头为 $\mathcal{C}$ 上的态射，`f a -> f b` 中的箭头为 $\mathcal{D}$ 上的态射。而中间的箭头则表示两个范畴间的态射，和另外两个箭头是不一样的含义。
+
+### 二元函子
+
+二元函子 $F : \mathcal{C} \times \mathcal{D} \rightarrow \mathcal{E}$ 能将两个范畴的笛卡尔积映射到新范畴。显然，二元函子满足函子的定义：
+- 单位元为 $(\operatorname{\mathrm{id}}\_{\mathcal{C}}, \operatorname{\mathrm{id}}\_{\mathcal{D}})$
+- 复合运算 $(f, g) \circ (f', g') = (f \circ f', g \circ g')$
+
+二元函子在 Haskell 中的定义如下：
+
+```haskell
+class Bifunctor f where
+    bimap :: (a -> c) -> (b -> d) -> f a b -> f c d
+    bimap g h = first g . second h
+    first :: (a -> c) -> f a b -> f c b
+    first g = bimap g id
+    second :: (b -> d) -> f a b -> f a d
+    second = bimap id
+```
 
 ### 扩展的定义
 
@@ -158,7 +176,7 @@ instance Contravariant (Op a) where
 
 ![Hom Functor](/img/in-post/post-algebra/hom-functor.svg){:height="400px" width="400px"}
 
-> 二元函子 $\operatorname{\mathrm{Hom}}(-, -) : \mathcal{C}^{\mathrm{op}} \times \mathcal{C} \rightarrow \mathtt{Set}$ 被称为**`Hom` 函子**（Hom-functor），其定义如下：
+> 二元函子 $\operatorname{\mathrm{Hom}}(-, -) : \mathcal{C}^{\mathrm{op}} \times \mathcal{C} \rightarrow \mathtt{Set}$ 被称为**Hom 函子**（Hom-functor），其定义如下：
 > - $\forall f : B \rightarrow B'\ \forall h : A' \rightarrow A,\ \operatorname{\mathrm{Hom}}(h, f) : \operatorname{\mathrm{Hom}}(A, B) \rightarrow \operatorname{\mathrm{Hom}}(A', B')$
 >   + 它使得 $g : A \rightarrow B \mapsto f \circ g \circ h : A' \rightarrow B'$
 
@@ -326,13 +344,13 @@ postFComp (Nat gh) fa = fmap gh fa
 
 ### 横纵合成互换定律
 
-对于下面的图表，存在互换律：
+![Vertical-Horizontal Composition](/img/in-post/post-algebra/v-h-composition.svg){:height="400px" width="400px"}
+
+对于上面的图表，存在互换律：
 
 $$
 (\psi_2 \circ \psi_1) \circ (\theta_2 \circ \theta_1) = (\psi_2 \circ \theta_2) \circ (\psi_1 \circ \theta_1)
 $$
-
-![Vertical-Horizontal Composition](/img/in-post/post-algebra/v-h-composition.svg){:height="400px" width="400px"}
 
 其中不同位置的 $\circ$ 代表不同的横纵合成。
 
@@ -354,7 +372,7 @@ $$
 
 自然变换可以看成**函子范畴**上的态射，函子范畴的对象为函子。此时原范畴上的自然同构变成了函子范畴上的同构态射。其严格定义如下：
 
-> 设 $\mathcal{C}, \mathcal{D}$ 为小范畴，则函子范畴 $\operatorname{\mathrm{Fct}}(\mathcal{C}, \mathcal{D})$ 的对象是 $\mathcal{C} \rightarrow \mathcal{D}$ 的态射，任意两个对象 $F, G$ 间的态射是自然变换 $\theta : F \rightarrow G$，合成运算为自然变换的纵合成。
+> 设 $\mathcal{C}, \mathcal{D}$ 为小范畴，则函子范畴 $\operatorname{\mathrm{Fct}}(\mathcal{C}, \mathcal{D})$ 的对象是 $\mathcal{C} \rightarrow \mathcal{D}$ 的函子，任意两个对象 $F, G$ 间的态射是自然变换 $\theta : F \rightarrow G$，合成运算为自然变换的纵合成。
 
 函子范畴在 Haskell 中的表述如下：
 
