@@ -165,7 +165,7 @@ $$
 
 将分裂域 $E$ 上的元素表示为 $\alpha = a + b\sqrt{3} + c\sqrt{5} + d\sqrt{15} = a + b\sqrt{3} + c\sqrt{5} + d\sqrt{15}$。令 $f$ 表示调换 $\plusmn \sqrt{3}$，$g$ 表示调换 $\plusmn \sqrt{5}$。则有以下对应关系：
 
-![Galois Correspondence](/img/in-post/post-unplugged/galois-correspondence.png){:height="400px" width="400px"}
+![Galois Correspondence](/img/in-post/post-algebra/galois-correspondence.png){:height="400px" width="400px"}
 
 直观理解：每一次扩域都会增加一个基变量，因此就丧失了在这个维度上的自由度，可以在这个维度上施加的变换也减少了。
 
