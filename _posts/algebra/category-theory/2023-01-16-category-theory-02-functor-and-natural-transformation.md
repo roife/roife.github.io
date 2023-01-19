@@ -18,15 +18,14 @@ katex: true
 ## 函子的定义
 
 前面关注的都是对象间的态射，下面关注范畴（小范畴）间的态射——**函子**（functor）。
-由于函子也是态射，因此也满足态射的定律。
+由于函子也是态射，因此也满足态射的定律。函子的定义如下：
 
-函子的定义如下：
-
-> 设 $\mathcal{C}$ 与 $\mathcal{D}$ 为范畴，则函子 $F : \mathcal{C} \rightarrow \mathcal{D}$ 会把 $\mathcal{C}$ 中的所有**对象**与**态射**对应到 $\mathcal{D}$ 上，且保留**复合运算**与**单位元**（恒等映射）：
+> 设 $\mathcal{C}$ 与 $\mathcal{D}$ 为范畴，则函子（共变函子）$F : \mathcal{C} \rightarrow \mathcal{D}$ 会把 $\mathcal{C}$ 中的所有**对象**与**态射**对应到 $\mathcal{D}$ 上，且保留**复合运算**与**单位元**（恒等映射）：
 >
-> - $F(f : A \rightarrow B) = F(f) : F(A) \rightarrow F(B)$
-> - $F(\mathbf{1}\_A) = \mathbf{1}\_{F(A)}$
-> - $F(g \circ_\mathcal{C} f) = F(g) \circ_\mathcal{D} F(f)$
+> - 对象映射 $F : \operatorname{\mathrm{Ob}}(\mathcal{C}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$，即 $x : \mathcal{C} \mapsto FX : \mathcal{D}$
+> - 态射映射 $F : \mathcal{C}(X, Y) \rightarrow \mathcal{D}(FX, FY)$
+> - 保持单位态射 $F(\mathbf{1}\_A) = \mathbf{1}\_{F(A)}$
+> - 保持态射复合 $F(g \circ_\mathcal{C} f) = F(g) \circ_\mathcal{D} F(f)$
 
 ![Covariant Functor](/img/in-post/post-algebra/covariant-functor.svg){:height="400px" width="400px"}
 
@@ -43,8 +42,8 @@ fmap (g . f) = (fmap g) . (fmap f)
 
 对于函子 $F : \mathcal{C} \rightarrow \mathcal{D}$：
 - 若 $\mathcal{D}$ 中任一对象都同构于某个 $FX\ (X \in \operatorname{\mathrm{Ob}}(\mathcal{C}))$，则称 $F$ 是**本质满的**（essentially surjective on objects，e.s.o.）
-- 若对所有 $X, Y \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，映射 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(X, Y) \rightarrow \operatorname{\mathrm{Hom}}\_{\mathcal{D}}(FX,FY)$ 都是单射，则称函子 $F$ 是**忠实的**（faithful）
-- 若对所有 $X, Y \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，映射 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(X, Y) \rightarrow \operatorname{\mathrm{Hom}}\_{\mathcal{D}}(FX,FY)$ 都是满射，则称函子 $F$ 是**全的**（full）
+- 若对所有 $X, Y \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，映射 $\mathcal{C}(X, Y) \rightarrow \mathcal{D}(FX,FY)$ 都是单射，则称函子 $F$ 是**忠实的**（faithful）
+- 若对所有 $X, Y \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，映射 $\mathcal{C}(X, Y) \rightarrow \mathcal{D}(FX,FY)$ 都是满射，则称函子 $F$ 是**全的**（full）
 
 ## Haskell 中的函子定义
 
@@ -116,25 +115,26 @@ class (Category r, Category t) =>
         CategoricalFunctor f r t | f r -> t, f t -> r where
   cfmap :: r a b -> t (f a) (f b)
 
--- > :k Functor
 -- Functor :: (k1 -> k) -> Constraint
-
--- > :k CategoricalFunctor
 -- CategoricalFunctor :: (k1 -> k) -> (k1 -> k1 -> *) -> (k -> k -> *) -> Constraint
 ```
 
 ## 共变函子与反变函子
 
-对于函子 $F : \mathcal{C} \rightarrow \mathcal{D}$，它在反范畴上对应的函子 $G : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。$G$ 的定义如下：
+对于函子 $F : \mathcal{C} \rightarrow \mathcal{D}$，它在反范畴上对应的函子 $F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。$F^{\mathrm{op}}$ 在 Haskell 中的定义如下：
 
 ```haskell
 class Functor f where
   fmap :: (b ~> a) -> (f b ~> f a)
 ```
 
-不难发现 $F = G$，函子 $G$ 也称为**共变函子**（covariant functor），本质上就是函子。
+不难发现 $F = F^{\mathrm{op}}$，函子 $F^{\mathrm{op}}$ 也称为**共变函子**（covariant functor），即通常说的函子。
 
-与之对偶的是反变函子（contravariant functor）$F' : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}$（或 $G' : \mathcal{C} \rightarrow \mathcal{D}^{\mathrm{op}}$）：
+与之对偶的是反变函子（contravariant functor）$F' : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}$（或 $F^{\mathrm{op}}' : \mathcal{C} \rightarrow \mathcal{D}^{\mathrm{op}}$）：
+- 对象映射 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$（或 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}^{\mathrm{op}}) \rightarrow \operatorname{\mathrm{Ob}}(D)$）
+- 态射映射 $F' : \mathcal{C}(X, Y) \rightarrow \mathcal{D}(FY, FX)$
+- 保持单位态射
+- 态射复合 $F'(g \circ\_\mathcal{C^{\mathrm{op}}} f) = F'(g) \circ\_\mathcal{D} F'(f)$
 
 ```haskell
 class Contravariant f where
@@ -144,41 +144,6 @@ class Contravariant f where
 ![Cotravariant Functor](/img/in-post/post-algebra/contravariant-functor.svg){:height="400px" width="400px"}
 
 一般会将反变函子称为 cofunctor。
-
-## Hom 函子
-
-范畴 $\mathcal{C}$ 上所有的 `Hom-Set` 组成的集合组成了一个 Set 范畴，范畴 $\mathcal{C}$ 到这个 Set 范畴的映射即为共变 Hom 函子，而反范畴 $\mathcal{C}^{\mathrm{op}}$ 到这个 Set 范畴的映射即为反变 Hom 函子。
-
-> 给定局部小范畴 $\mathcal{C}$，**共变 Hom 函子**（covariant Hom-functor）$\operatorname{\mathrm{Hom}}(A, -) : \mathcal{C} \rightarrow \mathtt{Set}$ 的定义如下：
-> - $\forall B \in \operatorname{\mathrm{Ob}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(A, -)(B) = \operatorname{\mathrm{Hom}}(A, B)$
-> - $\forall f : B \rightarrow C \in \operatorname{\mathrm{Arr}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(A, -)(f) = \operatorname{\mathrm{Hom}}(A, f) : \operatorname{\mathrm{Hom}}(A, B) \rightarrow \operatorname{\mathrm{Hom}}(A, C)$
->   + 它使得 $g : A \rightarrow B \mapsto f \circ g : A \rightarrow C$
-
-在 Haskell 中的对应表述为：
-
-```haskell
-instance Functor ((->) a) where
-  fmap f g = (f . g)
-```
-
-> 给定局部小范畴 $\mathcal{C}$，**反变 Hom 函子**（contravariant Hom-functor）$\operatorname{\mathrm{Hom}}(-, B) : \mathcal{C}^{\mathrm{op}} \rightarrow \mathtt{Set}$ 的定义如下：
-> - $\forall B \in \operatorname{\mathrm{Ob}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(-, A)(B) = \operatorname{\mathrm{Hom}}(B, A)$
-> - $\forall h : C \rightarrow B \in \operatorname{\mathrm{Arr}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(-, A)(h) = \operatorname{\mathrm{Hom}}(h, A) : \operatorname{\mathrm{Hom}}(B, A) \rightarrow \operatorname{\mathrm{Hom}}(C, A)$
->   + 它使得 $g : B \rightarrow A \mapsto g \circ h : C \rightarrow A$
-
-在 Haskell 中的对应表述为：
-
-```haskell
-data Op b a = Op (a -> b)
-instance Contravariant (Op a) where
-  contramap h (Op g) = Op (g . h)
-```
-
-![Hom Functor](/img/in-post/post-algebra/hom-functor.svg){:height="400px" width="400px"}
-
-> 二元函子 $\operatorname{\mathrm{Hom}}(-, -) : \mathcal{C}^{\mathrm{op}} \times \mathcal{C} \rightarrow \mathtt{Set}$ 被称为**Hom 函子**（Hom-functor），其定义如下：
-> - $\forall f : B \rightarrow B'\ \forall h : A' \rightarrow A,\ \operatorname{\mathrm{Hom}}(h, f) : \operatorname{\mathrm{Hom}}(A, B) \rightarrow \operatorname{\mathrm{Hom}}(A', B')$
->   + 它使得 $g : A \rightarrow B \mapsto f \circ g \circ h : A' \rightarrow B'$
 
 ## 函子的复合
 
@@ -213,15 +178,15 @@ newtype (:.:) f g p = Comp1 { unComp1 :: f (g p) } -- GHC.Generics
 > \theta_X \in \operatorname{\mathrm{Hom}}_{\mathcal{D}}(FX, GX), X \in \operatorname{\mathrm{Ob}}(C)
 > $$
 >
-> 使得对于 $\mathcal{C}$ 上的所有态射 $f : X \rightarrow Y$，下图交换：
+> 使得对于 $\mathcal{C}$ 上的所有态射 $f : X \rightarrow Y$，下图交换（即满足自然性）：
 >
-> ![Natural Transformation](/img/in-post/post-algebra/natural-transformation.svg){:height="250px" width="250px"}
+> ![Natural Transformation](/img/in-post/post-algebra/natural-transformation.svg){:height="300px" width="300px"}
 >
 > 上面这幅图也可以记作：
 >
-> ![Natural Transformation 2](/img/in-post/post-algebra/natural-transformation-2.svg){:height="250px" width="250px"}
+> ![Natural Transformation 2](/img/in-post/post-algebra/natural-transformation-2.svg){:height="200px" width="200px"}
 >
-> 即满足 $\theta_X \circ Gf = Ff \circ \theta_Y$，称 $\theta$ 是 natural 的（或满足 naturality）。
+> 即满足 $\theta\_Y \circ Ff = Gf \circ \theta\_X$。
 
 ## Haskell 中的自然变换
 
@@ -243,11 +208,15 @@ flatten :: Tree a -> [a]
 
 使用函子进行映射（$F f$）会改变容器内的“值”，而不会改变容器的结构；而自然变换可能会改变结构。
 
-由交换图知自然变换 $\theta$ 满足对任意的 $f$，$\theta \circ \operatorname{\mathrm{fmap}}\ f = \operatorname{\mathrm{fmap}}\ f \circ \theta$，$\theta \circ \operatorname{\mathrm{contramap}}\ f = \operatorname{\mathrm{contramap}}\ f \circ \theta$）
+由交换图知自然变换 $\theta$ 满足对任意的 $f$：
+- $\theta \circ \operatorname{\mathrm{fmap}}\ f = \operatorname{\mathrm{fmap}}\ f \circ \theta$
+- $\theta \circ \operatorname{\mathrm{contramap}}\ f = \operatorname{\mathrm{contramap}}\ f \circ \theta$）
 
 ## 自然变换的合成
 
-自然变换有两种合成方式：横合成和纵合成。并且横纵合成的结构都是函子范畴上的态射，满足结合律 $(\phi \circ \psi) \circ \theta = \phi \circ (\psi \circ \theta)$。
+自然变换有两种合成方式：横合成和纵合成。
+
+并且横纵合成的结构都是函子范畴上的态射，满足结合律 $(\phi \circ \psi) \circ \theta = \phi \circ (\psi \circ \theta)$。
 
 ### 纵合成
 
@@ -320,7 +289,9 @@ horizontalComp theta@(Nat f1f2) psi@(Nat g1g2) = Nat $ \(Comp1 x) -> Comp1 (fmap
 > \end{CD}
 > $$
 
-此外，横合成还有一类特殊情况，即函子和自然变换的合成：
+### 函子与自然变换合成
+
+横合成还有一类特殊情况，即函子和自然变换的合成：
 
 ![Horizontal Composition-2](/img/in-post/post-algebra/horizontal-composition-2.svg){:height="300px" width="300px"}
 
@@ -368,22 +339,6 @@ $$
 
 > **定理** 对于函子 $F : \mathcal{C} \rightarrow \mathcal{D}$，$F$ 是范畴等价当且仅当 $F$ 是全忠实、本质满函子（证明略）
 
-## 函子范畴
-
-自然变换可以看成**函子范畴**上的态射，函子范畴的对象为函子。此时原范畴上的自然同构变成了函子范畴上的同构态射。其严格定义如下：
-
-> 设 $\mathcal{C}, \mathcal{D}$ 为小范畴，则函子范畴 $\operatorname{\mathrm{Fct}}(\mathcal{C}, \mathcal{D})$ 的对象是 $\mathcal{C} \rightarrow \mathcal{D}$ 的函子，任意两个对象 $F, G$ 间的态射是自然变换 $\theta : F \rightarrow G$，合成运算为自然变换的纵合成。
-
-函子范畴在 Haskell 中的表述如下：
-
-```haskell
-type instance (~>) = Nat
-instance Category ((~>) :: i -> i -> *)
-         => Category (Nat :: (k1 -> i) -> (k1 -> i) -> *) where
-  id = Nat id
-  Nat f . Nat g = Nat (f . g)
-```
-
 ## Applicative 变换
 
 Applicative 是特殊的 functor，相比自然变换而言，applicative 的变换则需要满足更多性质：
@@ -406,6 +361,70 @@ t :: (Applicative f, Applicative g) => f a -> g a
 - `sequenceA . (fmap Identity) = Identity`
 - `t . sequenceA = sequenceA . fmap t`
 - `sequenceA . fmap Compose = Compose . fmap sequenceA . sequenceA`
+
+# 函子范畴
+
+## 函子范畴
+
+自然变换可以看成**函子范畴**上的态射，函子范畴的对象为函子。此时原范畴上的自然同构变成了函子范畴上的同构态射。其严格定义如下：
+
+> 设 $\mathcal{C}, \mathcal{D}$ 为小范畴，记函子范畴为 $\operatorname{\mathrm{Fct}}(\mathcal{C}, \mathcal{D})$：
+> - 对象是 $\mathcal{C} \rightarrow \mathcal{D}$ 的函子
+> - 任意两个对象 $F, G$ 间的态射是自然变换 $\theta : F \rightarrow G$
+> - 恒等运算为自函子 $\operatorname{\mathrm{id}}\_{\mathcal{C}}$
+> - 合成运算为自然变换的纵合成
+
+函子范畴在 Haskell 中的表述如下：
+
+```haskell
+type instance (~>) = Nat
+instance Category ((~>) :: i -> i -> *)
+         => Category (Nat :: (k1 -> i) -> (k1 -> i) -> *) where
+  id = Nat id
+  Nat f . Nat g = Nat (f . g)
+```
+
+## Hom 函子
+
+局部小范畴 $\mathcal{C}$ 上所有的 `Hom-Set` 组成的集合组成 了一个 Set 范畴，范畴 $\mathcal{C}$ 到这个 Set 范畴的映射即为共变 Hom 函子，而反范畴 $\mathcal{C}^{\mathrm{op}}$ 到这个 Set 范畴的映射即为反变 Hom 函子。
+
+> 给定局部小范畴 $\mathcal{C}$，**共变 Hom 函子**（covariant Hom-functor）$\operatorname{\mathrm{Hom}}(A, -) : \mathcal{C} \rightarrow \mathtt{Set}$ 的定义如下：
+> - $\forall B \in \operatorname{\mathrm{Ob}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(A, -)(B) = \operatorname{\mathrm{Hom}}(A, B)$
+> - $\forall f : B \rightarrow C \in \operatorname{\mathrm{Arr}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(A, -)(f) = \operatorname{\mathrm{Hom}}(A, f) : \operatorname{\mathrm{Hom}}(A, B) \rightarrow \operatorname{\mathrm{Hom}}(A, C)$
+>   + $\operatorname{\mathrm{Hom}}(A, f)(g : A \rightarrow B) = f \circ g : A \rightarrow C$
+
+在 Haskell 中的对应表述为：
+
+```haskell
+instance Functor ((->) a) where
+  fmap f g = (f . g)
+```
+
+> 给定局部小范畴 $\mathcal{C}$，**反变 Hom 函子**（contravariant Hom-functor）$\operatorname{\mathrm{Hom}}(-, B) : \mathcal{C}^{\mathrm{op}} \rightarrow \mathtt{Set}$ 的定义如下：
+> - $\forall B \in \operatorname{\mathrm{Ob}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(-, A)(B) = \operatorname{\mathrm{Hom}}(B, A)$
+> - $\forall h : C \rightarrow B \in \operatorname{\mathrm{Arr}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(-, A)(h) = \operatorname{\mathrm{Hom}}(h, A) : \operatorname{\mathrm{Hom}}(B, A) \rightarrow \operatorname{\mathrm{Hom}}(C, A)$
+>   + $\operatorname{\mathrm{Hom}}(h, A)(g : B \rightarrow A) = g \circ h : C \rightarrow A$
+
+在 Haskell 中的对应表述为：
+
+```haskell
+data Op b a = Op (a -> b)
+instance Contravariant (Op a) where
+  contramap h (Op g) = Op (g . h)
+```
+
+![Hom Functor](/img/in-post/post-algebra/hom-functor.svg){:height="400px" width="400px"}
+
+下面给出共变 Hom 函子的证明：
+
+- $\operatorname{\mathrm{Hom}}(A, \operatorname{\mathrm{id}}\_X)(f) = \operatorname{\mathrm{id}}\_X \circ f = f$，因此 $\operatorname{\mathrm{Hom}}(A, \operatorname{\mathrm{id}}\_X) = \operatorname{\mathrm{id}}\_{\operatorname{\mathrm{Hom}}(A, X)}$
+- $\operatorname{\mathrm{Hom}}(A, g \circ f)(h) = g \circ f \circ h = (\operatorname{\mathrm{Hom}}(A, g) \circ \operatorname{\mathrm{Hom}}(A, f))(h)$，因此 $\operatorname{\mathrm{Hom}}(A, g \circ f) = \operatorname{\mathrm{Hom}}(A, g) \circ \operatorname{\mathrm{Hom}}(A, f)$
+
+此外，还可以定义二元函子：
+
+> 二元函子 $\operatorname{\mathrm{Hom}}(-, -) : \mathcal{C}^{\mathrm{op}} \times \mathcal{C} \rightarrow \mathtt{Set}$ 的定义如下：
+> - $\forall f : B \rightarrow B'\ \forall h : A' \rightarrow A,\ \operatorname{\mathrm{Hom}}(h, f) : \operatorname{\mathrm{Hom}}(A, B) \rightarrow \operatorname{\mathrm{Hom}}(A', B')$
+>   + 它使得 $g : A \rightarrow B \mapsto f \circ g \circ h : A' \rightarrow B'$
 
 # Typeclass 限定范畴
 

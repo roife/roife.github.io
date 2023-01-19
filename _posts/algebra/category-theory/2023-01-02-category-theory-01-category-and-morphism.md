@@ -19,12 +19,13 @@ katex: true
 - 一组**对象**（object）：$A, B, C, \dots$，记作 $\operatorname{\mathrm{Ob}}(\mathcal{C})$
 - 一组**态射**（morphism / arrow）
   + 该范畴上的所有态射组成的集合记作 $\operatorname{\mathrm{Arr}}(\mathcal{C})$
+  + 范畴 $\mathcal{C}$ 中对象 $A \rightarrow B$ 之间的所有态射的集合记为 $\mathcal{C}(A, B)$ 或 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(A, B)$
   + 对于任意一组对象 $a, b$，可以得到一个态射的集合 $\mathcal{C}(a, b)$
   + 当 $a \ne a' \wedge b \ne b'$ 时，$\mathcal{C}(a, b) \cap \mathcal{C}(a', b') = \emptyset$
 
 一个从 $a$ 到 $b$ 的态射可以记作 $f : a \rightarrow b$ 或 $a \overset{f}{\longrightarrow} b$。态射满足下面的性质：
 - 态射间存在**复合（composite）运算**：对于一对态射 $f : a \rightarrow b$ 与 $g : b \rightarrow c$，存在一个复合态射 $g \circ f : a \rightarrow c$，其中 $\circ$ 是态射复合的运算符
-- 复合运算 $\circ$ 满足结合律（associativity）：若 $a, b, c, d \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，那么对于 $f : a \rightarrow b,\ g : b \rightarrow c,\ h : c \rightarrow d$ 有 $h \circ (g \circ f) = (h \circ g) \circ f$
+- 复合运算 $\circ$ 满足结合律：若 $a, b, c, d \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，那么对于 $f : a \rightarrow b,\ g : b \rightarrow c,\ h : c \rightarrow d$ 有 $h \circ (g \circ f) = (h \circ g) \circ f$
 - 对于每个对象 $a \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，都存在**单位态射**（identity morphism） $\mathbf{1}_a \in \mathcal{C}(a, a)$
   + $\forall f \in \mathcal{C}(a, b) \ \forall g \in \mathcal{C}(c, a)$，满足 $f \circ \mathbf{1}_a = f, \mathbf{1}_a \circ g = g$；即 $\mathbf{1}_a$ 是 $f$ 的右单位元、$g$ 的左单位元
 
@@ -156,11 +157,11 @@ upsy Unit = U
 - $\operatorname{\mathrm{Ob}}(\mathcal{C}^{\mathrm{op}}) = \operatorname{\mathrm{Ob}}(\mathcal{C})$
 - 态射：$\forall a, b \in \operatorname{\mathrm{Ob}} (\mathcal{C}^{\mathrm{op}}), \mathcal{C}^{\mathrm{op}}(a, b) = \mathcal{C}(b, a)$
 - 单位态射：$\mathcal{C}^{\mathrm{op}}$ 中的 单位态射与 $\mathcal{C}$ 相同
-- 态射复合：$\forall f, g \in \operatorname{\mathrm{Arr}}(\mathcal{C}), g \circ^{\mathrm{op}} f = f \circ g$
-
-反范畴的反范畴是自身，即 $(\mathcal{C}^{\mathrm{op}})^{\mathrm{op}} = \mathcal{C}$。
+- 态射复合：$\forall f, g \in \operatorname{\mathrm{Arr}}(\mathcal{C}), g^{\mathrm{op}} \circ^{\mathrm{op}} f^{\mathrm{op}} = f \circ g$
 
 反范畴可以理解为反转态射的箭头，其它都不变。
+
+反范畴的反范畴是自身，即 $(\mathcal{C}^{\mathrm{op}})^{\mathrm{op}} = \mathcal{C}$。
 
 反范畴是原范畴的的对偶，例如原范畴的单一态射在反范畴中是完全态射，原范畴的初始对象在终极范畴中是终极对象。
 
