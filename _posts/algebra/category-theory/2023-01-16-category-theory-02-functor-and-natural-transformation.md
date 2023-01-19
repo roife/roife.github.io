@@ -17,9 +17,6 @@ katex: true
 
 ## 函子的定义
 
-前面关注的都是对象间的态射，下面关注范畴（小范畴）间的态射——**函子**（functor）。
-由于函子也是态射，因此也满足态射的定律。函子的定义如下：
-
 > 设 $\mathcal{C}$ 与 $\mathcal{D}$ 为范畴，则函子（共变函子）$F : \mathcal{C} \rightarrow \mathcal{D}$ 会把 $\mathcal{C}$ 中的所有**对象**与**态射**对应到 $\mathcal{D}$ 上，且保留**复合运算**与**单位元**（恒等映射）：
 >
 > - 对象映射 $F : \operatorname{\mathrm{Ob}}(\mathcal{C}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$，即 $x : \mathcal{C} \mapsto FX : \mathcal{D}$
@@ -37,6 +34,8 @@ fmap (g . f) = (fmap g) . (fmap f)
 ```
 
 如果函子 $F, G : \mathcal{C} \rightarrow \mathcal{D}$ 都是从 $\mathcal{C}$ 到 $\mathcal{D}$ 的态射，那么称这两个函子为**平行函子**（parallel functor）。
+
+函子也可以看作是小范畴范畴上的态射，其对象为范畴，且存在恒等函子和函子复合。
 
 ## 函子的性质
 
@@ -119,7 +118,7 @@ class (Category r, Category t) =>
 -- CategoricalFunctor :: (k1 -> k) -> (k1 -> k1 -> *) -> (k -> k -> *) -> Constraint
 ```
 
-## 共变函子与反变函子
+## 共变函子（反函子）与反变函子
 
 对于函子 $F : \mathcal{C} \rightarrow \mathcal{D}$，它在反范畴上对应的函子 $F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。$F^{\mathrm{op}}$ 在 Haskell 中的定义如下：
 
@@ -128,7 +127,7 @@ class Functor f where
   fmap :: (b ~> a) -> (f b ~> f a)
 ```
 
-不难发现 $F = F^{\mathrm{op}}$，函子 $F^{\mathrm{op}}$ 也称为**共变函子**（covariant functor），即通常说的函子。
+不难发现 $F = F^{\mathrm{op}}$，函子 $F^{\mathrm{op}}$ 也称为**共变函子**（covariant functor），即通常说的函子。一般所说的反函子（opposite functor）也是指共变函子 $F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。
 
 与之对偶的是反变函子（contravariant functor）$F' : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}$（或 $F^{\mathrm{op}}' : \mathcal{C} \rightarrow \mathcal{D}^{\mathrm{op}}$）：
 - 对象映射 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$（或 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}^{\mathrm{op}}) \rightarrow \operatorname{\mathrm{Ob}}(D)$）
@@ -188,6 +187,8 @@ newtype (:.:) f g p = Comp1 { unComp1 :: f (g p) } -- GHC.Generics
 >
 > 即满足 $\theta\_Y \circ Ff = Gf \circ \theta\_X$。
 
+由于 $FA, GA \in \operatorname{\mathrm{Ob}}(\mathcal{D})$，那么很自然地，态射 $\theta\_A(FA) = FB$ 也应当属于 $\operatorname{\mathrm{Arr}}(\mathcal{D})$。所以自然变换的本质就是 $\mathcal{D}$ 内部分特殊的态射。这一特性在讨论反范畴时会用到。
+
 ## Haskell 中的自然变换
 
 ```haskell
@@ -211,6 +212,12 @@ flatten :: Tree a -> [a]
 由交换图知自然变换 $\theta$ 满足对任意的 $f$：
 - $\theta \circ \operatorname{\mathrm{fmap}}\ f = \operatorname{\mathrm{fmap}}\ f \circ \theta$
 - $\theta \circ \operatorname{\mathrm{contramap}}\ f = \operatorname{\mathrm{contramap}}\ f \circ \theta$）
+
+## 反自然变换
+
+设函子 $F, G : \mathcal{C} \rightarrow \mathcal{D}$，则在反范畴中对应的有反函子 $F^{\mathrm{op}}, G^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。
+
+前面提到，自然变换本质上是范畴上原有的态射。由于在 $\mathcal{C}^{\mathrm{op}}$ 中，所有的态射都被反转了，因此从 $FA$ 到 $GA$ 的自然变换 $\theta\_A$ 也被反转了，得到 $\theta\_A^{\mathrm{op}} : G^{\mathrm{op}}A \rightarrow F^{\mathrm{op}}A$。因此反自然变换（opposite natural transformation）：$\theta^{\mathrm{op}} : G^{\mathrm{op}} \rightarrow F^{\mathrm{op}}$。且 $(\theta^{\mathrm{op}})^{\mathrm{op}} = \theta$。
 
 ## 自然变换的合成
 
@@ -335,7 +342,7 @@ $$
 
 若存在函子间的同构 $\theta : FG \overset{\sim}{\rightarrow} \operatorname{\mathrm{id}}\_{\mathcal{D}}$，$\psi : GF \overset{\sim}{\rightarrow} \operatorname{\mathrm{id}}\_{\mathcal{C}}$，则称 $G$ 是 $F$ 的**拟逆函子**（quasi inverse），且 $F$ 是 $\mathcal{C}$ 到 $\mathcal{D}$ 的一个**等价**（equivalence）。
 
-进一步的，若 $F G = \operatorname{\mathrm{id}}\_{\mathcal{D}}$ 且 $G F = \operatorname{\mathrm{id}}\_{\mathcal{C}}$，则称 $F$ 是一个 $\mathcal{C}$ 到 $\mathcal{D}$ 的**同构**，并称 $G$ 是 $F$ 的**逆**。
+进一步的，若 $F G = \operatorname{\mathrm{id}}\_{\mathcal{D}}$ 且 $G F = \operatorname{\mathrm{id}}\_{\mathcal{C}}$，则称 $G$ 是 $F$ 的**逆**，并称 $F$ 是一个 $\mathcal{C}$ 到 $\mathcal{D}$ 的**同构**。
 
 > **定理** 对于函子 $F : \mathcal{C} \rightarrow \mathcal{D}$，$F$ 是范畴等价当且仅当 $F$ 是全忠实、本质满函子（证明略）
 
@@ -368,7 +375,7 @@ t :: (Applicative f, Applicative g) => f a -> g a
 
 自然变换可以看成**函子范畴**上的态射，函子范畴的对象为函子。此时原范畴上的自然同构变成了函子范畴上的同构态射。其严格定义如下：
 
-> 设 $\mathcal{C}, \mathcal{D}$ 为小范畴，记函子范畴为 $\operatorname{\mathrm{Fct}}(\mathcal{C}, \mathcal{D})$：
+> 设 $\mathcal{C}, \mathcal{D}$ 为小范畴，记函子范畴为 $\operatorname{\mathrm{Fct}}(\mathcal{C}, \mathcal{D})$ 或 $\mathcal{D}^{\mathcal{C}}$：
 > - 对象是 $\mathcal{C} \rightarrow \mathcal{D}$ 的函子
 > - 任意两个对象 $F, G$ 间的态射是自然变换 $\theta : F \rightarrow G$
 > - 恒等运算为自函子 $\operatorname{\mathrm{id}}\_{\mathcal{C}}$
@@ -383,6 +390,12 @@ instance Category ((~>) :: i -> i -> *)
   id = Nat id
   Nat f . Nat g = Nat (f . g)
 ```
+
+## 反范畴的函子范畴
+
+根据前面的讨论，反范畴上的函子（即反函子）$F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$ 与原函子 $F$ 等价，但是自然变换 $\theta^{\mathrm{op}}$ 取反。
+
+即有 $\operatorname{\mathrm{Fct}}(\mathcal{C}, \mathcal{D}) \overset{\sim}{\rightarrow} \operatorname{\mathrm{Fct}}(\mathcal{C}^{\mathrm{op}}, \mathcal{D}^{\mathrm{op}})$，使得 $\theta \mapsto \theta^{op}$。
 
 ## Hom 函子
 
