@@ -13,25 +13,22 @@ header-style: text
 katex: true
 ---
 
-# 范畴的定义
+# 范畴
 
 一个范畴 $\mathcal{C}$ 由两个要素组成：
 - 一组**对象**（object）：$A, B, C, \dots$，记作 $\operatorname{\mathrm{Ob}}(\mathcal{C})$
 - 一组**态射**（morphism / arrow）
   + 该范畴上的所有态射组成的集合记作 $\operatorname{\mathrm{Arr}}(\mathcal{C})$
-  + 范畴 $\mathcal{C}$ 中对象 $A \rightarrow B$ 之间的所有态射的集合记为 $\mathcal{C}(A, B)$ 或 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(A, B)$
-  + 对于任意一组对象 $a, b$，可以得到一个态射的集合 $\mathcal{C}(a, b)$
+  + 对于 $A, B \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，可以得到 $A \rightarrow B$ 的态射的集合 $\mathcal{C}(a, b)$（或记作 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(A, B)$，称为 Hom 集）
   + 当 $a \ne a' \wedge b \ne b'$ 时，$\mathcal{C}(a, b) \cap \mathcal{C}(a', b') = \emptyset$
 
 一个从 $a$ 到 $b$ 的态射可以记作 $f : a \rightarrow b$ 或 $a \overset{f}{\longrightarrow} b$。态射满足下面的性质：
-- 态射间存在**复合（composite）运算**：对于一对态射 $f : a \rightarrow b$ 与 $g : b \rightarrow c$，存在一个复合态射 $g \circ f : a \rightarrow c$，其中 $\circ$ 是态射复合的运算符
-- 复合运算 $\circ$ 满足结合律：若 $a, b, c, d \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，那么对于 $f : a \rightarrow b,\ g : b \rightarrow c,\ h : c \rightarrow d$ 有 $h \circ (g \circ f) = (h \circ g) \circ f$
-- 对于每个对象 $a \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，都存在**单位态射**（identity morphism） $\mathbf{1}_a \in \mathcal{C}(a, a)$
-  + $\forall f \in \mathcal{C}(a, b) \ \forall g \in \mathcal{C}(c, a)$，满足 $f \circ \mathbf{1}_a = f, \mathbf{1}_a \circ g = g$；即 $\mathbf{1}_a$ 是 $f$ 的右单位元、$g$ 的左单位元
+- 对于每个 $a \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，都存在**单位态射**（identity morphism） $\mathbf{1}_a \in \mathcal{C}(a, a)$
+- 态射间存在**复合运算**（composition）：对于一对态射 $f : a \rightarrow b$ 与 $g : b \rightarrow c$，存在一个复合态射 $g \circ f : a \rightarrow c$，其中 $\circ$ 是态射复合的运算符。且复合运算 $\circ$ 满足结合律：设 $a \overset{f}{\longrightarrow} b,\ b \overset{g}{\longrightarrow} c,\ c \overset{h}{\longrightarrow} d$，有 $h \circ (g \circ f) = (h \circ g) \circ f$
 
 这里的“对象”可以是任意的数学对象，例如值、类型、范畴等。“态射”是抽象的概念，不一定是映射，只要是满足上面定律的对象都可以成为态射。
 
-# 范畴的例子
+## 范畴的例子
 
 - 幺半群 $(m, 1, \otimes)$ 可以看作只有一个抽象对象的范畴：
   + $m$ 中的每个元素看作一个态射
@@ -44,7 +41,7 @@ katex: true
   + 对象是集合 $\mathtt{Set}\_A,\ \mathtt{Set}\_B,\ \cdots$
   + 态射是集合之间的映射 $\mathtt{Set}\_A \rightarrow \mathtt{Set}\_B$，显然映射可复合
 
-# Haskell 中的范畴
+## Haskell 中的范畴
 
 Haskell 中能“近似”地定义范畴，一般讨论类型以及类型之间的映射：
 
@@ -56,7 +53,9 @@ class Category cat where
 
 此处 `cat` 的 kind 为 `k -> k -> *`。`cat` 是一个范畴，对象是 `kind` 为 `k` 的类型（开启 `PolyKinds` 扩展），态射是 `cat a b`。
 
-## Hask 范畴
+### Hask 范畴
+
+由于 Haskell 中存在 `undefined`，所以 Haskell 中类型构成的的范畴并不是严格的 Set 范畴。
 
 Haskell 中所有的**类型**以及**类型间的映射（函数）**构成了一个范畴。这个范畴称为 **Hask 范畴**：
 - 对象为类型 `a :: *`
@@ -64,7 +63,7 @@ Haskell 中所有的**类型**以及**类型间的映射（函数）**构成了�
 - 态射复合 `(.)` 可结合
 - 单位态射为 `id :: a -> a`
 
-## 严格定义
+### 严格定义
 
 Haskell 中类型间的映射都是 kind 为 `*` 的类型，函数也是 kind 为 `*` 的类型间的映射。因此在使用 `Category` 时，对象一般也是 kind 为 `*` 的类型。因此在标准库中将范畴直接定义为上面简化的 `Category` typeclass。
 
@@ -88,19 +87,40 @@ instance Category (->) where
 
 另外需要注意的一点是，上面在讨论的 kind 为 `*` 的类型中不包括 $\bot$，因为 $\bot$ 有任意的多态类型。所以下面在讨论 Haskell 和 Hask 范畴时不考虑 $\bot$、`undefined` 还有 `let x = x in x` 等。
 
-# `Hom`
+## 反范畴（对偶范畴）
 
-设范畴 $\mathcal{C}$，对于 $A, B \in \operatorname{\mathrm{Ob}}(\mathcal{C})$，记 $\operatorname{\mathrm{Hom}}(A, B) = \\\{f \in \operatorname{\mathrm{Arr}(\mathcal{C})} \vert f : A \rightarrow B \\\}$，也可以写作 $\operatorname{\mathrm{Hom}}_\mathcal{C}(A, B)$ 或者 $\mathcal{C}(A, B)$。态射构成的集合称为 `Hom-Set`。
+对于任意范畴 $\mathcal{C}$ , 其反范畴（Opposite Category） $\mathcal{C}^{\mathrm{op}}$ 定义如下：
+- $\operatorname{\mathrm{Ob}}(\mathcal{C}^{\mathrm{op}}) = \operatorname{\mathrm{Ob}}(\mathcal{C})$
+- 态射：$\forall a, b \in \operatorname{\mathrm{Ob}} (\mathcal{C}^{\mathrm{op}}), \mathcal{C}^{\mathrm{op}}(a, b) = \mathcal{C}(b, a)$
+- 单位态射：$\mathcal{C}^{\mathrm{op}}$ 中的 单位态射与 $\mathcal{C}$ 相同
+- 态射复合：$\forall f, g \in \operatorname{\mathrm{Arr}}(\mathcal{C}), g^{\mathrm{op}} \circ^{\mathrm{op}} f^{\mathrm{op}} = f \circ g$
+
+反范畴可以理解为反转态射的箭头，其它都不变。因此反范畴的反范畴是自身，即 $(\mathcal{C}^{\mathrm{op}})^{\mathrm{op}} = \mathcal{C}$。
+
+反范畴是原范畴的的对偶，例如原范畴的单一态射在反范畴中是完全态射，原范畴的初始对象在终极范畴中是终极对象。
+
+```haskell
+type Op a b = Op (getOp :: b -> a)
+instance Category Op where
+  id  = Op id
+  Op f . Op g = Op (g .  f)
+```
+
+## 范畴的大小
+
+范畴可以分成小范畴，大范畴和局部小范畴。这样的定义主要是为了避免罗素悖论。
+
+如果范畴 $\mathcal{C}$ 的对象 $\operatorname{\mathrm{Ob}}(\mathcal{C})$ 和 $\operatorname{\mathrm{Arr}}(\mathcal{C})$ 都可以构成集合，那么称之为**小范畴**（small category）。反之，则称为**大范畴**（large category）。
+
+例如集合范畴是一个大范畴（否则会构造出“集合的集合”）。
+
+如果任意两个对象 $a, b \in \operatorname{\mathrm{Ob}}(\mathcal{C})$ 间的态射 $\mathcal{C}(a, b)$ 能构成集合，那称之为**局部小范畴**（locally small category）。局部小范畴的概念比小范畴更大一些。
+
+一般来说小范畴比较少见，所以会讨论局部小范畴。
 
 # 态射的性质
 
-范畴论中推广了函数映射的一些性质，因此先回顾一下函数映射的性质，考虑集合 $A, B$ 以及函数 $f : A \rightarrow B$：
-- 单射（injection）：$\forall a, b \in A, a \ne b \Rightarrow f(a) \ne f(b)$（或者定义为 $f(a) = f(b) \Rightarrow a = b$）
-- 满射（surjection）：$\forall y \in B, \exists x \in A, f(x) = y$
-  + 如果 $f$ 是满射的，那么值域 $B$ 中所有的值在定义域中一定至少有一个原象
-- 双射（bijection）：既是单射又是满射的映射
-
-范畴论上的对象不再关系对象内部具体的内容，而只关心对象和态射，因此上面性质在范畴论上的推广用了另一套定义。对于范畴 $\mathcal{C}$ 上的态射 $f, g, h$，有以下定义:
+范畴论中推广了函数映射的一些性质，如单射、满射等。范畴论上的对象不再关系对象内部具体的内容，而只关心对象和态射，因此上面性质在范畴论上的推广用了另一套定义。对于范畴 $\mathcal{C}$ 上的态射 $f, g, h$，有以下定义:
 - 完全态射（epimorphism）：若 $g \circ f = h \circ f \Rightarrow g = h$，则称 $f$ 为完全态射
   + 也称为右消除（right cancellation）或右可约
 - 单一态射（monomorphism）：若 $f \circ g = f \circ h \Rightarrow g = h$,则 $f$ 是单一态射
@@ -150,35 +170,3 @@ uphi U = Unit
 upsy :: Unit -> U
 upsy Unit = U
 ```
-
-# 反范畴（对偶范畴）
-
-对于任意范畴 $\mathcal{C}$ , 其反范畴（Opposite Category） $\mathcal{C}^{\mathrm{op}}$ 定义如下：
-- $\operatorname{\mathrm{Ob}}(\mathcal{C}^{\mathrm{op}}) = \operatorname{\mathrm{Ob}}(\mathcal{C})$
-- 态射：$\forall a, b \in \operatorname{\mathrm{Ob}} (\mathcal{C}^{\mathrm{op}}), \mathcal{C}^{\mathrm{op}}(a, b) = \mathcal{C}(b, a)$
-- 单位态射：$\mathcal{C}^{\mathrm{op}}$ 中的 单位态射与 $\mathcal{C}$ 相同
-- 态射复合：$\forall f, g \in \operatorname{\mathrm{Arr}}(\mathcal{C}), g^{\mathrm{op}} \circ^{\mathrm{op}} f^{\mathrm{op}} = f \circ g$
-
-反范畴可以理解为反转态射的箭头，其它都不变。
-
-反范畴的反范畴是自身，即 $(\mathcal{C}^{\mathrm{op}})^{\mathrm{op}} = \mathcal{C}$。
-
-反范畴是原范畴的的对偶，例如原范畴的单一态射在反范畴中是完全态射，原范畴的初始对象在终极范畴中是终极对象。
-
-```haskell
-type Op a b = Op (getOp :: b -> a)
-instance Category Op where
-  id  = Op id
-  Op f . Op g = Op (g .  f)
-```
-
-# 范畴的大小
-
-范畴可以分成小范畴，大范畴和局部小范畴。这样的定义主要是为了避免罗素悖论。
-
-如果范畴 $\mathcal{C}$ 的对象 $\operatorname{\mathrm{Ob}}(\mathcal{C})$ 和 $\operatorname{\mathrm{Arr}}(\mathcal{C})$ 都可以构成集合，那么称之为**小范畴**（small category）。反之，则称为**大范畴**（large category）。
-
-例如集合范畴是一个大范畴（否则会构造出“集合的集合”）。
-
-如果任意两个对象 $a, b \in \operatorname{\mathrm{Ob}}(\mathcal{C})$ 间的态射 $\mathcal{C}(a, b)$ 能构成集合，那称之为**局部小范畴**（locally small category）。
-

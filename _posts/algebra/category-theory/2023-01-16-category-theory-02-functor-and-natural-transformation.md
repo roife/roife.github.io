@@ -15,13 +15,11 @@ katex: true
 
 # 函子
 
-## 函子的定义
-
-> 设 $\mathcal{C}$ 与 $\mathcal{D}$ 为范畴，则函子（共变函子）$F : \mathcal{C} \rightarrow \mathcal{D}$ 会把 $\mathcal{C}$ 中的所有**对象**与**态射**对应到 $\mathcal{D}$ 上，且保留**复合运算**与**单位元**（恒等映射）：
+> 设 $\mathcal{C}$ 与 $\mathcal{D}$ 为范畴，则函子 $F : \mathcal{C} \rightarrow \mathcal{D}$ 会把 $\mathcal{C}$ 中的所有**对象**与**态射**嵌入到 $\mathcal{D}$ 上，并保持范畴的结构（恒等映射与态射复合）：
 >
 > - 对象映射 $F : \operatorname{\mathrm{Ob}}(\mathcal{C}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$，即 $x : \mathcal{C} \mapsto FX : \mathcal{D}$
 > - 态射映射 $F : \mathcal{C}(X, Y) \rightarrow \mathcal{D}(FX, FY)$
-> - 保持单位态射 $F(\mathbf{1}\_A) = \mathbf{1}\_{F(A)}$
+> - 保持恒等映射 $F(\mathbf{1}\_A) = \mathbf{1}\_{F(A)}$
 > - 保持态射复合 $F(g \circ_\mathcal{C} f) = F(g) \circ_\mathcal{D} F(f)$
 
 ![Covariant Functor](/img/in-post/post-algebra/covariant-functor.svg){:height="400px" width="400px"}
@@ -33,9 +31,7 @@ fmap id = id
 fmap (g . f) = (fmap g) . (fmap f)
 ```
 
-如果函子 $F, G : \mathcal{C} \rightarrow \mathcal{D}$ 都是从 $\mathcal{C}$ 到 $\mathcal{D}$ 的态射，那么称这两个函子为**平行函子**（parallel functor）。
-
-函子也可以看作是小范畴范畴上的态射，其对象为范畴，且存在恒等函子和函子复合。
+函子是小范畴范畴（Cat 范畴）上的态射，其对象为小范畴，且存在恒等函子和函子复合。
 
 ## 函子的性质
 
@@ -55,27 +51,9 @@ class Functor f where
 
 其中，`a -> b` 中的箭头为 $\mathcal{C}$ 上的态射，`f a -> f b` 中的箭头为 $\mathcal{D}$ 上的态射。而中间的箭头则表示两个范畴间的态射，和另外两个箭头是不一样的含义。
 
-### 二元函子
-
-二元函子 $F : \mathcal{C} \times \mathcal{D} \rightarrow \mathcal{E}$ 能将两个范畴的笛卡尔积映射到新范畴。显然，二元函子满足函子的定义：
-- 单位元为 $(\operatorname{\mathrm{id}}\_{\mathcal{C}}, \operatorname{\mathrm{id}}\_{\mathcal{D}})$
-- 复合运算 $(f, g) \circ (f', g') = (f \circ f', g \circ g')$
-
-二元函子在 Haskell 中的定义如下：
-
-```haskell
-class Bifunctor f where
-    bimap :: (a -> c) -> (b -> d) -> f a b -> f c d
-    bimap g h = first g . second h
-    first :: (a -> c) -> f a b -> f c b
-    first g = bimap g id
-    second :: (b -> d) -> f a b -> f a d
-    second = bimap id
-```
-
 ### 扩展的定义
 
-范畴中的态射也可以不是函数映射：
+实际上，范畴中的态射也可以不是函数映射：
 
 ```haskell
 class (Category r, Category t) =>
@@ -118,6 +96,24 @@ class (Category r, Category t) =>
 -- CategoricalFunctor :: (k1 -> k) -> (k1 -> k1 -> *) -> (k -> k -> *) -> Constraint
 ```
 
+### 二元函子
+
+二元函子 $F : \mathcal{C} \times \mathcal{D} \rightarrow \mathcal{E}$ 能将两个范畴的笛卡尔积映射到新范畴。显然，二元函子满足函子的定义：
+- 单位元为 $(\operatorname{\mathrm{id}}\_{\mathcal{C}}, \operatorname{\mathrm{id}}\_{\mathcal{D}})$
+- 复合运算 $(f, g) \circ (f', g') = (f \circ f', g \circ g')$
+
+二元函子在 Haskell 中的定义如下：
+
+```haskell
+class Bifunctor f where
+    bimap :: (a -> c) -> (b -> d) -> f a b -> f c d
+    bimap g h = first g . second h
+    first :: (a -> c) -> f a b -> f c b
+    first g = bimap g id
+    second :: (b -> d) -> f a b -> f a d
+    second = bimap id
+```
+
 ## 共变函子（反函子）与反变函子
 
 对于函子 $F : \mathcal{C} \rightarrow \mathcal{D}$，它在反范畴上对应的函子 $F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。$F^{\mathrm{op}}$ 在 Haskell 中的定义如下：
@@ -129,7 +125,7 @@ class Functor f where
 
 不难发现 $F = F^{\mathrm{op}}$，函子 $F^{\mathrm{op}}$ 也称为**共变函子**（covariant functor），即通常说的函子。一般所说的反函子（opposite functor）也是指共变函子 $F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。
 
-与之对偶的是反变函子（contravariant functor）$F' : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}$（或 $F^{\mathrm{op}}' : \mathcal{C} \rightarrow \mathcal{D}^{\mathrm{op}}$）：
+与之对偶的是**反变函子**（contravariant functor）$F' : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}$（或 $F^{\mathrm{op}}' : \mathcal{C} \rightarrow \mathcal{D}^{\mathrm{op}}$）：
 - 对象映射 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$（或 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}^{\mathrm{op}}) \rightarrow \operatorname{\mathrm{Ob}}(D)$）
 - 态射映射 $F' : \mathcal{C}(X, Y) \rightarrow \mathcal{D}(FY, FX)$
 - 保持单位态射
@@ -140,7 +136,7 @@ class Contravariant f where
   contramap ::(b ~> a) -> (f a ~> f b)
 ```
 
-![Cotravariant Functor](/img/in-post/post-algebra/contravariant-functor.svg){:height="400px" width="400px"}
+![Cotravariant Functor](/img/in-post/post-algebra/contravariant-functor.svg){:height="350px" width="350px"}
 
 一般会将反变函子称为 cofunctor。
 
@@ -161,13 +157,11 @@ newtype (:.:) f g p = Comp1 { unComp1 :: f (g p) } -- GHC.Generics
 ```
 
 设范畴 $\mathcal{A}, \mathcal{B}, \mathcal{C}$，对于函子 $F : \mathcal{A} \rightarrow \mathcal{B},\ G : \mathcal{B} \rightarrow \mathcal{C}$，它们的复合 $G \circ F : \mathcal{A} \rightarrow \mathcal{C}$ 满足下面的性质：
-- 对于任意函子 $F : \mathcal{A} \rightarrow \mathcal{B}$，有 $F \circ \operatorname{\mathrm{id}}\_{\mathcal{A}} = \operatorname{\mathrm{id}}\_{\mathcal{B}} \circ F = F$，其中 $\operatorname{\mathrm{id}}\_{\mathcal{A}}$ 为 $\mathcal{A}$ 上的单位函子
 - 复合的结果 $G \circ F$ 也是函子（`f <$> G (F x) = G (F (f x))`）
+- 存在单位函子 $\operatorname{\mathrm{id}}$，对于 $F : \mathcal{A} \rightarrow \mathcal{B}$，有 $F \circ \operatorname{\mathrm{id}}\_{\mathcal{A}} = \operatorname{\mathrm{id}}\_{\mathcal{B}} \circ F = F$
 - 函子的复合运算 $\circ$ 满足结合律，即对于函子 $F, G, H$，满足 $(H \circ G) \circ F = H \circ (G \circ F)$
 
 # 自然变换
-
-## 自然变换的定义
 
 **自然变换**（natural transformation）是函子之间的态射，$F$ 到 $G$ 的自然态射也可以记作 $\operatorname{\mathrm{Nat}}(F, G)$。
 
@@ -177,17 +171,15 @@ newtype (:.:) f g p = Comp1 { unComp1 :: f (g p) } -- GHC.Generics
 > \theta_X \in \operatorname{\mathrm{Hom}}_{\mathcal{D}}(FX, GX), X \in \operatorname{\mathrm{Ob}}(C)
 > $$
 >
-> 使得对于 $\mathcal{C}$ 上的所有态射 $f : X \rightarrow Y$，下图交换（即满足自然性）：
+> 使得对于 $\mathcal{C}$ 上的所有态射 $f : X \rightarrow Y$，下图交换（称为自然性，naturality）：
 >
 > ![Natural Transformation](/img/in-post/post-algebra/natural-transformation.svg){:height="300px" width="300px"}
 >
-> 上面这幅图也可以记作：
+> 即满足 $\forall f \in \mathcal{C}(X, Y), \theta\_Y \circ Ff = Gf \circ \theta\_X$。上面这幅图也可以记作：
 >
 > ![Natural Transformation 2](/img/in-post/post-algebra/natural-transformation-2.svg){:height="200px" width="200px"}
->
-> 即满足 $\theta\_Y \circ Ff = Gf \circ \theta\_X$。
 
-由于 $FA, GA \in \operatorname{\mathrm{Ob}}(\mathcal{D})$，那么很自然地，态射 $\theta\_A(FA) = FB$ 也应当属于 $\operatorname{\mathrm{Arr}}(\mathcal{D})$。所以自然变换的本质就是 $\mathcal{D}$ 内部分特殊的态射。这一特性在讨论反范畴时会用到。
+由于 $FA, GA \in \operatorname{\mathrm{Ob}}(\mathcal{D})$，那么很自然地，态射 $\theta\_A(FA) = FB$ 也应当属于 $\operatorname{\mathrm{Arr}}(\mathcal{D})$。所以自然变换的本质就是 $\mathcal{D}$ 内部分特殊的态射，因此两个函子间不一定存在自然变换，取决于态射。
 
 ## Haskell 中的自然变换
 
@@ -212,6 +204,8 @@ flatten :: Tree a -> [a]
 由交换图知自然变换 $\theta$ 满足对任意的 $f$：
 - $\theta \circ \operatorname{\mathrm{fmap}}\ f = \operatorname{\mathrm{fmap}}\ f \circ \theta$
 - $\theta \circ \operatorname{\mathrm{contramap}}\ f = \operatorname{\mathrm{contramap}}\ f \circ \theta$）
+
+即：切换容器与 `fmap` 的顺序无关。
 
 ## 反自然变换
 
@@ -296,9 +290,7 @@ horizontalComp theta@(Nat f1f2) psi@(Nat g1g2) = Nat $ \(Comp1 x) -> Comp1 (fmap
 > \end{CD}
 > $$
 
-### 函子与自然变换合成
-
-横合成还有一类特殊情况，即函子和自然变换的合成：
+横合成还有一类特殊情况，即**函子和自然变换的合成**：
 
 ![Horizontal Composition-2](/img/in-post/post-algebra/horizontal-composition-2.svg){:height="300px" width="300px"}
 
@@ -332,7 +324,7 @@ $$
 
 其中不同位置的 $\circ$ 代表不同的横纵合成。
 
-## 自然变换的逆与自然同构
+## 自然同构
 
 给定范畴 $\mathcal{C}, \mathcal{D}$，对于函子 $F : \mathcal{C} \rightarrow \mathcal{D},\ G : \mathcal{D} \rightarrow \mathcal{C}$，给定自然变换 $\theta : F \rightarrow G$，若 $\psi : G \rightarrow F$ 满足 $\psi \circ \theta = \operatorname{\mathrm{id}}\_F,\ \theta \circ \psi = \operatorname{\mathrm{id}}\_G$，则称自然变换 $\psi$ 是 $\theta$ 的**逆**，记作 $\theta^{-1}$。
 
@@ -399,7 +391,7 @@ instance Category ((~>) :: i -> i -> *)
 
 ## Hom 函子
 
-局部小范畴 $\mathcal{C}$ 上所有的 `Hom-Set` 组成的集合组成 了一个 Set 范畴，范畴 $\mathcal{C}$ 到这个 Set 范畴的映射即为共变 Hom 函子，而反范畴 $\mathcal{C}^{\mathrm{op}}$ 到这个 Set 范畴的映射即为反变 Hom 函子。
+局部小范畴 $\mathcal{C}$ 上所有的 Hom 集组成的集合组成 了一个 Set 范畴（集合范畴的子范畴），范畴 $\mathcal{C}$ 到这个 Set 范畴的映射即为共变 Hom 函子，而反范畴 $\mathcal{C}^{\mathrm{op}}$ 到这个 Set 范畴的映射即为反变 Hom 函子。
 
 > 给定局部小范畴 $\mathcal{C}$，**共变 Hom 函子**（covariant Hom-functor）$\operatorname{\mathrm{Hom}}(A, -) : \mathcal{C} \rightarrow \mathtt{Set}$ 的定义如下：
 > - $\forall B \in \operatorname{\mathrm{Ob}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(A, -)(B) = \operatorname{\mathrm{Hom}}(A, B)$
