@@ -15,6 +15,8 @@ katex: true
 
 # 范畴
 
+## 范畴的定义
+
 一个范畴 $\mathcal{C}$ 由两个要素组成：
 - 一组**对象**（object）：$A, B, C, \dots$，记作 $\operatorname{\mathrm{Ob}}(\mathcal{C})$
 - 一组**态射**（morphism / arrow）
@@ -128,45 +130,3 @@ instance Category Op where
 - 同构态射（isomorphism）：若对于 $f$，存在一个 $f^{-1}$ 满足 $f \circ f^{-1} = \operatorname{\mathrm{id}}$ 且 $f^{-1} \circ f = \operatorname{\mathrm{id}}$,则称 $f$ 是同构态射
 
 单一态射是单射的推广，完全态射是满射的推广，同态态射是双射的推广。但是和函数映射仍然有区别。例如单射 + 满射 = 双射；而单一态射 + 完全态射 = 双态射（bimorphism），不一定是同构态射。
-
-# 初始对象和终极对象
-
-一些范畴内有两种特殊的对象：
-- 对于范畴 $\mathcal{C}$，如果对于所有对象 $A \in \operatorname{\mathrm{Ob}}(\mathcal{C})$ 都有**唯一态射** $\mathbf{0} \rightarrow A$，则 $\mathbf{0}$ 称为**初始对象**（initial object）
-- 对于范畴 $\mathcal{C}$，如果对于所有对象 $A \in \operatorname{\mathrm{Ob}}(\mathcal{C})$ 都有**唯一态射** $A \rightarrow \mathbf{1}$，则 $\mathbf{1}$ 称为**终极对象**（terminal object）
-
-范畴中的初始对象与终极对象**唯一同构（unique up to isomorphism）**：
-- 如果存在另一个初始对象 $\mathbf{0'}$，那么 $\mathbf{0} \simeq \mathbf{0'}$
-- 如果存在另一个终极对象 $\mathbf{1'}$，那么 $\mathbf{1} \simeq \mathbf{1'}$
-
-Hask 范畴内的初始对象与终极对象分别为 `Void` 与 `Unit`（这里不考虑 `undefined`，否则 Haskell 就无法给出范畴的初始对象和终极对象了）：
-
-```haskell
-data Void
-data Unit = Unit
-
-absurd :: Void -> a
-absurd = absurd
-
-unit :: a -> Unit
-unit _ = Unit
-```
-
-`()` 和 `Unit` 同构，其它空对象也和 `Void` 同构：
-
-```haskell
-data V
-data U = U
-
-vphi :: V -> Void
-vphi = vphi
-
-vpsy :: Void -> V
-vpsy = absurd
-
-uphi :: U -> Unit
-uphi U = Unit
-
-upsy :: Unit -> U
-upsy Unit = U
-```
