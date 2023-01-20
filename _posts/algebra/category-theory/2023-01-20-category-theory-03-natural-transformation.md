@@ -144,9 +144,7 @@ horizontalComp theta@(Nat f1f2) psi@(Nat g1g2) = Nat $ \(Comp1 x) -> Comp1 (fmap
 > \end{CD}
 > $$
 
-### 函子与自然变换合成
-
-横合成还有一类特殊情况，即函子和自然变换的合成：
+横合成还有一类特殊情况，即函子和自然变换的“合成”：
 
 ![Horizontal Composition-2](/img/in-post/post-algebra/horizontal-composition-2.svg){:height="300px" width="300px"}
 
@@ -244,6 +242,23 @@ instance Category ((~>) :: i -> i -> *)
 根据前面的讨论，反范畴上的函子（即反函子）$F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$ 与原函子 $F$ 等价，但是自然变换 $\theta^{\mathrm{op}}$ 取反。
 
 即有 $\operatorname{\mathrm{Fct}}(\mathcal{C}, \mathcal{D}) \overset{\sim}{\rightarrow} \operatorname{\mathrm{Fct}}(\mathcal{C}^{\mathrm{op}}, \mathcal{D}^{\mathrm{op}})$，使得 $\theta \mapsto \theta^{op}$。
+
+# 以自然变换为态射的 Cat 范畴
+
+前面介绍的 Cat 范畴以小范畴为对象，以函子为态射。但是实际上可以换一种方式看 Cat 范畴，即仍然以小范畴为对象，但是以自然变换为态射。即：设范畴 $\mathcal{C}, \mathcal{D}$，函子 $F, G : \mathcal{C} \rightarrow \mathcal{D}$ 和自然变换 $\theta : F \rightarrow G$。令 $\theta$ 成为 $\mathcal{C} \rightarrow \mathcal{D}$ 的态射。
+
+![Horizontal Cat](/img/in-post/post-algebra/horizontal-cat.svg){:height="500px" width="500px"}
+
+下面证明这个新范畴 $\mathcal{N}$ 仍然满足范畴的定义。
+- 对象 $\operatorname{\mathrm{Ob}}(\mathcal{N}) = \operatorname{\mathrm{Ob}}(\mathbf{Cat}) = \mathcal{C}, \mathcal{D}, \dots$
+- 态射 $\operatorname{\mathrm{Hom}}(\mathcal{C}, \mathcal{D}) = \operatorname{\mathrm{Nat}}(F\_1, F\_2)\ (F\_1, F\_2 : \mathcal{C} \rightarrow \mathcal{D})$
+- 单位态射 $\operatorname{\mathrm{idNat}}\_{\mathcal{C}} = \operatorname{\mathrm{id}}\_{\mathcal{C}} \rightarrow \operatorname{\mathrm{id}}\_{\mathcal{C}}\ (\operatorname{\mathrm{id}}\_{\mathcal{C}} : \mathcal{C} \rightarrow \mathcal{C})$
+- 态射复合：自然变换的横向复合
+  + 设 $\theta : \mathcal{C} \rightarrow \mathcal{D} = F\_1 \rightarrow F\_2,\ \psi : \mathcal{D} \rightarrow \mathcal{E} = G\_1 \rightarrow G\_2$
+  + $\theta \circ \psi : \mathcal{C} \rightarrow \mathcal{E} = G\_1 F\_1 \rightarrow G\_2 F\_2$
+  + 结合律即横向复合的结合律
+
+因此这个范畴上态射的合成就是自然变换横合成的本质（对应函子范畴上态射的合成是纵合成的本质）。
 
 # Typeclass 限定范畴
 

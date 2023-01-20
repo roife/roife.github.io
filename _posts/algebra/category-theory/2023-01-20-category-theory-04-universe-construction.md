@@ -22,6 +22,8 @@ katex: true
   + $\operatorname{\mathrm{Hom}}(A, \mathbf{1})$ 恰有一个元素
 - 如果既是初始对象，又是终端对象，则称为零对象。
 
+![Initial object and Terminal object](/img/in-post/post-algebra/initial-terminal-object.svg){:height="200px" width="200px"}
+
 注意，初始对象不意味着没有其它对象到它的态射，而是只强调它发出的态射；终端对象也只强调其它对象到它的态射，它自己也可以发出态射。
 
 范畴中的初始对象与终极对象**唯一同构（unique up to isomorphism）**：

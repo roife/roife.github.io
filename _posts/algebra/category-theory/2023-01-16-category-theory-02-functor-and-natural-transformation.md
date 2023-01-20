@@ -96,24 +96,6 @@ class (Category r, Category t) =>
 -- CategoricalFunctor :: (k1 -> k) -> (k1 -> k1 -> *) -> (k -> k -> *) -> Constraint
 ```
 
-### 二元函子
-
-二元函子 $F : \mathcal{C} \times \mathcal{D} \rightarrow \mathcal{E}$ 能将两个范畴的笛卡尔积映射到新范畴。显然，二元函子满足函子的定义：
-- 单位元为 $(\operatorname{\mathrm{id}}\_{\mathcal{C}}, \operatorname{\mathrm{id}}\_{\mathcal{D}})$
-- 复合运算 $(f, g) \circ (f', g') = (f \circ f', g \circ g')$
-
-二元函子在 Haskell 中的定义如下：
-
-```haskell
-class Bifunctor f where
-    bimap :: (a -> c) -> (b -> d) -> f a b -> f c d
-    bimap g h = first g . second h
-    first :: (a -> c) -> f a b -> f c b
-    first g = bimap g id
-    second :: (b -> d) -> f a b -> f a d
-    second = bimap id
-```
-
 # 共变函子（反函子）与反变函子
 
 对于函子 $F : \mathcal{C} \rightarrow \mathcal{D}$，它在反范畴上对应的函子 $F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。$F^{\mathrm{op}}$ 在 Haskell 中的定义如下：
@@ -139,6 +121,36 @@ class Contravariant f where
 ![Cotravariant Functor](/img/in-post/post-algebra/contravariant-functor.svg){:height="350px" width="350px"}
 
 一般会将反变函子称为 cofunctor。
+
+# 二元函子
+
+（共变）二元函子（Bifunctor） $F : \mathcal{C} \times \mathcal{D} \rightarrow \mathcal{E}$ 能将两个范畴的笛卡尔积映射到新范畴。显然，二元函子满足函子的定义：
+- 单位元为 $(\operatorname{\mathrm{id}}\_{\mathcal{C}}, \operatorname{\mathrm{id}}\_{\mathcal{D}})$
+- 复合运算 $(f, g) \circ (f', g') = (f \circ f', g \circ g')$
+
+二元函子在 Haskell 中的定义如下：
+
+```haskell
+class Bifunctor f where
+    bimap :: (a -> c) -> (b -> d) -> f a b -> f c d
+    bimap g h = first g . second h
+    first :: (a -> c) -> f a b -> f c b
+    first g = bimap g id
+    second :: (b -> d) -> f a b -> f a d
+    second = bimap id
+```
+
+而对应的反变二元函子 $F : \mathcal{C}^{\mathrm{op}} \times \mathcal{D} \rightarrow \mathcal{E}$ 称为 Profunctor。
+
+```haskell
+class Profunctor p where
+  dimap :: (a -> b) -> (c -> d) -> p b c -> p a d
+  dimap f g = lmap f . rmap g
+  lmap :: (a -> b) -> p b c -> p a c
+  lmap f = dimap f id
+  rmap :: (b -> c) -> p a b -> p a c
+  rmap = dimap id
+```
 
 # Hom 函子
 
