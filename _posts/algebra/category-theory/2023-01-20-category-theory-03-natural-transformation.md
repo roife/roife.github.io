@@ -22,7 +22,7 @@ katex: true
 > 设范畴 $\mathcal{C}, \mathcal{D}$ 间的函子 $F, G : C \rightarrow D$，自然变换 $\theta_X : FX \rightarrow GX$ 是 $\mathcal{D}$ 上的一组态射：
 >
 > $$
-> \theta_X \in \operatorname{\mathrm{Hom}}_{\mathcal{D}}(FX, GX), X \in \operatorname{\mathrm{Ob}}(C)
+> \theta_X \in \operatorname{\mathrm{Hom}}_{\mathcal{D}}(FX, GX), X \in \operatorname{\mathrm{Ob}}(\mathcal{C})
 > $$
 >
 > 使得对于 $\mathcal{C}$ 上的所有态射 $f : X \rightarrow Y$，下图交换（称为自然性，naturality）：
@@ -33,7 +33,9 @@ katex: true
 >
 > ![Natural Transformation 2](/img/in-post/post-algebra/natural-transformation-2.svg){:height="200px" width="200px"}
 
-由于 $FA, GA \in \operatorname{\mathrm{Ob}}(\mathcal{D})$，那么很自然地，态射 $\theta\_A(FA) = FB$ 也应当属于 $\operatorname{\mathrm{Arr}}(\mathcal{D})$。所以自然变换的本质就是 $\mathcal{D}$ 内部分特殊的态射，因此两个函子间不一定存在自然变换，取决于态射。
+对于自然变换 $\theta$，$X \in \operatorname{\mathrm{C}}$，因此自然变换可以理解成“将对象映射到了态射上”；或者从交换性条件来看，考虑态射 $f : X \rightarrow Y$，它“将态射映射到了交换图上”。
+
+由于 $FA, GA \in \operatorname{\mathrm{Ob}}(\mathcal{D})$，那么很自然地，态射 $\theta\_A(FA) = FB$ 也应当属于 $\operatorname{\mathrm{Arr}}(\mathcal{D})$。所以自然变换的本质就是 $\mathcal{D}$ 内部分特殊的态射。如果 $FA$ 和 $GA$ 间本来就没有态射，那么 $F$ 和 $G$ 之间也就不存在自然变换。
 
 ## Haskell 中的自然变换
 
@@ -183,6 +185,8 @@ $$
 给定范畴 $\mathcal{C}, \mathcal{D}$，对于函子 $F : \mathcal{C} \rightarrow \mathcal{D},\ G : \mathcal{D} \rightarrow \mathcal{C}$，给定自然变换 $\theta : F \rightarrow G$，若 $\psi : G \rightarrow F$ 满足 $\psi \circ \theta = \operatorname{\mathrm{id}}\_F,\ \theta \circ \psi = \operatorname{\mathrm{id}}\_G$，则称自然变换 $\psi$ 是 $\theta$ 的**逆**，记作 $\theta^{-1}$。
 
 自然变换可逆称为它是**自然同构**（natural isomorphism），记作 $\theta : F \overset{\sim}{\rightarrow} G$，并称函子 $F$ 与 $G$ 同构。易得 $(\theta^{-1})\_X = (\theta\_X)^{-1} : G X \overset{\sim}{\rightarrow} F X$。
+
+即，自然同构的每一个分量都是一个同构变换，都有逆。
 
 ## 拟逆函子与范畴等价
 

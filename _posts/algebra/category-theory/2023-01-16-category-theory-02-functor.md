@@ -108,19 +108,41 @@ class Functor f where
 不难发现 $F = F^{\mathrm{op}}$，函子 $F^{\mathrm{op}}$ 也称为**共变函子**（covariant functor），即通常说的函子。一般所说的反函子（opposite functor）也是指共变函子 $F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。
 
 与之对偶的是**反变函子**（contravariant functor）$F' : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}$（或 $F^{\mathrm{op}}' : \mathcal{C} \rightarrow \mathcal{D}^{\mathrm{op}}$）：
-- 对象映射 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$（或 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}^{\mathrm{op}}) \rightarrow \operatorname{\mathrm{Ob}}(D)$）
+- 对象映射 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$（或 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}^{\mathrm{op}}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$）
 - 态射映射 $F' : \mathcal{C}(X, Y) \rightarrow \mathcal{D}(FY, FX)$
 - 保持单位态射
 - 态射复合 $F'(g \circ\_\mathcal{C^{\mathrm{op}}} f) = F'(g) \circ\_\mathcal{D} F'(f)$
 
 ```haskell
 class Contravariant f where
-  contramap ::(b ~> a) -> (f a ~> f b)
+  contramap :: (b ~> a) -> (f a ~> f b)
 ```
 
 ![Cotravariant Functor](/img/in-post/post-algebra/contravariant-functor.svg){:height="350px" width="350px"}
 
 一般会将反变函子称为 cofunctor。
+
+## 函数类型
+
+以函数为例。固定参数类型，改变结果类型，则函子是协变的（下面的 `->`）；固定结果类型，改变参数类型，则函子是反变的（下面的 `Op`）。
+
+```haskell
+instance Functor ((->) a) where
+  -- f :: b -> c
+  -- g :: a -> b
+  -- f . g :: a -> c
+  fmap f g = f . g
+```
+
+```haskell
+data Op b a = Op (a -> b)
+instance Contravariant (Op a) where
+  -- h :: b -> a
+  -- g :: a -> r
+  -- g . h :: b -> r
+  -- 等价于 contramap f g = g . f
+  contramap h (Op g) = Op (g . h)
+```
 
 # 二元函子
 
@@ -161,25 +183,10 @@ class Profunctor p where
 > - $\forall f : B \rightarrow C \in \operatorname{\mathrm{Arr}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(A, -)(f) = \operatorname{\mathrm{Hom}}(A, f) : \operatorname{\mathrm{Hom}}(A, B) \rightarrow \operatorname{\mathrm{Hom}}(A, C)$
 >   + $\operatorname{\mathrm{Hom}}(A, f)(g : A \rightarrow B) = f \circ g : A \rightarrow C$
 
-在 Haskell 中的对应表述为：
-
-```haskell
-instance Functor ((->) a) where
-  fmap f g = (f . g)
-```
-
 > 给定局部小范畴 $\mathcal{C}$，**反变 Hom 函子**（contravariant Hom-functor）$\operatorname{\mathrm{Hom}}(-, B) : \mathcal{C}^{\mathrm{op}} \rightarrow \mathtt{Set}$ 的定义如下：
 > - $\forall B \in \operatorname{\mathrm{Ob}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(-, A)(B) = \operatorname{\mathrm{Hom}}(B, A)$
 > - $\forall h : C \rightarrow B \in \operatorname{\mathrm{Arr}}(\mathcal{C}),\  \operatorname{\mathrm{Hom}}(-, A)(h) = \operatorname{\mathrm{Hom}}(h, A) : \operatorname{\mathrm{Hom}}(B, A) \rightarrow \operatorname{\mathrm{Hom}}(C, A)$
 >   + $\operatorname{\mathrm{Hom}}(h, A)(g : B \rightarrow A) = g \circ h : C \rightarrow A$
-
-在 Haskell 中的对应表述为：
-
-```haskell
-data Op b a = Op (a -> b)
-instance Contravariant (Op a) where
-  contramap h (Op g) = Op (g . h)
-```
 
 ![Hom Functor](/img/in-post/post-algebra/hom-functor.svg){:height="400px" width="400px"}
 
@@ -194,6 +201,7 @@ instance Contravariant (Op a) where
 > - $\forall f : B \rightarrow B'\ \forall h : A' \rightarrow A,\ \operatorname{\mathrm{Hom}}(h, f) : \operatorname{\mathrm{Hom}}(A, B) \rightarrow \operatorname{\mathrm{Hom}}(A', B')$
 >   + 它使得 $g : A \rightarrow B \mapsto f \circ g \circ h : A' \rightarrow B'$
 
+在 Haskell 中，态射是类型间的映射，Hom 函子就是函数类型 `* -> *`。因此共变函子就是 `F r a = F (r -> a)`，反变函子就是 `Op b a = Op (a -> b)`。
 
 # 函子的复合
 
