@@ -1,6 +1,6 @@
 ---
 layout: "post"
-title: "「范畴论」04 泛构造"
+title: "「范畴论」04 泛构造，逗号范畴，拉回与推出"
 subtitle: "Universal construction, comma category, pullback and pushout"
 author: "roife"
 date: 2023-01-20
@@ -72,7 +72,7 @@ upsy Unit = U
 >
 > ![Product](/img/in-post/post-algebra/product.svg){:height="300px" width="300px"}
 >
-> 其中，$\pi\_1$ 和 $\pi\_2$ 称为态射（projection）。
+> 其中，$\pi\_1$ 和 $\pi\_2$ 称为投影（projection）。
 >
 > 即 $\pi\_1 \circ \langle f, g \rangle = f$ 且 $\pi\_2 \circ \langle f, g \rangle = g$。如果所有这样的积存在，那么它们都与 $A \times B$ 唯一同构。
 
@@ -274,11 +274,11 @@ $$
 
 所有的锥可以构成一个锥范畴，范畴中的对象是锥形。但是在 $\mathcal{C}$ 中不是所有对象 $C$ 都能成为锥的顶点，因此 $\Delta(C)$ 和 $D$ 之间可能不存在自然变换。锥之间的态射由锥顶点 $C$ 决定。
 
-> 若对象 $C$ 和 $p\_i : C \rightarrow D\_i$ 组成的锥形是一个所有其他对象 $C'$ 和 $f\_i : C' \rightarrow D\_i$ 组成的锥形的终对象，则称顶点为 $C$ 的锥形对象是函子 $F$ 的**极限**（limit）或极限对象，记为 $\underleftarrow{\operatorname{\mathrm{lim}}}(F)$。
+> 若对象 $C$ 和 $p\_i : C \rightarrow D\_i$ 组成的锥形是一个所有其他对象 $C'$ 和 $f\_i : C' \rightarrow D\_i$ 组成的锥形的终对象，则称顶点为 $C$ 的锥形对象是函子 $F$ 的**极限**（limit）或极限对象，记为 $\underleftarrow{\operatorname{\mathrm{lim}}}(D)$。
 >
 > ![Limit](/img/in-post/post-algebra/limit.svg){:height="400px" width="400px"}
 >
-> 即其它顶点 $C'$ 都存在唯一态射 $g : C' \rightarrow \underleftarrow{\operatorname{\mathrm{lim}}}(F)$ 使得 $f\_i = p\_i \circ g$。
+> 即其它顶点 $C'$ 都存在唯一态射 $g : C' \rightarrow \underleftarrow{\operatorname{\mathrm{lim}}}(D)$ 使得 $f\_i = p\_i \circ g$。
 
 极限也可以用逗号范畴定义：
 
@@ -294,11 +294,31 @@ $$
 
 ![Co-cone](/img/in-post/post-algebra/cocone.svg){:height="600px" width="600px"}
 
-> 若对象 $C$ 和 $p\_i : D\_i \rightarrow C$ 组成的余锥是一个所有其他对象 $C'$ 和 $f\_i : D\_i \rightarrow C'$ 组成的余锥的始对象，则称顶点为 $C$ 的余锥对象是函子 $F$ 的**余极限**（colimit）或余极限对象，记为 $\underrightarrow{\operatorname{\mathrm{lim}}}(F)$。
+> 若对象 $C$ 和 $p\_i : D\_i \rightarrow C$ 组成的余锥是一个所有其他对象 $C'$ 和 $f\_i : D\_i \rightarrow C'$ 组成的余锥的始对象，则称顶点为 $C$ 的余锥对象是函子 $F$ 的**余极限**（colimit）或余极限对象，记为 $\underrightarrow{\operatorname{\mathrm{lim}}}(D)$。
 >
 > ![Colimit](/img/in-post/post-algebra/colimit.svg){:height="400px" width="400px"}
 >
-> 即其它顶点 $C'$ 都存在唯一态射 $g : \underrightarrow{\operatorname{\mathrm{lim}}}(F) \rightarrow C'$ 使得 $f\_i = g \circ p\_i$。
+> 即其它顶点 $C'$ 都存在唯一态射 $g : \underrightarrow{\operatorname{\mathrm{lim}}}(D) \rightarrow C'$ 使得 $f\_i = g \circ p\_i$。
+
+## 极限与自然变换
+
+下面讨论极限和自然变换的关系。
+
+![Limit and Natural transformation](/img/in-post/post-algebra/limit-and-natural-transformation.svg){:height="350px" width="350px"}
+
+对于范畴 $\mathcal{C}$ 上的锥集，如果极限存在（即存在泛锥），那么存在**唯一**的态射 $g : C' \rightarrow \underleftarrow{\operatorname{\mathrm{lim}}}(D)$，其中态射 $g \in \mathrm{Hom}(C', \underleftarrow{\operatorname{\mathrm{lim}}}(D))$。即 $g$ 与 $C'$ 一一对应；对于每个锥（对象） $C'$，都可以找到态射 $g \in \mathrm{Hom}(C', \underleftarrow{\operatorname{\mathrm{lim}}}(D))$。这是一个从对象到态射的映射，即一个自然变换。
+
+下面讨论这个自然变换对应的函子。
+- 第一个函子能将对象映射到 $g$。$C' \rightarrow \mathrm{Hom}(C', \underleftarrow{\operatorname{\mathrm{lim}}}(D))$，即反变 Hom 函子 $\operatorname{\mathrm{Hom}}(-, \underleftarrow{\operatorname{\mathrm{lim}}}(D))$
+- 第二个函子能将对象映射到锥（对应的自然变换）。$C' \rightarrow \operatorname{\mathrm{Nat}}(\Delta_{C'}, D)$
+
+事实上，第一个函子对应了映射 $g$，第二个函子中的自然变换对应了映射 $f$，且有关系 $f = p \circ g$。其中 $p$ 是固定的，因此 $g \cong f$，即
+
+$$
+\operatorname{\mathrm{Nat}}(\Delta_{C'}, \Delta_C) \cong \mathrm{Hom}(C', \underleftarrow{\operatorname{\mathrm{lim}}}(D)) \cong \operatorname{\mathrm{Nat}}(\Delta_{C'}, D)
+$$
+
+这也是锥映射的交换性条件。
 
 ## 极限的例子
 
@@ -383,7 +403,7 @@ Hom 函子就是一个连续函子。下面以 Haskell 为例介绍它是如何�
 
 在 Haskell 中，Hom 函子就是两个类型间的映射，因此可以用函数类型来表示。
 
-> **逆变连续函子** 保持第二个参数
+> **逆变连续 Hom 函子** 保持第二个参数
 >
 > ```haskell
 > newtype ToSring a = ToString (a -> String)
@@ -397,7 +417,7 @@ Hom 函子就是一个连续函子。下面以 Haskell 为例介绍它是如何�
 > ToString (Either b c) ~ (b -> String, c -> String)
 > ```
 
-> **协变连续函子** 保持第一个参数
+> **协变连续 Hom 函子** 保持第一个参数
 >
 > 即函数 `r -> a`，它保持极限是显然的。取类型积作为极限：
 >

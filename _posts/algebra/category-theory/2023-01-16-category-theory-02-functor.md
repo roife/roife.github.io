@@ -105,7 +105,15 @@ class Functor f where
   fmap :: (b ~> a) -> (f b ~> f a)
 ```
 
-不难发现 $F = F^{\mathrm{op}}$，函子 $F^{\mathrm{op}}$ 也称为**共变函子**（covariant functor），即通常说的函子。一般所说的反函子（opposite functor）也是指共变函子 $F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。
+不难发现 $F = F^{\mathrm{op}}$，函子 $F^{\mathrm{op}}$ 也称为**共变函子**（covariant functor），即通常说的函子。一般所说的**反函子**（opposite functor）也是指共变函子 $F^{\mathrm{op}} : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}^{\mathrm{op}}$。
+
+共变函子有以下的性质：
+
+$$
+F (f \circ g) = F f \circ F g
+$$
+
+---------
 
 与之对偶的是**反变函子**（contravariant functor）$F' : \mathcal{C}^{\mathrm{op}} \rightarrow \mathcal{D}$（或 $F^{\mathrm{op}}' : \mathcal{C} \rightarrow \mathcal{D}^{\mathrm{op}}$）：
 - 对象映射 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$（或 $F' : \operatorname{\mathrm{Ob}}(\mathcal{C}^{\mathrm{op}}) \rightarrow \operatorname{\mathrm{Ob}}(\mathcal{D})$）
@@ -121,6 +129,12 @@ class Contravariant f where
 ![Cotravariant Functor](/img/in-post/post-algebra/contravariant-functor.svg){:height="350px" width="350px"}
 
 一般会将反变函子称为 cofunctor。
+
+对应的，反变函子有以下性质：
+
+$$
+F'(f \circ g) = F' g \circ F' f
+$$
 
 ## 函数类型
 
