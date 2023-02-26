@@ -215,6 +215,8 @@ class Profunctor p where
 > - $\forall f : B \rightarrow B'\ \forall h : A' \rightarrow A,\ \operatorname{\mathrm{Hom}}(h, f) : \operatorname{\mathrm{Hom}}(A, B) \rightarrow \operatorname{\mathrm{Hom}}(A', B')$
 >   + 它使得 $g : A \rightarrow B \mapsto f \circ g \circ h : A' \rightarrow B'$
 
+这个二元函子 $\operatorname{\mathrm{Hom}}(-, -)$ 是一个 profunctor。
+
 在 Haskell 中，态射是类型间的映射，Hom 函子就是函数类型 `* -> *`。因此共变函子就是 `F r a = F (r -> a)`，反变函子就是 `Op b a = Op (a -> b)`。
 
 # 函子的复合

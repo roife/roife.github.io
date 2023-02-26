@@ -33,7 +33,7 @@ katex: true
 >
 > ![Natural Transformation 2](/img/in-post/post-algebra/natural-transformation-2.svg){:height="200px" width="200px"}
 
-对于自然变换 $\theta$，$X \in \operatorname{\mathrm{C}}$，因此自然变换可以理解成“将对象映射到了态射上”；或者从交换性条件来看，考虑态射 $f : X \rightarrow Y$，它“将态射映射到了交换图上”。
+对于自然变换 $\theta$，$X \in \operatorname{\mathrm{C}}$，因此自然变换可以理解成“将对象映射到了态射上”；或者从交换性条件来看，考虑态射 $f : X \rightarrow Y$，它“将态射映射到满足自然性的另一个态射上”或者“将态射映射到了交换图上”。
 
 由于 $FA, GA \in \operatorname{\mathrm{Ob}}(\mathcal{D})$，那么很自然地，态射 $\theta\_A(FA) = GA$ 也应当属于 $\operatorname{\mathrm{Arr}}(\mathcal{D})$。所以自然变换的本质就是 $\mathcal{D}$ 内部分特殊的态射。如果 $FA$ 和 $GA$ 间本来就没有态射，那么 $F$ 和 $G$ 之间也就不存在自然变换。
 

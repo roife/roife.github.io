@@ -1,6 +1,6 @@
 ---
 layout: "post"
-title: "「范畴论」04 泛构造，逗号范畴，拉回与推出"
+title: "「范畴论」04 泛构造"
 subtitle: "Universal construction, comma category, pullback and pushout"
 author: "roife"
 date: 2023-01-20
@@ -274,11 +274,11 @@ $$
 
 所有的锥可以构成一个锥范畴，范畴中的对象是锥形。但是在 $\mathcal{C}$ 中不是所有对象 $C$ 都能成为锥的顶点，因此 $\Delta(C)$ 和 $D$ 之间可能不存在自然变换。锥之间的态射由锥顶点 $C$ 决定。
 
-> 若对象 $C$ 和 $p\_i : C \rightarrow D\_i$ 组成的锥形是一个所有其他对象 $C'$ 和 $f\_i : C' \rightarrow D\_i$ 组成的锥形的终对象，则称顶点为 $C$ 的锥形对象是函子 $F$ 的**极限**（limit）或极限对象，记为 $\underleftarrow{\operatorname{\mathrm{lim}}}(D)$。
+> 若对象 $C$ 和 $p\_i : C \rightarrow D\_i$ 组成的锥形是一个所有其他对象 $C'$ 和 $f\_i : C' \rightarrow D\_i$ 组成的锥形的终对象，则称顶点为 $C$ 的锥形对象是函子 $F$ 的**极限**（limit）或极限对象，记为 $\varprojlim(D)$。
 >
 > ![Limit](/img/in-post/post-algebra/limit.svg){:height="400px" width="400px"}
 >
-> 即其它顶点 $C'$ 都存在唯一态射 $g : C' \rightarrow \underleftarrow{\operatorname{\mathrm{lim}}}(D)$ 使得 $f\_i = p\_i \circ g$。
+> 即其它顶点 $C'$ 都存在唯一态射 $g : C' \rightarrow \varprojlim(D)$ 使得 $f\_i = p\_i \circ g$。
 
 极限也可以用逗号范畴定义：
 
@@ -286,7 +286,7 @@ $$
 >
 > 其中，$C$ 是锥的顶点；$f$ 是自然变换，对应锥的腰部。$f$ 对应了一族态射 $\Delta(C)(i) \rightarrow \beta(i) = C \rightarrow D\_i$。
 >
-> 逗号范畴 $(\Delta / \beta)$ 中若存在终对象则记作极限 $\underleftarrow{\operatorname{\mathrm{lim}}}(\beta)$。
+> 逗号范畴 $(\Delta / \beta)$ 中若存在终对象则记作极限 $\varprojlim(\beta)$。
 
 ## 余锥与余极限
 
@@ -294,11 +294,11 @@ $$
 
 ![Co-cone](/img/in-post/post-algebra/cocone.svg){:height="600px" width="600px"}
 
-> 若对象 $C$ 和 $p\_i : D\_i \rightarrow C$ 组成的余锥是一个所有其他对象 $C'$ 和 $f\_i : D\_i \rightarrow C'$ 组成的余锥的始对象，则称顶点为 $C$ 的余锥对象是函子 $F$ 的**余极限**（colimit）或余极限对象，记为 $\underrightarrow{\operatorname{\mathrm{lim}}}(D)$。
+> 若对象 $C$ 和 $p\_i : D\_i \rightarrow C$ 组成的余锥是一个所有其他对象 $C'$ 和 $f\_i : D\_i \rightarrow C'$ 组成的余锥的始对象，则称顶点为 $C$ 的余锥对象是函子 $F$ 的**余极限**（colimit）或余极限对象，记为 $\varinjlim(D)$。
 >
 > ![Colimit](/img/in-post/post-algebra/colimit.svg){:height="400px" width="400px"}
 >
-> 即其它顶点 $C'$ 都存在唯一态射 $g : \underrightarrow{\operatorname{\mathrm{lim}}}(D) \rightarrow C'$ 使得 $f\_i = g \circ p\_i$。
+> 即其它顶点 $C'$ 都存在唯一态射 $g : \varinjlim(D) \rightarrow C'$ 使得 $f\_i = g \circ p\_i$。
 
 ## 极限与自然变换
 
@@ -306,16 +306,16 @@ $$
 
 ![Limit and Natural transformation](/img/in-post/post-algebra/limit-and-natural-transformation.svg){:height="350px" width="350px"}
 
-对于范畴 $\mathcal{C}$ 上的锥集，如果极限存在（即存在泛锥），那么存在**唯一**的态射 $g : C' \rightarrow \underleftarrow{\operatorname{\mathrm{lim}}}(D)$，其中态射 $g \in \mathrm{Hom}(C', \underleftarrow{\operatorname{\mathrm{lim}}}(D))$。即 $g$ 与 $C'$ 一一对应；对于每个锥（对象） $C'$，都可以找到态射 $g \in \mathrm{Hom}(C', \underleftarrow{\operatorname{\mathrm{lim}}}(D))$。这是一个从对象到态射的映射，即一个自然变换。
+对于范畴 $\mathcal{C}$ 上的锥集，如果极限存在（即存在泛锥），那么存在**唯一**的态射 $g : C' \rightarrow \varprojlim(D)$，其中态射 $g \in \mathrm{Hom}(C', \varprojlim(D))$。即 $g$ 与 $C'$ 一一对应；对于每个锥（对象） $C'$，都可以找到态射 $g \in \mathrm{Hom}(C', \varprojlim(D))$。这是一个从对象到态射的映射，即一个自然变换。
 
 下面讨论这个自然变换对应的函子。
-- 第一个函子能将对象映射到 $g$。$C' \rightarrow \mathrm{Hom}(C', \underleftarrow{\operatorname{\mathrm{lim}}}(D))$，即反变 Hom 函子 $\operatorname{\mathrm{Hom}}(-, \underleftarrow{\operatorname{\mathrm{lim}}}(D))$
+- 第一个函子能将对象映射到 $g$。$C' \rightarrow \mathrm{Hom}(C', \varprojlim(D))$，即反变 Hom 函子 $\operatorname{\mathrm{Hom}}(-, \varprojlim(D))$
 - 第二个函子能将对象映射到锥（对应的自然变换）。$C' \rightarrow \operatorname{\mathrm{Nat}}(\Delta_{C'}, D)$
 
-事实上，第一个函子对应了映射 $g$，第二个函子中的自然变换对应了映射 $f$，且有关系 $f = p \circ g$。其中 $p$ 是固定的，因此 $g \cong f$，即
+事实上，第一个函子对应了态射 $g$，第二个函子中的自然变换对应了态射 $f$，且有关系 $f = p \circ g$。其中 $p$ 是固定的，因此 $g \cong f$，即
 
 $$
-\operatorname{\mathrm{Nat}}(\Delta_{C'}, \Delta_C) \cong \mathrm{Hom}(C', \underleftarrow{\operatorname{\mathrm{lim}}}(D)) \cong \operatorname{\mathrm{Nat}}(\Delta_{C'}, D)
+\operatorname{\mathrm{Nat}}(\Delta_{C'}, \Delta_C) \cong \mathrm{Hom}(C', \varprojlim(D)) \cong \operatorname{\mathrm{Nat}}(\Delta_{C'}, D)
 $$
 
 这也是锥映射的交换性条件。
@@ -330,13 +330,13 @@ $$
 
 ### 等化子
 
-> **等化子**（Equalizer）是由一个 $\mathbf{2}$ 生成的极限 $\underleftarrow{\operatorname{\mathrm{lim}}}(F)$，其中的两个对象上有平行态射（以及恒等态射），使下图交换：
+> **等化子**（Equalizer）是由一个 $\mathbf{2}$ 生成的极限 $\varprojlim(F)$，其中的两个对象上有平行态射（以及恒等态射），使下图交换：
 >
 > ![Equalizer](/img/in-post/post-algebra/equalizer.svg){:height="250px" width="250px"}
 >
 > 从交换图可以看出满足 $f \circ p = g \circ p$。
 
-当 $\mathcal{C}$ 是一个 Set 范畴的时候，函数 $p$ 是集合间的映射，因此 $p$ 的像是 $D\_A$ 的子集。在这个子集上，$f = g$。即方程 $f(x) = g(x)$ 的解 $x \in \underleftarrow{\operatorname{\mathrm{lim}}}(F)$。
+当 $\mathcal{C}$ 是一个 Set 范畴的时候，函数 $p$ 是集合间的映射，因此 $p$ 的像是 $D\_A$ 的子集。在这个子集上，$f = g$。即方程 $f(x) = g(x)$ 的解 $x \in \varprojlim(F)$。
 
 > **举例** 取 $D\_A$ 为参数化的二维平面 $(x, y)$，$D\_B$ 为直线。令 $f (x, y) = 2 y + x, g (x, y) = y - x$。
 >
