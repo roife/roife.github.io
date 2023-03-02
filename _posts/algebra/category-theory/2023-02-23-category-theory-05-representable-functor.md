@@ -1,6 +1,6 @@
 ---
 layout: "post"
-title: "「范畴论」04 米田引理与可表函子"
+title: "「范畴论」05 米田引理与可表函子"
 subtitle: "Yoneda lemma and Representable functor"
 author: "roife"
 date: 2023-02-23
@@ -51,7 +51,7 @@ $$
 >
 > $$
 > \begin{align*}
-> h^{\mathcal{C}} : \mathcal{C} & \rightarrow \mathcal{C}^{\vee} \\
+> k_{\mathcal{C}} : \mathcal{C} & \rightarrow \mathcal{C}^{\vee} \\
 > A & \mapsto \operatorname{\mathrm{Hom}}_{\mathcal{C}}(A, -)
 > \end{align*}
 > $$
@@ -80,7 +80,9 @@ $$
 
 这个同构也可以记作 $\operatorname{\mathrm{Nat}}(\mathcal{C}(-, A), F) \cong FA$。
 
-此外，同样有**反变 Yoneda 引理**（Co-Yoneda Lemma）：存在自然同构 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}^{\vee}}(h^{\mathcal{C}}(S), F) \cong F()$，即 $\operatorname{\mathrm{Nat}}(\mathcal{C}(A, -), F) \cong FA$。它给出了函子同构 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(-, h^{\mathcal{C}}(-)) \overset{\sim}{\rightarrow} \operatorname{\mathrm{ev}}^{\vee}$。
+此外，同样有**反变 Yoneda 引理**（Co-Yoneda Lemma）：存在自然同构 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}^{\vee}}(k\_{\mathcal{C}}(S), F) \cong F()$，即 $\operatorname{\mathrm{Nat}}(\mathcal{C}(A, -), F) \cong FA$。它给出了函子同构 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(-, k\_{\mathcal{C}}(-)) \overset{\sim}{\rightarrow} \operatorname{\mathrm{ev}}^{\vee}$。
+
+一个非空集合 $A$ 中的元素，可以看作是单元素集 $\mathbf{1}$ 向这个集合的映射；一个非空集合 $A$ 的幂集 $P(A)$，可以是二元素集 $\mathbf{2}$ 向这个集合的映射。
 
 ## 证明
 
@@ -88,7 +90,7 @@ $$
 
 $$
 \begin{align*}
-\Theta : \operatorname{\mathrm{Hom}}_{\mathcal{C}^{\vee}}(h^{\mathcal{C}}(S), F) & \overset{\sim}{\rightarrow} F(S) \\
+\Theta : \operatorname{\mathrm{Hom}}_{\mathcal{C}^{\vee}}(k_{\mathcal{C}}(S), F) & \overset{\sim}{\rightarrow} F(S) \\
 \left [ \operatorname{\mathrm{Hom}}_{\mathcal{C}}(S, -) \overset{\phi}{\rightarrow} F \right] & \mapsto \phi_S(\operatorname{\mathrm{id}}_S)
 \end{align*}
 $$
@@ -106,8 +108,8 @@ $$
   ![Yoneda Lemma 1](/img/in-post/post-algebra/yoneda-lemma-1.svg){:height="700px" width="700px"}
 - 因此 $\Psi(x)$ 是一个自然变换。下面证明 $\Psi = \Theta^{-1} : F(S) \rightarrow \operatorname{\mathrm{Nat}}(\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(S, -), F)$
   + 证明 $\Theta \circ \Psi = \operatorname{\mathrm{id}}\_{F(S)}$，即 $(\Theta \circ \Psi)(x) = \Theta(\Psi(x)) = \Psi(x)\_A(\operatorname{\mathrm{id}}\_A) = F(\operatorname{\mathrm{id}}\_A)(x) = \operatorname{\mathrm{id}}\_{F(A)}(x)$
-  + 证明 $\Psi \circ \Theta = \operatorname{\mathrm{id}}\_{\operatorname{\mathrm{Nat}}(\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(S, -), F)}$
-    - 即证明 $\Psi \circ \Theta(\phi) = \phi \Rightarrow \Psi(\phi\_A(\operatorname{\mathrm{id}}\_A)) = \phi$
+  + 证明 $\Psi \circ \Theta = \operatorname{\mathrm{id}}\_{\operatorname{\mathrm{Nat}}(\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(S, -), F)}$，即证明 $\Psi \circ \Theta(\phi) = \phi$
+    - $\iff \Psi(\phi\_A(\operatorname{\mathrm{id}}\_A)) = \phi$
     - $\iff \forall B \in \operatorname{\mathrm{Ob}}(\mathcal{C}),\ \forall f \in \operatorname{\mathrm{Hom}}\_{\mathcal{C}}(A, B),\ \Psi(\phi\_A(\operatorname{\mathrm{id}}\_A))\_B(f) = \phi\_B(f)$
     - $\iff (F(f))(\phi\_A(\operatorname{\mathrm{id}}\_A)) = \phi\_B(f)$
     - 令 $u\_A = \phi\_S(\operatorname{\mathrm{id}}\_A)$，由于 $\phi$ 是自然变换 ，因此下图交换：
@@ -120,14 +122,18 @@ $$
 
 可以利用 Yoneda lemma 证明 Yoneda 嵌入是一个嵌入（即一个全忠实函子）：
 - 取 $F = h\_{\mathcal{C}}(X)$；
-- 根据 Yoneda lemma，得 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}^{\wedge}}(h\_{\mathcal{C}}(A), h\_{\mathcal{C}}(X)) \cong h\_{\mathcal{C}}(X)(A) = \operatorname{\mathrm{Hom}}\_{\mathcal{C}}(A, X)$ 是双射，因此是全忠实的；
-- 同理可以证明 $h^{\mathcal{C}}$ 是全忠实的
+- 根据 Yoneda lemma，得 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}^{\wedge}}(h\_{\mathcal{C}}(A), h\_{\mathcal{C}}(X)) \cong h\_{\mathcal{C}}(X)(A) = \operatorname{\mathrm{Hom}}\_{\mathcal{C}}(A, X)$ 是双射，因此 $h\_{\mathcal{C}}$ 是全忠实的；
+- 同理可以证明 $k\_{\mathcal{C}}$ 是全忠实的
 
-由这条性质可以得出下面这个推论：
+## 推论
 
-> 设局部小范畴 $\mathcal{C}$，$c, d \in \operatorname{\mathrm{Ob}}(\mathcal{C})$。$c \cong d \iff h\_{\mathcal{C}}(A) \cong h\_{\mathcal{C}}(X) \iff \operatorname{\mathrm{Hom}}(-, c) \cong \operatorname{\mathrm{Hom}}(-, d)$
->
-> 即一个对象由它的态射所决定。
+由 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}^{\wedge}}(h\_{\mathcal{C}}(c), h\_{\mathcal{C}}(d)) \cong \operatorname{\mathrm{Hom}}\_{\mathcal{C}}(c, d)$ 可以得出下面这个推论：
+
+> 设局部小范畴 $\mathcal{C}$，$c, d \in \operatorname{\mathrm{Ob}}(\mathcal{C})$。$c \cong d \iff \operatorname{\mathrm{Hom}}(-, c) \cong \operatorname{\mathrm{Hom}}(-, d)$
+
+由于 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(c, d) \cong \operatorname{\mathrm{Hom}}\_{\mathcal{C}^{\wedge}}(h\_{\mathcal{C}}(c), h\_{\mathcal{C}}(d))$，因此 $c \leftrightarrow d$ 可以同构到 $h\_{\mathcal{C}}(c) \leftrightarrow h\_{\mathcal{C}}(d)$，即 $c \cong d \Rightarrow h\_{\mathcal{C}}(c) \cong h\_{\mathcal{C}}(d)$；反之亦然。
+
+因此 $c \cong d \iff h\_{\mathcal{C}}(c) \cong h\_{\mathcal{C}}(d) \iff \operatorname{\mathrm{Hom}}(-, c) \cong \operatorname{\mathrm{Hom}}(-, d)$
 
 ## Haskell 中的 Yoneda 引理
 
@@ -227,9 +233,36 @@ ypsi btoa = YonedaEmbed $ \atox -> \b -> atox (btoa b)
 
 # 可表函子
 
-如果存在 $X \in \operatorname{\mathrm{Ob}}(\mathcal{C})$ 及同构 $\phi : h\_{\mathcal{C}}(X) \overset{\sim}{\rightarrow} F$（即 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(-, X) \cong F$），则称 $F : \mathcal{C}^{\mathrm{op}} \rightarrow \mathsf{Set}$ 是**可表函子**（representable functor），并称 $(X, \phi)$ 是其**代表元**。
+如果存在 $X \in \operatorname{\mathrm{Ob}}(\mathcal{C})$ 及自然同构 $\phi : h\_{\mathcal{C}}(X) \overset{\sim}{\rightarrow} F$（即 $\operatorname{\mathrm{Hom}}\_{\mathcal{C}}(-, X) \overset{\sim}{\rightarrow} F$），则称 $F : \mathcal{C}^{\mathrm{op}} \rightarrow \mathsf{Set}$ 是**可表函子**（representable functor），并称 $(X, \phi)$ 是其**代表元**。
 
-由 Yoneda 引理可知，$h\_{\mathcal{C}}(X) \rightarrow F$ 一定存在，且 $\phi$ 可以由 $u\_X = \phi\_X(\operatorname{\mathrm{id}}\_A)$ 表示；反过来则未必。
+由 Yoneda 引理可知，$h\_{\mathcal{C}}(X) \rightarrow F$ 一定存在，且 $\phi$ 可以由 $u\_X = \phi\_X(\operatorname{\mathrm{id}}\_X) \in F(X)$ 表示，因此也可以用 $(X, u)$ 表示可表函子；反过来则未必。
+
+## 可表函子的例子
+
+- 反变幂集函子是可表的
+  + 考虑函子 $P : \mathsf{Set}^{\mathrm{op}} \rightarrow \mathsf{Set}$ 将集合映射至其幂集
+  + 态射 $f : S \rightarrow T$ 被映射至 $\forall B \subset S, T \supset f(B) \mapsto B$，即 $P(f) = f^{-1}$
+  + 令 $A = \\{0, 1\\}, u\_A = \phi\_A(\operatorname{\mathrm{id}}\_A = \\{0 \rightarrow 0, 1 \rightarrow 1\\}) = \\{1\\} \in P(A)$，同构
+
+    $$
+    \begin{align*}
+    \phi_S : \operatorname{\mathrm{Hom}}_{\mathsf{Set}}(S, A) & \rightarrow P(S) \\
+    f & \mapsto f^{-1}(\{1\})
+    \end{align*}
+    $$
+
+  + 即一个集合的幂集与它到 $\\{0, 1\\}$ 的映射一一对应
+- 群到集合的遗忘函子 $\mathsf{Grp} \rightarrow \mathsf{Set}$ 是可表的
+  + 群被映射到对象集合，群同态 $f$ 被映射到集合间的映射 $f^{-1}$
+  + 令 $Z = (\mathbb{Z}, 0, +)$，$u\_A = \phi(\operatorname{\mathrm{id}}\_Z) = \mathbb{Z}$，同构
+
+    $$
+    \begin{align*}
+    \phi_S : \operatorname{\mathrm{Hom}}_{\mathsf{Grp}}((S, e, \times), (\mathbb{Z}, 0, +)) & \rightarrow S \\
+    f & \mapsto f^{-1}(\mathbb{Z})
+    \end{align*}
+    $$
+  + 在 $f : (\mathbb{Z}, 0, +) \rightarrow (S, e, \times)$ 中，$0 \mapsto e$，因此 $f(1) \in G$ 完全决定了集合 $G$。因此 $f$ 与 $G$ 中的元素一一对应
 
 ## Haskell 中的可表函子
 
