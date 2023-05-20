@@ -1,0 +1,3 @@
+[submodule "themes/pupi"]
+	path = themes/pupi
+	url = https://github.com/roife/hugo-theme-pupi
