@@ -1,0 +1,493 @@
+#+title: 群环域
+#+date: 2022-01-23
+#+hugo_tags: 代数
+#+hugo_categories:
+#+hugo_draft: true
+
+* 群
+
+** 群的定义
+
+#+begin_definition
+*群*（group）是一个集合 \(G\) 与其上定义的某种二元运算 \(\cdot : G \times G \rightarrow G\) 构成的。遵循：
+
+1. 结合性：对任何 \(a, b, c \in G\)，有 \((a \cdot b) \cdot c=a \cdot (b \cdot c)\)
+2. 单位元：\(G\) 中存在一个单位元 \(e\)，使得对任何 \(a \cdot e=e \cdot a=a\)
+3. 逆元：对任何 \(a \in G\)，都存在一个逆元 \(a^{−1}\) 使得 \(a \cdot a^{−1} = a^{−1} \cdot a = e\)
+#+end_definition
+
+下面的例子都是群：
+- 全体整数和加法构成了整数加群
+- 所有整数模 \(n\) 的余数集合 \(\{0, 1, 2, \dots, n - 1\}\) 与“加法取模”运算构成了*整数模 \(n\) 加法群*，记作 \(\mathbb{Z}_n\) 或 \(\mathbb{Z} / n \mathbb{Z}\)
+- 一般模 \(n\) 余数集合 \(\{0, 1, 2, \dots n-1\}\) 与乘法取模不构成群（因为没有逆元）；但是如果 \(n\) 是素数，\(\{1, 2, \dots, n-1\}\) 与“乘法取模运算”可以构成*整数模 \(n\) 乘法群*
+  + 更一般的，\(\{k \vert k \in \mathbb{Z}_n, (k, n) = 1\}\) 对乘法构成群，记作 \(\mathbb{Z}^*_n\) 或 \((\mathbb{Z}/n\mathbb{Z})^\times\)
+- \( n \times n \) 的可逆矩阵构成的群 \( GL_n \)，可以用 \( GL_n(\mathbb{R}) \) 或 \( GL_n(\mathbb{C}) \) 表示实数矩阵和复数矩阵
+
+群有几个简单的性质：
+
+#+begin_theorem
+群的单位元是唯一的。
+#+end_theorem
+#+begin_proof
+假设存在单位元 \(e, e'\)，则 \(e = ee' = e'\)
+#+end_proof
+
+#+begin_theorem
+群的逆元唯一存在。
+#+end_theorem
+#+begin_proof
+假设存在两个逆元 \(a^{-1}, b\)，则 \(a^{-1} = (ab)a^{-1} = b(aa^{-1}) = b\)
+#+end_proof
+
+#+begin_theorem
+（消去律）设群 \(G\)，令 \(a, b, c \in G\)：
+- 若 \(ab = ac\) 或 \(ba = ca\)，则 \(b=c\)
+- 若 \(ab = a\) 或 \(ba = a\)，则 \(b = 1\)
+#+end_theorem
+#+begin_proof
+直接乘逆元即可。
+#+end_proof
+
+去掉逆元的约束，可以得到*幺半群*（Monoid）。
+
+#+begin_definition
+*幺半群*是一个集合 \(G\) 与其上定义的某种二元运算 \(\cdot : G \times G \rightarrow G\) 构成的。遵循：
+
+1. 结合性：对任何 \(a, b, c \in G\)，有 \((a \cdot b) \cdot c=a \cdot (b \cdot c)\)
+2. 单位元：\(G\) 中存在一个单位元 \(e\)，使得对任何 \(a \cdot e=e \cdot a=a\)
+#+end_definition
+
+幺半群结构比群更加常见：
+- 全体整数和乘法
+- 长度有限的字符串和拼接操作
+- 长度有限的列表和连接操作
+
+继续去掉单位元的约束，可以得到*半群*（semigroup）：
+
+#+begin_definition
+半群包括一个集合，以及定义在集合的*可结合*的二元运算。
+#+end_definition
+
+*** 阶
+
+#+begin_definition
+群中元素的个数称为群的*阶*，记作 $|G|$。
+#+end_definition
+
+#+begin_definition
+对群中的一个元 \(a\)，能够满足 \(a^m = e\) 的最小正整数 \(m\) 称为 \(a\) 的*阶*（order）。如果不存在这样的 \(e\)，称 \(a\) 的阶是无限的。
+#+end_definition
+
+#+begin_theorem
+有限群的每个元素都有有限的阶。
+#+end_theorem
+#+begin_proof
+根据鸽巢原理，存在两个 \(a^i, a^j (i < j)\) 使得 \(a^i = a^j\)。
+
+则 \(a^{j - i} = a^j a^{-i} = a^i a^{-i} = e\)。
+#+end_proof
+
+元素自乘可以生成一个循环子群，这个循环子群的阶是该元素的阶。
+
+*** 子群
+
+#+begin_definition
+设群 \(G\)，如果其子群 \(H \in G\) 对于 \(G\) 的乘法也构成一个群，则 \(H\) 称为 \(G\) 的一个*子群*（subgroup）。
+#+end_definition
+
+对于任何群 \(G\)，\(G\) 本身和单位元集合 \( \{e\} \) 必定是其子群，称为*平凡子群*。
+
+#+begin_theorem
+群 \(G\) 的非空子集 \(H\) 构成子群的充要条件是：
+- 子集内的元素对乘法封闭
+- 单位元 \( e \in H \)
+- \(\forall a \in H, a^{-1} \in H\)（存在逆元）
+
+或者等价于：对任意 \(a, b \in H\)，则 \(a \cdot b^{−1} \in H\)
+#+end_theorem
+#+begin_proof
+充分性是显然的，下面证明必要性。
+
+- 如果 \(H\) 是子群，则 \( \forall a \in H, a \cdot a^{-1} = e \in H \)，第二条得证
+- \( \forall a \in H, e \cdot a^{-1} = a^{-1} \in H \)，第三条得证
+- \( \forall a, b \in H \)，由第三条知 \( b^{-1} \in H \)，则 \( a \cdot b = a \cdot (b^{-1})^{-1} \in H \)，第一条得证
+#+end_proof
+
+子群的一个例子是整数加群 \(\langle \mathbb{Z}, + \rangle\) 的子群 \(H = \{k \cdot n\}\ (k = 0, \plusmn 1, \plusmn 2, \dots)\)：\(\forall h n, k n \in H, h n + (-k) n = (h-k) n \in H\)，即 \(hn\) 与 \(kn\) 的逆元的乘仍在 \(H\) 中。根据子群的判定定理可知，\(H\) 是 \( \langle \mathbb{Z}, + \rangle \) 的子群。
+
+** 群同态与群同构
+
+#+begin_definition
+设群 \(A, B\)，映射 \(f : A \rightarrow B\)。如果对于 \(a, b \in A\) 和 \(f(a), f(b) \in B\) 总有
+
+\[f(a) \cdot f(b) = f(a \cdot b)\]
+
+则称 \(f\) 是*同态映射*（homomorphism）。
+
+如果 \(f\) 是满射，则称为*同态满射*（epimorphism）。
+#+end_definition
+
+同态映射的例子有很多，例如：
+- 行列式函数 \(\operatorname{\mathrm{det}} : \mathbb{R}_{n \times n} \rightarrow \mathbb{R}^{\times}\)
+- 幂函数 \(\operatorname{\mathrm{exp}} : \mathbb{R}^{+} \rightarrow \mathbb{R}^{\times}\)
+- 绝对值函数 \(|| : \mathbb{C}^{\times} \rightarrow \mathbb{R}^{\times}\)
+
+由同态映射的例子可以得到以下性质：
+
+#+begin_theorem
+设群同态 \(\phi : A \rightarrow B\)，则：
+- \( \phi(e_A) = e_B \)
+- \( \phi(a^{-1}) = \phi(a)^{-1} \)
+#+end_theorem
+#+begin_proof
+两个定理的证明如下：
+- \( \phi(e_A) \cdot \phi(e_A) = \phi(e_A \cdot e_A) = \phi(e_A) \)，根据消去定理两边消去 \( \phi(e_A) \) 即可
+- \( \phi(e_A) = \phi(a \cdot a^{-1}) = \phi(a) \cdot \phi(a^{-1}) \)，两边左乘 \(\phi(a)^{-1}\) 即可
+#+end_proof
+
+比同态更强的是同构。
+
+#+begin_definition
+如果群同态 \(f\) 是双射，则称为*同构*（isomorphism），记为 \(A \cong B\)。其中 \(A \cong A\) 的映射称为*自同构*（automorphism）。
+#+end_definition
+
+*** 像和核
+
+#+begin_definition
+同态 $\phi : A \rightarrow B$ 的像记作 \( \operatorname{\mathrm{Im}}(\phi) \) 或 \( \phi(A) \)：
+
+\[
+\operatorname{\mathrm{Im}}(\phi) = \{ x \in B | x = \phi(a), a \in A \}
+\]
+#+end_definition
+
+#+begin_definition
+同态 $\phi : A \rightarrow B$ 的核记作 \( \operatorname{\mathrm{Ker}}(\phi) \)：
+
+\[
+\operatorname{\mathrm{ker}}(\phi) = \{ a \in A | \phi(a) = e_B \}
+\]
+#+end_definition
+
+容易验证，群同态的核是定义域上的一个子群，像是其值域上的一个子群。
+
+** 陪集
+
+#+begin_theorem
+设群 \(G\)，\(H\) 是 \(G\) 的子群，则 \(a \sim b \Leftrightarrow a b^{-1} \in H\) 是一个等价关系。
+#+end_theorem
+#+begin_proof
+通过定义证明：
+- \(a a^{-1} = e \in H\)，即 \(a \sim a\)
+- \(a b^{-1} \in H \Rightarrow (a b^{-1})^{-1} = b a^{-1} \in H\)，即 \(a \sim b \Rightarrow b \sim a\)
+- \(a b^{-1} \in H, b c^{-1} \in H \Rightarrow (a b^{-1})(b c^{-1}) = a c^{-1} \in H\)，即 \(a \sim b \wedge b \sim c \Rightarrow a \sim c\)
+#+end_proof
+
+通过这个等价关系，可以将集合 \(G\) 划分为若干等价类。
+
+#+begin_definition
+子群 \(H\) 的*右陪集*（right coset）为集合
+
+\[
+Ha = \{ha  \vert  h \in H\}
+\]
+#+end_definition
+
+右陪集的例子：
+- \(H = \{0, \plusmn 3, \plusmn 6, \dots \}\) 为 \(\langle \mathbb{Z}, + \rangle \) 的子群，\(H0, H1, H2\) 为 \(\langle \mathbb{Z}, + \rangle \) 的右陪集
+- \(H = \{(1), (1\ 2)\}\) 为 \(S_3\) 的子群，\(H(1), H(1\ 3), H(2\ 3)\) 为 \(S_3\) 的右陪集
+
+#+begin_definition
+子群 \(H\) 的*左陪集*（left coset）为集合
+
+\[
+aH = \{ah  \vert  h \in H\}
+\]
+#+end_definition
+
+- 子群 \(H\) 的左右陪集个数相等：或者都是无限大，或者都有限并相等
+  - 证明：构建一个一一映射 \(f : Ha \rightarrow a^{-1}H\)。\(\forall Ha = Hb, ab^{-1} \in H\)，则 \((ab^{-1})^{-1} = ba^{-1} \in H\)。因此 \(a^{-1}H = b^{-1} H\)。
+- 子群 \(H\) 的陪集个数（左或者右）称为 \(H\) 在 \(G\) 中的*指数*
+- 一般而言 \(Ha \ne aH\)
+
+左右陪集将原群分为了若干个不相交的集合：\(G = a_1H + b_2H + \dots + a_nH\)。
+
+*** 正规子群
+假设 \(N\) 是 \(G\) 的子群，如果对 \(G\) 的每个元 \(a\) 都有 \(Na = aN\)，则子群 \(N\) 称为一个*正规子群*（或*不变子群*，Normal subgroup）。记作 \(N \lhd G\) 或 \(G \rhd N\)。
+
+正规子集也叫做群的*中心*。一个正规子群的左（右）陪集叫做 \(N\) 的*陪集*。
+
+- 群 \(G\) 的子群 \(N\) 是一个正规子群的充要条件是：\(\forall a \in G, aNa^{-1} = N\)
+- 群 \(G\) 的子群 \(N\) 是一个正规子群的充要条件是：\(\forall a \in G\ \forall n \in N, ana^{-1} \in N\)
+
+*** 商群
+把正规子群 \(N\) 的所有陪集做成一个集合 \(\\{aN, bN, cN, \dots\\}\)，并且定义这 个集合上的乘法为
+
+\[(xN)(yN) = (xy)N\]
+
+此时正规子群的陪集在这个乘法下构成一个群，称为*商群*（Quotient group），用 \(G/N\) 表示。
+
+- 一个群 \(G\) 同它的每个商群 \(G/N\) 同态
+  - 构造映射 \(f : a \rightarrow aN, a \in G\)。\(\forall a, b \in G, ab \rightarrow (ab)N = (aN)(bN)\)。因此 \(f\) 是一个同态满射。
+
+** 对称群
+*** 变换与对称群
+*变换*即为一个群的自映射 \(\tau : A \rightarrow A\)。例如 \(A = \\{1, 2\\}\)，变换 \(\tau: 1 \rightarrow 2, 2 \rightarrow 1\)。
+
+为了方便，记 \(a \rightarrow \tau(a) = a^\tau\)。
+
+所有的变换可以构成一个新的集合 \(S = \\{\tau, \lambda, \mu, \dots\\}\)。定义这个集合上的二元运算为“乘法”，则 \(\tau \lambda : a \rightarrow (a^{\tau})^\lambda = a^{\tau \lambda} = \lambda(\tau(a))\)。可以发现这种乘法满足结合律。乘法的单位元即为恒等运算 \(e : a \rightarrow a\)。这样形成的群称为*对称群*（symmetric group）。
+
+*** 变换群
+\(S\) 本身无法构成群（因为有些变换没有逆元），但是其子集 \(G\) 可以构成逆元，其中 \(G\) 只包含一一变换（即双射），这个子群称为*变换群*（transform group）。变换群一般也不是交换群。
+
+变换群有很多性质： - 一个集合 \(A\) 的所有一一变换构成一个变换群 \(G\) - （*凯莱定理*）任何一个群都同一个变换群同构
+
+*** 置换群
+
+#+begin_definition
+一个有限集合 \(S\) 上的的双射 \(\phi : S \rightarrow S\) 称为一个*置换*。
+#+end_definition
+
+一个有限集合的若干个置换作成的一个群叫做一个*置换群*（permutation group）。一个包含 n 个元素的集合的全体置换作成的群叫做 *n 次对称群*，可以描述对称性（包括镜像、旋转等），用 \(S_n\) 来表示。由于 \(n\) 元置换有 \(n!\) 个，因此 \(S_n\) 的阶为 \(n!\)。
+
+对于置换 \[
+\begin{pmatrix}
+1 & 2 & \dots & n \\
+k_1 & k_2 & \dots & k_n
+\end{pmatrix}
+\] 可以记作 \((k_1, k_2, \dots k_n)\)，表示 \(\sigma(i) = k_i\)。
+
+两个置换可以进行复合操作。
+
+置换群的性质： - \(S_3\) 是最小的有限非阿贝尔群 - 任何一个*有限群*都与一个置换群同构（变换群不一定是有限的）
+
+*** 循环置换
+如果置换 \(\sigma \in S_n\) 满足以下条件，则称 \(\sigma\) 为循环置换： - \(\sigma\) 让某个集合的元素构成循环的置换 \(\sigma(i_1) = i_2, \sigma(i_2) = i_3, \dots \sigma(i_r) = i_1\) - \(\sigma\) 保持其他元素不变 \(\forall i \notin \\{i_1, i_2, \dots, i_r\\}, \sigma(i) = i\)
+
+\(\sigma\) 可以记作 \((i_1\ i_2\ \dots\ i_r)\)，则 \((i_1\ i_2\ \dots\ i_r) = (i_2\ i_3\ \dots\ i_r\ i_1) = \dots = (i_r\ i_1\ \dots i_{r-1})\)。
+
+如果循环置换只有两个元素 \((i\ j)\) 则称为对调。
+
+恒等置换 \(e = (1) = (2) = \dots = (n)\)。
+
+任意一个置换都可以分解为若干个循环置换，并且用乘法进行表示，例如 \((2, 1, 4, 5, 3) = (1\ 2)(3\ 4\ 5) = (3\ 4\ 5)(1\ 2)\)。
+
+如果两个置换不相交（即没有共同数字），那么这两个循环可交换。
+
+\((x_1\ x_2\ \dots\ x_n)^{-1} = (x_n\ x_{n-1}\ \dots\ x_1)\)。
+
+*** 交错群
+
+#+begin_definition
+如果将置换应用于 \(x_1, x_2, \dots x_n\) 时，函数
+
+\[\Delta = \prod_{i < k} (x_i - x_k)\]
+
+保持不变。这种置换称为*偶置换*（即有偶数个逆序对）；另一种置换称为奇置换。
+#+end_definition
+
+奇偶置换有一些简单的性质：
+- 偶置换和奇置换一样多，都有 \(\frac{n!}{2}\) 个
+- 两个偶置换或两个奇置换的合成仍然是偶置换，奇置换和偶置换的合成是奇置换
+
+#+begin_definition
+*交错群* \(A_n\)（alternating group）是置换群 \(S_n\) 的子群，由偶置换组成。
+#+end_definition
+
+#+begin_theorem
+每个偶置换都可以表示成 \(3\)-轮换的乘积
+#+end_theorem
+#+begin_proof
+置换可以分解为对换的乘积。由于对换都是奇置换，因此将偶置换会被分解为偶数个对换。
+
+下证任意两个不同的对换的乘积能表示成 \(3\)-轮换的乘积：
+
+- \((i\ j)(i\ k) = (i\ k\ j)\)
+- \((i\ j)(k\ l) = (i\ j)(j\ k)(j\ k)(k\ l) = (j\ k\ i)(l\ k\ j)\)
+#+end_proof
+
+** 循环群
+
+#+begin_definition
+若群 \(G\) 的每个元素都是固定元素 \(a\) 的乘方，称 \(G = \langle a \rangle = \{ a^k | k \in \mathbb{Z} \}\) 为*循环群*（cyclic group），也称 \(G\) 是由 \(a\) 所生成的，用 \(G = \langle a \rangle \) 表示。
+
+\(a\) 叫做 \(G\) 的一个*生成元*。（注意 \(a\) 不是单位元）
+#+end_definition
+
+#+begin_theorem
+设群 \(G\)，若 \(g \in G\)，则 \( \langle g \rangle \) 是 \(G\) 中包含 \(g\) 的最小子群，称为*循环子群*。
+#+end_theorem
+
+\(n\) 阶循环群记作 \(C_n\) 或 \(\mathbb{Z}/n \mathbb{Z}\)。
+
+下面是两个循环群的例子：
+- 整数加群 \( \mathbb{Z} = \langle 1 \rangle \)，单位元是 \(0\)，定义 \(1 ^ 0 = 0\)
+- 整数模 \(n\) 加法群 \( \mathbb{Z}_n = \langle 1 \rangle \)，单位元是 \(0\)，定义 \(1 ^ 0 = 0\)
+
+#+begin_theorem
+若 \(G = \langle a \rangle\)，那么：
+- 如果 \(a\) 的阶无限，那么 \(G \cong \langle \mathbb{Z}, + \rangle \)
+  + 此时 \(G\) 只有两个生成元 \({-1, 1}\)
+- 如果 \(a\) 的阶是整数 \(n\)，那么 \(G \cong Z_n\)
+  - 有限群 \(G\) 是循环群，当且仅当 \(G\) 中有一个元素 \(a\) 的阶等于群 \(G\) 的阶
+#+end_theorem
+#+begin_proof
+下面对两种情况分别讨论：
+
+- 如果 \(a\) 的阶无限，那么 \(a^h = a^k \iff h = k\)。否则 \(a^{h - k} = e (h > k)\)，与 \(a\) 的阶无限矛盾。因此可以构造 \(G \rightarrow \mathbb{Z}\) 的双射：
+
+  \[ f : a^k \rightarrow k \]
+
+  显然 \(a^h a^k = h + k\)
+
+- 如果 \(a\) 的阶有限，设 \( |G| = n \)
+  + 如果 \(n = 0\)，平凡成立
+  + 否则，\( |a| = n \)
+
+    设 \(k = qn + r (0 \le r < n)\)，则 \(x^k = x^{qn + r} = (x^n)^q x^r = x^r\)，因此 \(x^k \in \{x^0, x^1, \dots x^{n-1}\}\)。又由于 \( |G| = n \)，因此 \( \{ x^0, x^1, \dots, x^{n-1}\} \) 互不相同。
+
+    构造双射
+
+    \[ f : x^k \rightarrow [k] \]
+
+    显然 \(a^h a^k = [h + k]\)
+#+end_proof
+
+根据费马小定理，当 \(p\) 为素数时，\(\mathbb{Z}^*_p\) 也是循环群，且 \(\mathbb{Z}^*_p \cong \mathbb{Z}_{p-1}\)。
+
+循环群有以下相关的性质：
+
+#+begin_theorem
+循环群一定是阿贝尔群。
+#+end_theorem
+#+begin_proof
+\(a^p a^q = a^{p + q} = a^q a^p\)
+#+end_proof
+
+#+begin_theorem
+素数 \(p\) 阶的群一定循环群，且是阿贝尔群。
+#+end_theorem
+#+begin_proof
+设 \(| G | = p\)，由拉格朗日定理，群中元素的阶可以被 \(p\) 整除，则 \(\vert a \vert = 1\ \text{or}\ p\)
+- 当 \( |a| = 1\) 时，\(a = e\)
+- 否则 \(|a| = p\)，为循环群，且为阿贝尔群
+#+end_proof
+
+*** 分圆方程
+- \(n\) 次单位根 \(x^n = 1\)
+- \(n\) 次本原单位根 \(x^n = 1 \wedge \forall m \in \{1, 2, \dots, n-1\}, x^m \ne 1\)
+
+例如 \(i\) 是 \(2\) 次本原单位根，也是 \(4\) 次单位根。
+
+对于方程 \(x^3 - 1 = (x - 1)(x^2 + x + 1)\)，其中 \((x^2 + x + 1)\) 称为方程的分圆多项式。\(k\) 次本原单位根对应的分圆多项式记为 \(\Phi_k(x)\)。
+
+\[
+x^n - 1 = \prod_{d \vert n} \Phi_d(x)
+\]
+
+\(n\) 次单位根在乘法下同构于循环群 \(C_n\)，而 \(n\) 次本原单位根 \(\zeta_k\) 是其生成元，即 \(C_n = (\zeta_k)\)。
+
+** 群同态基本定理
+
+#+begin_theorem
+设 \( \phi : G \rightarrow G' \) 是群同态，则 \( G / \operatorname{\mathrm{Ker}}(\phi) \cong \operatorname{\mathrm{Im}}(\phi) \)
+#+end_theorem
+#+begin_proof
+设同态满射 \(f : G \rightarrow \operatorname{\mathrm{Im}}(\phi) \)。
+
+首先根据定义容易验证 \(\mathrm{Ker}(f)\) 是 \(G\) 的正规子群。下证商群 \(G/\mathrm{Ker}(f) \cong G'\)
+
+记 \(N = \mathrm{Ker}(f)\)，\(f(a) = a'\)，\(f(b) = b'\)
+  - 设新映射 \(g : G/\mathrm{Ker}(f) \rightarrow G'\)，\(g(aN) = a' = f(a)\)
+  - 下证 \(f\) 是合法的映射：设 \(aN = bN\)
+    - \(a^{-1}b \in N\)，\(f(a^{-1} b) = e'\)
+    - 因此 \((a')^{-1}b' = f(a)^{-1} f(b) = f(a^{-1})f(b) = f(a^{-1} b) = e'\)
+    - 即 \(g(aN) = g(bN)\)
+  - 下证 \(f\) 是满射：由于 \(f\) 是满射，则 \(\forall a' \in G', \exists a \in G, f(a) = a'\)，因此 \(g(aN) = a'\)
+  - 下证 \(f\) 是单射：
+    - 如果 \(aN \ne bN\)，则 \(a^{-1} b \notin N\)，\(a^{-1} b \ne e\)
+    - 因此 \((a')^{-1} b' = f(a)^{-1} f(b) = f(a^{-1}) f(b) = f(a^{-1} b) = (a^{-1} b)' \ne e'\)
+    - 即 \(g(aN) \ne g(bN)\)
+  - 下证 \(f\) 是同态：\(g(aN \cdot bN) = g(abN) = (ab)' = f(ab) = f(a)f(b) = a' \cdot b'\)
+
+综上，\(G/\mathrm{Ker}(f) \cong G'\)
+#+end_proof
+
+即一个群不仅和和它的每一个商群同态，并且只和它的商群同态。
+
+** 拉格朗日定理
+- 引理：一个子群 \(H\) 和与其每一个右陪集 \(Ha\) 之间都存在一一映射
+  - 证明：构造 \(f : H \rightarrow Ha\)，对于任意的 \(h_1 a = h_2 a\)，由于 \(a \in G\)，则 \(a^{-1} \in G\)，两边乘上 \(a^{-1}\)，因此 \(h_1 = h_2\)
+- 对于左陪集同理
+
+#+begin_quote
+*拉格朗日定理*：有限群 \(G\) 的阶，能够被其子群 \(H\) 的阶整除。
+
+*证明*：首先 \(G\) 能被 \(H\) 的陪集覆盖。根据等价关系知，任意两个陪集间没有交集。由引理知，每个陪集 \(\vert Ha \vert = \vert H \vert = n\)，因此假设有 \(m\) 个陪集，则 \(\vert G \vert = m \vert H \vert = mn\)。
+
+*注意*：拉格朗日定理的逆定理不一定成立，也就是假设 $ \vert G \vert  = ab$，则不一定存在大小为 \(a\) 的子群
+
+#+end_quote
+
+推论： - 一个有限群 \(G\) 中的任意元素 \(a\) 的阶都能整除 \(G\) 的阶 - \(a\) 的阶等于其生成的循环子群的阶，都能整除 \(G\) 的阶 - 如果 \(G\) 的阶是素数，那么 \(G\) 是循环群 - 因为任意对于 \(a \in G - \\{e\\}\)，\(a\) 生成的阶一定等于 \(G\) 的阶，即 \(G = (a)\) - 有限群 \(G\) 中的任何元素 \(a\)，都有 \(a^{ \vert G \vert } = e\) - 设 \(a\) 的阶为 \(n\)，\(G\) 的阶为 \(nk\)，则 \(a^{ \vert G \vert } = a^{nk} = e^k = e\)
+
+利用拉格朗日定理可以证明费马小定理。
+
+#+begin_quote
+*费马小定理*：若 \(p\) 是素数，则 \(\forall a \in \mathbb{Z} \cap (0, p), a^{p−1} \equiv 1 \mod p\)
+
+*证明*：考虑一个整数模 \(p\) 乘法群 \(G\)，群内元素为 \(\\{1, 2, \dots, p-1\\}\)，单位元 \(e = 1\)。这个群的封闭性、结合性、单位元显然，可逆性根据裴蜀定理知 \(\forall a \in G\) 满足 \(\exists s \exists t, as + pt = 1\) 即 \(as \equiv 1 \mod p\)，即 \(a ^{-1} = s \in G\)。
+
+由拉格朗日定理的推论知 \(a^{p-1} = e\)，即 \(a^{p-1} \equiv 1 \mod p\)。
+
+#+end_quote
+
+费马小定理可以推广为欧拉定理。
+
+#+begin_quote
+*欧拉定理*：若 \(p\) 是素数，则 \(\forall a \in \mathbb{Z} \cap (0, n)\) 且 \((a, n) = 1\)，则 \(a^{\phi(n)} \equiv 1 \mod n\)。其中
+
+\[\phi(n) =  \vert  \{i  \vert  i \in \mathbb{Z} \cap (0, n) \wedge \gcd(i, n) = 1\}  \vert \]
+
+*证明*：证明同上，考虑一个整数模 \(p\) 乘法群 \(G\)，\(\forall a \in G, (a, n) = 1\)，剩余证明同理。
+
+#+end_quote
+
+利用容斥原理可以得到
+
+\[\phi(n) = n \left (1 - \frac{1}{p_1} \right ) \left (1 - \frac{1}{p_2} \right ) \cdots \left (1 - \frac{1}{p_m} \right )\ (n = p_1^{k_1} p_2^{k_2} \cdots p_m^{k_m})\]
+
+* 环
+一个集合 \(R\) 如果满足以下条件，则叫做一个*环*： - \(R\) 是一个*加群*，也就是说 \(R\) 和其上定义的*加法*构成一个*阿贝尔群*，满足结合律、交换律并且存在逆元 - \(R\) 上定义了*乘法*，并且对于乘法满足*结合性* - \(R\) 对加法和乘法满足分配律：\(a(b+c)=ab+ac\)，\((b+c)a = ba+ca\)
+
+环的例子： - 全体整数对于普通加法和乘法构成一个环 - 多项式和矩阵对于加法和乘法构成一个环
+
+如果乘法满足交换律，则称为*交换环*。其满足 \(a^n b^n = (ab)^n\)。
+
+如果乘法存在单位元满足 \(ea = ae = a\)，则称 \(e\) 为环的*乘法单位元*，一般用 \(1\) 表示（加法单位元用 \(0\) 表示）。有了单位元后，定义环中可逆的元素为*可逆元*。
+
+根据分配律有 \((a - a)a = a(a - a) = aa - aa = 0\)，即 \(0a = a0 = 0\)。因此可知 \(a = 0 \Rightarrow ab = ba = 0\)。但是这个命题的逆命题不成立，例如模 \(n\) 的剩余类下的加法和乘法。
+
+如果有 \(ab = 0\) 且 \(a \ne 0, b \ne 0\)，则称 \(a\) 为环的*左零因子*，\(b\) 为环的*右零因子*。对于交换环而言，左零因子等于右零因子。
+
+如果一个环内不存在左零因子或右零因子（如整数环），则有： - \(ab = 0 \Rightarrow a = 0 \vee b = 0\) - \(a \ne 0, ab = ac \Rightarrow b =c\) - \(a \ne 0, ba=ca \Rightarrow b=c\)
+
+如果一个环同时满足三个条件（乘法交换律、存在单位元、不存在零因子），则称为*整环*。整数环即为一个整环。
+
+一个集合 \(R\) 如果满足以下条件，则叫做一个*半环*： - \(R\) 上定义了*加法*，并且对于加法构成了交换幺半群，其单位元为 \(0\) - \(R\) 上定义了*乘法*，并且对于乘法构成了一个幺半群，其单位元为 \(1\) - \(R\) 对加法和乘法满足分配律：\(a(b+c)=ab+ac\)，\((b+c)a = ba+ca\) - \(0\) 元乘以任何元都得 \(0\)。即 \(a0 = 0a = 0\)
+
+自然数就是一个半环。
+
+* 域
+一个环 \(R\) 如果满足以下条件，则叫做*除环*： - \(R\) 至少包含一个不等于零的元 - \(R\) 有一个单位元 \(1\) - \(R\) 的每个不等于零的元都有一个*逆元*
+
+一个*交换除环*叫做一个*域*。
+
+全体有理数 \(\mathbb{Q}\) 或复数 \(\mathbb{C}\) 对于加法和乘法即构成了一个除环，同时也构成了一个域。
+
+若域 \(F\) 是复数域 \(\mathbb{C}\) 的子集，则称 \(F\) 为*数域*。有理数域 \(\mathbb{Q}\) 是最小的数域。
+
+除环和域的性质： - 一个除环没有零因子 - 假设 \(a \ne 0\) 而且 \(ab = 0\)。则 \(a^{-1}ab = b = 0\) - 一个除环中的所有非零元，对于乘法构成一个群 \(R*\)，称为除环 \(R\) 的*乘群*
+
+一个除环是由一个加群与一个乘群组合而成的，由分配律使二者产生联系。

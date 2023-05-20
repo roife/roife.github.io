@@ -1,19 +1,24 @@
-_site
-_archive
-node_modules
-.jekyll-cache
-.vscode
-.bundle
-.bundle/*
-*.log
-*.lock
-*.sh
+# Hugo default output directory
+public/
+/exampleSite/resources/
+/exampleSite/.hugo_build.lock
+/resources
+.hugo_build.lock
+
+node_modules/
+build/
+
+## OS Files
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# OSX
 .DS_Store
-*/.DS_Store
-*/*/.DS_Store
+**/.DS_Store
+
+# Latex Preview Cache
 ltximg/
-*/ltximg/
-*/*/ltximg/
-_posts/*.html
-_posts/*/*.html
-_posts/*/*/*.html
+**/ltximg/

@@ -1,0 +1,134 @@
+baseURL = "http://localhost:1313/"
+title = "ROIFE BLOG"
+
+theme = "pupi"
+themesDir = "themes"
+
+copyright = ""
+paginate = 10
+languageCode = "zh-cn"
+defaultContentLanguage = "zh-cn"
+
+hasCJKLanguage = true
+enableInlineShortcodes = true
+enableEmoji = true
+# prevent build failures when using Hugo's Instagram shortcode due to deprecated Instagram API.
+# See https://github.com/gohugoio/hugo/issues/7228#issuecomment-714490456
+ignoreErrors = ["error-remote-getjson"]
+ignoreFiles = ['\.org$']
+
+
+disqusShortname = ""
+googleAnalytics = ""
+
+[outputs]
+home = ["HTML", "JSON", "RSS"]
+
+# prevent build failures when using Hugo's template _internal/opengraph.html  
+[taxonomies]
+tag = "tags"
+series = "series"
+
+[markup]
+[markup.highlight]
+noClasses = false
+codeFences = true
+guessSyntax = true
+lineNos = false
+lineNumbersInTable = false
+# style = "gruvbox"
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[menu]
+[[menu.main]]
+identifier = "home"
+name = "Home"
+url = "/"
+weight = -10
+[[menu.main]]
+identifier = "series"
+name = "Series"
+url = "/series/"
+weight = 10
+[[menu.main]]
+identifier = "archive"
+name = "Archive"
+url = "/archive/"
+weight = 20
+[[menu.main]]
+identifier = "about"
+name = "About"
+url = "/about/"
+weight = 50
+
+
+[params]
+author = "roife"
+description = "roife 的魔法科见闻"
+keywords = "blog, developer, personal"
+img_home = "img/home-bg.jpg"
+img_404 = "img/404-bg.jpg"
+
+useFaviconGenerator = true
+
+custom_js = []
+custom_css = [] # ["css/custom.css"]  Add your file to assets folder  [assets/css/custom.css]
+
+lightTabColor = "#FFFFFF"
+darkTabColor = "#000000"
+
+comment = true
+katex = true
+toc = true
+
+[params.sidebar]
+enable = false
+gravatarEmail = ""
+# Overwritten by your gravatar image if `gravatarEmail` is filled
+avatar = "img/avatar-roife.jpg"
+bio = ""
+
+[params.social]
+# twitter = "johndoe"
+# facebook = "johndoe"
+# zhihu = "johndoe"
+# weibo = "johndoe"
+github = "roife"
+email = "roifewu@gmail.com"
+# gitlab = "johndoe"
+# linkedin = "johndoe"
+rss = true
+
+[[params.friends]]
+name = "Matrixkook"
+url = "https://matrixkook.github.io"
+
+[[params.friends]]
+name = "bazoka13"
+url = "https://bazoka13.github.io/"
+
+[[params.friends]]
+name = "Coekjan"
+url = "https://coekjan.github.io/"
+
+[[params.friends]]
+name = "Thysrael"
+url = "https://thysrael.github.io/"
+
+[[params.friends]]
+name = "Chlience"
+url = "https://chlience.cn/"
+
+[[params.friends]]
+name = "kirraobj"
+url = "https://kirraobj.ink/"
+
+[params.utterances]
+enable = true
+repo = "roife/roife.github.io"
+issueTerm = "pathname"
+label = "Comment"
+theme = "preferred-color-scheme"
+
