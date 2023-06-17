@@ -55,6 +55,7 @@
 但是向前驱结点递归寻找定义时会遇到*环*的问题。因此在基本块有多个前驱时，算法会预先插入一个空的 phi 函数并写入定义，然后再向前驱结点进行查找。这样在出现环形时，这个基本块会直接返回这个空的 phi 定义以打破环形的查找。
 
 因此递归查找变量的过程分为三种情况：
+
 - 当前基本块 unsealed：说明当前基本块的前驱还没有完成，应当先插入一个 phi 当作结果（当转为 sealed 时再化简当前指令及其 users）
 - 当前基本块只有一个前驱：直接读取其结果
 - 当前基本块有多个前驱：读取所有前驱的结果并生成 phi
@@ -106,18 +107,18 @@
     \state \comment{$v: \phi(x, x, ..., v, v, ...) \rightarrow x$}
     \state \comment{$v: \phi(v, v, ...) \rightarrow undef$}
     \procedure{TryRemoveTrivialPhi}{$phi$}
-    \state $same \gets \bot$
+    \state $same \gets $ empty
     \for {$op \in $ operands of $phi$}
     \if {$op = same$ \or $op = phi$}
       \continue
     \endif
-    \if {$same \ne$ \FALSE}
+    \if {$same$ is not empty}
       \state \comment{$phi$ merges at least two values, not trivial}
       \return $phi$
     \endif
     \state $same \gets op$
     \endfor
-    \if {$same = \bot$}
+    \if {$same$ is empty}
       \state \comment{$phi$ has no operands}
       \return $undef$
     \endif
@@ -152,6 +153,7 @@ Unsealed 基本块主要出现在循环中，因为循环结构会出现环形�
 #+end_pseudocode
 
 对于不同的程序结构，其 filling 和 sealing 的过程也不同。但是都遵循其定义：
+
 - 如果一个基本块内除 phi 结点外的指令都构建好了，那么它就是 filled
 - 如果一个基本块的前驱都是 filled，那么它就是 sealed
 
@@ -180,6 +182,7 @@ Unsealed 基本块主要出现在循环中，因为循环结构会出现环形�
 对集合 \(P\) 形成的引用图进行缩点，得到有向无环图 \(P'\)。
 
 设 \(P\) 引用的非 phi 结点为 \(x\)。对于 \(P'\) 上引用 \(x\) 的点 \(S\)：
+
 - 如果 \(|S| = 1\)，则 \(S\) 中的 phi 结点为 trivial 结点，可化简；
 - 否则 \(|S| > 1\)，即 \(S\) 是一个 SCC，且是冗余的 phi 结点集合。
 #+end_proof
@@ -260,6 +263,7 @@ Unsealed 基本块主要出现在循环中，因为循环结构会出现环形�
 ** Minimal SSA Form 的证明
 #+begin_definition
 *(路径汇聚)* 称两条非空路径 \(X_0 \rightarrow^{+} X_J\) 和 \(Y_0 \rightarrow^{+} Y_K\) 汇聚于 \(Z\) 当且仅当以下性质满足：
+
 - \(X_0 \ne Y_0\)
 - \(X_J = Z = Y_K\)
 - \((X_j = Y_k) \Rightarrow (j = J \vee k = K)\)
@@ -292,6 +296,7 @@ Unsealed 基本块主要出现在循环中，因为循环结构会出现环形�
 #+begin_proof
 设 \(p\) 是变量 \(v\) 的 phi 函数。由于 \(p\) 是 non-trivial 的，因此其至少有两个非自身的不同参数 \(r, s\)，设其对应的基本块为 \(R, S\)。
 \(r, s\) 有三种情况：
+
 - \(v\) 的直接定义
 - 一个 necessary phi 结点 \(r'\)，此时存在两条非空路径汇聚于 \(R'\)，因此也存在两条非空路径汇聚于 \(P\)，矛盾
 - 一个 unnecessary phi 结点
@@ -328,14 +333,33 @@ Unsealed 基本块主要出现在循环中，因为循环结构会出现环形�
 
 这样在进行 triviality check 时，只需要对比这两个 witness 是否相同。如果相同了，那么通过以下操作更新 witness：
 
-#+begin_src swift
-  wit_1 = wit_2
+#+begin_pseudocode
+\begin{algorithm}
+  \caption{Optimization for triviality check}
+  \begin{algorithmic}
+    \procedure{TrivialityCheck}{$phi$}
+    \if {witnesses of $phi$ is not initialized}
+      \state \comment{initialize witnesses for $phi$}
+      \state $wit_{1} \gets$ the first operand $op$ where $op \ne phi$
+      \state $wit_{2} \gets$ the first operand $op$ after $wit_{1}$ where $op \ne phi$ \and $op \ne wit_{1}$
+    \else
+      \state \comment{update witnesses of $\phi$}
+      \if {$wit_{1} = phi$ \or $wit_{1} = wit_{2}$}
+        \state $wit_{1} \gets$ the first operand $op$ after $wit_{2}$ where $op \ne phi$ \and $op \ne wit_{2}$
+      \endif
+      \if {$wit_{2} = phi$ \or $wit_{1} = wit_{2}$}
+        \state $wit_{2} \gets$ the first operand $op$ after $wit_{2}$ where $op \ne phi$ \and $op \ne wit_{2}$
+      \endif
+    \endif
+    \if {$wit_{1}$ or $wit_{2}$ is empty}
+      \return \FALSE
+    \endif
+    \endprocedure
+  \end{algorithmic}
+\end{algorithm}
+#+end_pseudocode
 
-  while wit_2 < phi.operands.size()
-          && phi.operands[wit_1] == phi.operands[wit_2] {
-      wit_2 += 1
-  }
-#+end_src
+这样一来对于每个 phi 的检查次数从 \(\Theta(n^2)\) 化简到了 \(\Theta(n)\)。
 
 ** 构建时优化
 此算法可以结合 GVN，运算强度削弱，复写传播，常量折叠等优化，在构建 SSA 时进行实时优化。

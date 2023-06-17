@@ -25,11 +25,13 @@
 
 * Hypotheses
 首先作者指出虽然目前有一些可重用的 IP 核，但是它们的专用程度很高，不足以成为运算单元这样基础的库。接着作者否定了对问题的两种猜想：
+
 - 没有人尝试去推动这件事（很多公司做了但是失败了）；
 - 缺少一个开源社区（软件库往往由少数人开发，但不妨碍它们被广泛使用）。
 
 ** HDL 缺乏表达力
 现在的 HDL 缺乏面向对象、多态、高阶函数等特性，无法实践抽象、封装、模块化的思想。这里作者举了两个例子：
+
 - 在实现加法树时，无法用递归生成语句，需要设计者手动展开循环，导致类似的代码不能复用
 - 设计一个 filter 模块时，不能使用高阶函数，需要在模块中硬编码条件
 
@@ -41,10 +43,12 @@ Chisel 等 HCL 直接使用 RTL 抽象，将 HDL 的硬件原语与现有的编�
 
 ** 一些复杂因素制约了 RTL 设计
 在电路的综合时，一些复杂因素会影响硬件 RTL 的设计：
+
 - ASIC 实现 memory 时往往不用 Verilog 的寄存器数组，而是会用 fab 厂商提供的 SRAM，限制了代码重用
 - 实现 FPGA 电路时会采用 FPGA 内硬编码的逻辑块来达到更好的性能和功耗，不利于代码重用
 
 并且目前的商业的 CAD 工具以及开源工具（如 Yosys、PyVerilog、Verific）有着与 Verilog 绑定、IR 层级太低等问题，不足以进行 RTL-to-RTL 变换来解决上面的问题：
+
 - Yosys：开源 Verilog RTL 综合器，可以将 Verilog 转换到 ASIC standard cell lib 或 Xilinx FPGA 上，但不关注 RTL 变换
 - PyVerilog：聚焦于 Verilog 的开源 RTL-to-RTL 转换工具，不支持 SRAM 接口或聚合类型
 - Verific：商业 Verilog/VHDL 解析器，可以在 AST（但是要求支持源语言所有特性）或语言无关的线网格式上写 pass
@@ -55,6 +59,7 @@ Chisel 等 HCL 直接使用 RTL 抽象，将 HDL 的硬件原语与现有的编�
 ** FIRRTL
 *** Overview
 FIRRTL 的设计过程中贯穿着三条准则：
+
 - *clear*：语法定义严格且直接
 - *simple*：IR 种类尽量少（方便下游工具进行综合仿真）
 - *rich*：尽可能多得捕获设计者的意图（FIRRTL 包含丰富的元素，包括内存结点、聚合类型、时钟类型等）
@@ -93,6 +98,7 @@ val m1 = myMod.map(onP)
 #+end_src
 
 此外，作者介绍了几种 Transformations：
+
 - Simplification Transformations：将高级 IR 转换到低级 IR，即分为 =high-to-mid= 与 =mid-to-low= 两种
 - Analysis Transformations：例如 Node-counting，early area estimations，module hierarchy depictions
 - Optimization Transformations：例如 Constant Propagation，CSE，DCE

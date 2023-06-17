@@ -1,7 +1,6 @@
 #+title: Types and Algebra
 #+date: 2021-09-25
 #+hugo_tags: 代数 ADT 程序语言理论 类型系统
-#+hugo_categories:
 
 * Types and Operations
 

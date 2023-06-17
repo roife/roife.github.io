@@ -134,18 +134,18 @@ draft = false
     \state \comment{$v: \phi(x, x, ..., v, v, ...) \rightarrow x$}
     \state \comment{$v: \phi(v, v, ...) \rightarrow undef$}
     \procedure{TryRemoveTrivialPhi}{$phi$}
-    \state $same \gets \bot$
+    \state $same \gets $ empty
     \for {$op \in $ operands of $phi$}
     \if {$op = same$ \or $op = phi$}
       \continue
     \endif
-    \if {$same \ne$ \FALSE}
+    \if {$same$ is not empty}
       \state \comment{$phi$ merges at least two values, not trivial}
       \return $phi$
     \endif
     \state $same \gets op$
     \endfor
-    \if {$same = \bot$}
+    \if {$same$ is empty}
       \state \comment{$phi$ has no operands}
       \return $undef$
     \endif
@@ -413,14 +413,35 @@ Unsealed 基本块主要出现在循环中，因为循环结构会出现环形�
 
 这样在进行 triviality check 时，只需要对比这两个 witness 是否相同。如果相同了，那么通过以下操作更新 witness：
 
-```swift
-wit_1 = wit_2
+<div class="pseudocode">
 
-while wit_2 < phi.operands.size()
-        && phi.operands[wit_1] == phi.operands[wit_2] {
-    wit_2 += 1
-}
-```
+\begin{algorithm}
+  \caption{Optimization for triviality check}
+  \begin{algorithmic}
+    \procedure{TrivialityCheck}{$phi$}
+    \if {witnesses of $phi$ is not initialized}
+      \state \comment{initialize witnesses for $phi$}
+      \state $wit\_{1} \gets$ the first operand $op$ where $op \ne phi$
+      \state $wit\_{2} \gets$ the first operand $op$ after $wit\_{1}$ where $op \ne phi$ \and $op \ne wit\_{1}$
+    \else
+      \state \comment{update witnesses of $\phi$}
+      \if {$wit\_{1} = phi$ \or $wit\_{1} = wit\_{2}$}
+        \state $wit\_{1} \gets$ the first operand $op$ after $wit\_{2}$ where $op \ne phi$ \and $op \ne wit\_{2}$
+      \endif
+      \if {$wit\_{2} = phi$ \or $wit\_{1} = wit\_{2}$}
+        \state $wit\_{2} \gets$ the first operand $op$ after $wit\_{2}$ where $op \ne phi$ \and $op \ne wit\_{2}$
+      \endif
+    \endif
+    \if {$wit\_{1}$ or $wit\_{2}$ is empty}
+      \return \FALSE
+    \endif
+    \endprocedure
+  \end{algorithmic}
+\end{algorithm}
+
+</div>
+
+这样一来对于每个 phi 的检查次数从 \\(\Theta(n^2)\\) 化简到了 \\(\Theta(n)\\)。
 
 
 ### 构建时优化 {#构建时优化}

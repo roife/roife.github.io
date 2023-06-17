@@ -1,0 +1,197 @@
+#+title: [The Little Schemer] 07 Friends and Relations
+#+date: 2020-01-05
+#+hugo_tags: 程序语言理论 scheme 函数式编程
+#+hugo_series: "The Little Schemer"
+
+* 集合
+set 是一个不包含重复元素的 lat
+
+- =(set? lat)= 判断 lat 是否是一个 set
+
+#+begin_src scheme
+(define set?
+  (lambda (lat)
+    (cond
+     ((null? lat) #t)
+     ((member? (car lat) (cdr lat)) #f)
+     (else (set? (cdr lat))))))
+#+end_src
+
+- =(makeset lat)= 去掉 lat 中的重复元素使其成为 set
+
+#+begin_src scheme
+(define makeset
+  (lambda (lat)
+    (cond
+     ((null? lat) '())
+     ((member? (car lat) (cdr lat)) (makeset (cdr lat)))
+     (else (cons (car lat) (makeset (cdr lat)))))))
+
+(define makeset-multirember
+  (lambda (lat)
+    (cond
+     ((null? lat) '())
+     (else (cons (car lat)
+                 (makeset-multirember (car lat) (cdr lat)))))))
+#+end_src
+
+- =(subset? set1 set2)= 判断 set1 是否为 set2 的子集
+
+#+begin_src scheme
+(define subset?
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) #t)
+     ((member? (car set1) set2) (subset? (cdr set1) set2))
+     (else #f))))
+
+(define subset?-and
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) #t)
+     (and (member (car set1) set2)
+          (subset?-and (cdr set1) set2)))))
+#+end_src
+
+- =(eqset? set1 set2)= 判断两个 set 是否相等
+
+#+begin_src scheme
+(define eqset?
+  (lambda (set1 set2)
+    (and (subset? set1 set2)
+         (subset? set2 set1))))
+#+end_src
+
+- =(intersect? set1 set2)= 判断两个 set 是否有交集
+
+#+begin_src scheme
+(define intersect?
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) #f)
+     ((member? (car set1) set2) #t)
+     (else (intersect? (cdr set1) set2)))))
+#+end_src
+
+- =(intersect set1 set2)= 求 set1 and set2
+
+#+begin_src scheme
+(define intersect
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) '())
+     ((member? (car set1) set2) (cons (car set1)
+                                      (intersect (cdr set1) set2)))
+     (else (intersect (cdr set1) set2)))))
+#+end_src
+
+- =(union set1 set2)= 求 set1+set2
+
+#+begin_src scheme
+(define union
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) set2)
+     ((member? (car set1) set2) (union (cdr set1) set2))
+     (else (cons (car set1)
+                 (union (cdr set1) set2))))))
+#+end_src
+
+- =(xxx set1 set2)= 返回 set1-set2
+
+#+begin_src scheme
+(define xxx
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) '())
+     ((member? (car set1) set2) (xxx (cdr set1) set2))
+     (else (cond (car set1)
+                 (xxx (cdr set1) set2))))))
+#+end_src
+
+- =(intersectall l-set)= l-set 是一个一重集合构成的集合，求这些一重集合构成的交
+
+#+begin_src scheme
+(define intersectall
+  (lambda (l-set)
+    (cond
+     ((null? (cdr l-set)) (car l-set))
+     (else (intersect (car l-set)
+                      (intersectall (cdr l-set)))))))
+#+end_src
+
+* pair
+Scheme 中将两个不同含义但是有关联的元素组成的 list 称作 pair
+
+- =(a-pair? x)= 判断 x 是否为 pair
+
+#+begin_src scheme
+(define a-pair?
+  (lambda (x)
+    (cond
+     ((atom? x) #f)
+     ((null? x) #f)
+     ((null? (cdr x)) #f)
+     ((null? (cdr (cdr x))) #t)
+     (else #f))))
+#+end_src
+
+下面是 pair 相关的操作
+
+- =(first p)= 获取 pair 的一个元素
+- =(second p)= 获取 pair 的第二个元素
+- =(build s1 s2)= 将 s1 与 s2 组成 pair
+
+#+begin_src scheme
+(define first (lambda (p) (car p)))
+(define second (lambda (p) (car (cdr p))))
+(define build (lambda (s1 s2) (cons s1 (cons s2 '())))) ;; 注意
+#+end_src
+
+由 pair 组成的 set 被称为 rel（relation，即关系，常指二元关系，可以看作是多值函数的映射）
+
+当 rel 变为单射时即为 fun（function，<数、>函数）
+
+#+begin_src scheme
+(define fun?
+  (lambda (rel)
+    (set? (firsts rel))))
+#+end_src
+
+- =(fun? rel)= 判断一个 rel 是否为函数
+
+- =(reveal rel)= 构建反向映射关系，即交换每一个 pair 的 first 和 second
+
+#+begin_src scheme
+(define reveal
+  (lambda (rel)
+    (cond
+     ((null? rel) '())
+     (else (cons (build (first (car rel))
+                        (second (car rel)))
+                 (reveal (cdr rel))))))) ;; 注意此处的小函数使得可读性提升
+#+end_src
+
+- =(revpair pair)= 交换一个 pair 的两个元素
+
+#+begin_src scheme
+(define revpair
+  (lambda (pair)
+    (build (first pair) (second pair))))
+#+end_src
+
+可以用这个函数进一步简化 reveal
+
+- =(fullfun? fun)= 判断一个函数是否可逆（一一映射）
+
+#+begin_src scheme
+(define fullfun?
+  (lambda (fun)
+    (fun? (reveal fun))))
+#+end_src
+
+#+begin_quote
+这一章通过 scheme 构建了集合及其操作，并以此为基础构建了映射关系、函数、一一映射等。
+
+本章展现了通过小函数来构建大函数有益于代码可读性的增强
+#+end_quote

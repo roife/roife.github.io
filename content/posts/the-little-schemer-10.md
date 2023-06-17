@@ -1,0 +1,328 @@
++++
+title = "[The Little Schemer] 10 What Is the Value of All of This?"
+author = ["roife"]
+date = 2020-01-06
+series = ["The Little Schemer"]
+tags = ["程序语言理论", "scheme", "函数式编程"]
+draft = false
++++
+
+## entry &amp; table {#entry-and-table}
+
+**entry** 是一个 pair，并满足以下要求：
+
+-   两个元素都是列表
+-   `(first pair)` 是一个 set
+-   两个列表长度相同
+
+不难发现 entry 可以看作 dict，如 `((a b c) (1 2 3))`。
+
+构造一个 entry 就和构造一个 pair 一样。
+
+```scheme
+(define new-entry build)
+```
+
+-   `(lookup-in-entry name entry entry-f)` 表示在 entry 的第一个表中查找 name，找到则返回第二个表中对应的元素，否则调用 entry-f
+
+由于递归的时候对于 pair 的两个元素都要 first 和 second，非常麻烦，所以用 lookup-in-entry-help 辅助
+
+```scheme
+(define lookup-in-entry
+  (lambda (name entry entry-f)
+    (lookup-in-entry-help name
+                          (first entry)
+                          (second entry)
+                          entry-f)))
+
+(define lookup-in-entry-help
+  (lambda (name names values entry-f)
+    (cond
+     ((null? names) (entry-f name))
+     ((eq? (car names) name) (car values))
+     (else (lookup-in-entry-help name
+                                 (cdr names)
+                                 (cdr values)
+                                 entry-f)))))
+```
+
+由 entry 组成的列表被称为 **table**，如 `(((a b c) (1 2 3)) ((o p q) (4 5 6)))`
+
+-   `(extend-table entry table)` 向 table 中添加 entry
+
+<!--listend-->
+
+```scheme
+(define extend-table cons)
+```
+
+-   `(lookup-in-table name table table-f)` 在 table 中寻找 name 对应的第一个值，否则调用 table-f
+
+<!--listend-->
+
+```scheme
+(define lookup-in-table
+  (lambda (name table table-f)
+    (cond
+     ((null? table) (table-f name))
+     (else (lookup-in-entry name
+                            (car table)
+                            (lambda (name)
+                              (lookup-in-table name (cdr table) table-f))))))) ;; 这里用了回调函数的写法
+```
+
+
+## 写一个 scheme 解释器 {#写一个-scheme-解释器}
+
+学习前面编写 `value` 的经验，首先先确定输入表达式中元素的类型，然后根据不同的类型来调用相应的函数。
+
+下面是列举出的一些类型：
+
+-   `*const`
+    -   数字：1 2
+    -   布尔类型：`\#t`，`\#f`
+    -   基本运算：cons，car，...（会被转换成 `'(primitive cons)`）
+-   `*quote`（这里先暂时不支持 'a 的写法）
+-   `*identifier`
+-   `*lambda`
+-   `*cond`
+-   `*application`
+
+接下来假设表达式都是合法的。
+
+分别处理每一种类型的函数被称为 **action**。
+
+-   `(expresstion-to-action e)` 将一个表达式转化成相应的 action
+
+<!--listend-->
+
+```scheme
+(define expression-to-action
+  (lambda (e)
+    (cond
+     ((atom? e) (atom-to-action e))
+     (else (list-to-action e)))))
+
+(define atom-to-action
+  (lambda (e)
+    (cond
+     ((number? e) *const)
+     ((eq? e #t) *const)
+     ((eq? e #f) *const)
+     ((eq? e 'cons) *const)
+     ((eq? e 'car) *const)
+     ((eq? e 'cdr) *const)
+     ((eq? e 'null?) *const)
+     ((eq? e 'eq?) *const)
+     ((eq? e 'atom?) *const)
+     ((eq? e 'zero?) *const)
+     ((eq? e 'add1) *const)
+     ((eq? e 'sub1) *const)
+     ((eq? e 'number?) *const)
+     (else *identifier))))
+
+(define list-to-action
+  (lambda (e)
+    (cond
+     ((atom? (car e))
+      (cond
+       ((eq? (car e) 'quote) *quote)
+       ((eq? (car e) 'lambda) *lambda)
+       ((eq? (car e) 'cond) *cond)
+       (else *application)))
+     (else *application))))
+```
+
+然后编写 `value` 函数。
+
+```scheme
+(define meaning
+  (lambda (e table)
+    ((expression-to-action e) e table))) ;; 这里新增 meaning 函数是为了解释器存储 indentifier 的值
+
+(define value
+  (lambda (e)
+    (meaning e '())))
+```
+
+然后分别定义各种类型对应的函数。
+
+```scheme
+(define *const
+  (lambda (e table)
+    (cond
+     ((number? e) e)
+     ((eq? e #t) #t)
+     ((eq? e #f) #f)
+     (else (build 'primitive e))))) ;; 注意这里其他的原子都表述成 primitive
+```
+
+```scheme
+(define text-of second)
+
+(define *quote
+  (lambda (e table) (text-of e)))
+```
+
+```scheme
+(define *identifier
+  (lambda (e table)
+    (lookup-in-table e table initial-table)))
+
+(define initial-table
+  (lambda (name)
+    (car '()))) ;; 调用 initial-table 代表找不到这个 identifier
+```
+
+`*lambda` 结果的结构可以分为四部分，分别是 non-primitive 标识，table，参数，函数体。
+
+```scheme
+(define *lambda
+  (lambda (e table)
+    (build 'non-primitive
+           (cons table (cdr e))))) ;; 这里的 table 类似于大作用域的变量
+
+(define table-of first)
+(define formals-of second)
+(define body-of third)
+```
+
+```scheme
+(define question-of first)
+(define answer-of second)
+
+(define else?
+  (lambda (x)
+    (cond
+     ((atom? x) (eq? x 'else))
+     (else #f))))
+
+(define evcon
+  (lambda (lines table)
+    (cond
+     ((else? (question-of (car lines)))
+      (meaning (answer-of (car lines)) table))
+     ((meaning (question-of (car lines)) table)
+      (meaning (answer-of (car lines)) table))
+     (else (evcon (cdr lines) table)))))
+
+(define cond-lines-of cdr)
+
+(define *cond
+  (lambda (e table)
+    (evcon (cond-lines-of e) table)))
+```
+
+对于 `*application`，它的 car 是一个函数，其余是参数，且这些参数应当先被求值。
+
+函数分为 primitive 和 non-primitive。
+
+```scheme
+(define evlist ;; return the meaning of a list of arguments
+  (lambda (args table)
+    (cond
+     ((null? args) '())
+     (else (cons (meaning (car args) table)
+                 (evlist (cdr args) table))))))
+
+(define function-of car)
+(define arguments-of cdr)
+
+;; apply-primitive
+
+(define :atom?
+  (lambda (x)
+    (cond
+     ((atom? x) #t)
+     ((null? x) #f)
+     ((eq? (car x) 'primitive) #t)
+     ((eq? (car x) 'non-primitive) #t)
+     (else #f))))
+
+(define apply-primitive
+  (lambda (name vals)
+    (cond
+     ((eq? name 'cons)
+      (cons (first vals) (second vals)))
+     ((eq? name 'car)
+      (car (first vals)))
+     ((eq? name 'cdr)
+      (cdr (first vals)))
+     ((eq? name 'null?)
+      (null? (first vals)))
+     ((eq? name 'eq?)
+      (eq? (first vals) (second vals)))
+     ((eq? name 'atom?)
+      (:atom? (first vals))) ;; 注意这里
+     ((eq? name 'zero?)
+      (zero? name (first vals)))
+     ((eq? name 'add1)
+      (add1 (first vals)))
+     ((eq? name 'sub1)
+      (sub1 (first vals)))
+     ((eq? name 'number?)
+      (number? (first vals)))
+     )))
+
+;; apply-closure: 此处只要
+
+(define apply-closure
+  (lambda (closure vals)
+    (meaning (body-of closure)
+             (extend-table
+              (new-entry (formals-of closure) vals)
+              (table-of closure)))))
+
+;; apply
+
+(define primitive?
+  (lambda (l)
+    (eq? (first l) 'primitive)))
+
+(define non-primitive?
+  (lambda (l)
+    (eq? (first l) 'non-primitive)))
+
+(define apply
+  (lambda (fun vals)
+    (cond
+     ((primitive? fun) (apply-primitive (second fun) vals))
+     ((non-primitive? fun) (apply-closure (second fun) vals)))))
+
+(define *application
+  (lambda (e table)
+    (apply
+     (meaning (function-of e) table)
+     (evlist (arguments-of e) table)))) ;; 先给参数求值
+```
+
+
+### 关于 `apply-closure` 的例子： {#关于-apply-closure-的例子}
+
+closure 为
+
+```scheme
+((((u v w)
+   (1 2 3))
+  ((x y z)
+   (4 5 6))) ;; table
+ (x y) ;; formals
+ (cons z x)) ;; body
+```
+
+vals 为 `((a b c) (d e f))`
+
+首先会生成 table
+
+```scheme
+(((x y)
+  ((a b c) (d e f))
+  ((u v w)
+   (1 2 3))
+  ((x  y z)
+   (4 5 6))))
+```
+
+然后 closure 解包：`(cons z x)`。
+
+最后进行计算。

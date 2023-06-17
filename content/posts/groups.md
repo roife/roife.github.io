@@ -13,7 +13,7 @@ draft = true
 
 <div class="definition">
 
-**群**（group）是一个集合 \\(G\\) 与其上定义的某种二元运算 \\(\cdot : G \times G \rightarrow G\\) 构成的。遵循：
+**(群，group)** 是一个集合 \\(G\\) 与其上定义的某种二元运算 \\(\cdot : G \times G \rightarrow G\\) 构成的。遵循：
 
 1.  结合性：对任何 \\(a, b, c \in G\\)，有 \\((a \cdot b) \cdot c=a \cdot (b \cdot c)\\)
 2.  单位元：\\(G\\) 中存在一个单位元 \\(e\\)，使得对任何 \\(a \cdot e=e \cdot a=a\\)
@@ -57,7 +57,7 @@ draft = true
 
 <div class="theorem">
 
-（消去律）设群 \\(G\\)，令 \\(a, b, c \in G\\)：
+**(消去律)** 设群 \\(G\\)，令 \\(a, b, c \in G\\)：
 
 -   若 \\(ab = ac\\) 或 \\(ba = ca\\)，则 \\(b=c\\)
 -   若 \\(ab = a\\) 或 \\(ba = a\\)，则 \\(b = 1\\)
@@ -70,11 +70,11 @@ draft = true
 
 </div>
 
-去掉逆元的约束，可以得到**幺半群**（Monoid）。
+去掉逆元的约束，可以得到**幺半群**。
 
 <div class="definition">
 
-**幺半群**是一个集合 \\(G\\) 与其上定义的某种二元运算 \\(\cdot : G \times G \rightarrow G\\) 构成的。遵循：
+**(幺半群，monoid)** 是一个集合 \\(G\\) 与其上定义的某种二元运算 \\(\cdot : G \times G \rightarrow G\\) 构成的。遵循：
 
 1.  结合性：对任何 \\(a, b, c \in G\\)，有 \\((a \cdot b) \cdot c=a \cdot (b \cdot c)\\)
 2.  单位元：\\(G\\) 中存在一个单位元 \\(e\\)，使得对任何 \\(a \cdot e=e \cdot a=a\\)
@@ -87,11 +87,11 @@ draft = true
 -   长度有限的字符串和拼接操作
 -   长度有限的列表和连接操作
 
-继续去掉单位元的约束，可以得到**半群**（semigroup）：
+继续去掉单位元的约束，可以得到**半群**：
 
 <div class="definition">
 
-半群包括一个集合，以及定义在集合的**可结合**的二元运算。
+**(半群，semigroup)** 包括一个集合，以及定义在集合的**可结合**的二元运算。
 
 </div>
 
@@ -100,7 +100,7 @@ draft = true
 
 <div class="definition">
 
-群中元素的个数称为群的**阶**，记作 \\(|G|\\)。
+**(阶，order)** 群中元素的个数称为群的**阶**，记作 \\(|G|\\)。
 
 </div>
 
@@ -131,7 +131,7 @@ draft = true
 
 <div class="definition">
 
-设群 \\(G\\)，如果其子群 \\(H \in G\\) 对于 \\(G\\) 的乘法也构成一个群，则 \\(H\\) 称为 \\(G\\) 的一个**子群**（subgroup）。
+**(子群，subgroup)** 设群 \\(G\\)，如果其子群 \\(H \in G\\) 对于 \\(G\\) 的乘法也构成一个群，则 \\(H\\) 称为 \\(G\\) 的一个**子群**（subgroup）。
 
 </div>
 

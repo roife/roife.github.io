@@ -1,0 +1,46 @@
+#+title: LLVM IR Parser
+#+date: 2023-01-08
+#+hugo_tags: 编译器 LLVM Parser
+
+因为毕设的一部分内容是写一个 LLVM IR 的 parser，所以我也正好趁机读了一下 LLVM 中文本 IR parser 的实现逻辑。
+
+LLVM 中对应的 parser 位于 =lib/AsmParser/= 中，本文用于记录 parser 实现上的部分细节。
+
+* =PerFunctionState=
+LLVM IR 虽然是以 CFG 的形式呈现的，但是文本 LLVM IR 是线性的。因此解析的时候可能会出现这种情况：使用了一个值，但是这个值的定义在后面部分。当然，可以通过两次扫描来解决这个问题。但是可能是处于速度的考虑，在 LLVM 中整个 parse 过程和 IR 构建过程都是一遍完成的，因此在实现上使用了一些技巧。
+
+在 LLVM 中，指令和基本块共同标号，且每个函数有自己独立的标号。在解析函数体前，LLVM 会定义一个结构体 =PerFunctionState= 来记录整个函数体中的标号。其中比较重要是下面三项：
+
+#+begin_src cpp
+std::map<std::string, std::pair<Value*, LocTy> > ForwardRefVals;
+std::map<unsigned, std::pair<Value*, LocTy> > ForwardRefValIDs;
+std::vector<Value*> NumberedVals;
+#+end_src
+
+其中 =NumberedVals= 用来记录数字命名的值。由于 LLVM IR 要求指令的数字名是严格递增的，因此可以直接用下标来访问某个标号的值，并且数组长度就是已经定义的值的数量。
+
+=ForwardRefVals= 和 =ForwardRefValIDs= 用来记录还没有定义的值，二者的区别在于值的名字是一个字符串还是一个数字 id。
+
+使用一个值时，按照下面的步骤进行检查： - 如果这个值已经定义了，那么返回这个值对应的指针 - 否则在 =ForwardRefVals= 或 =ForwardRefValIDs= 中创建一个空值；这个值并不会对应实际的 value，但是它会和 value 一样记录 def-use 关系（方便后续 replace）
+
+遇到一个新定义值后，按照以下步骤处理：
+
+- 如果是用数字命名的
+  - 检查 =NameID==NumberedVals.size()=（标号要求依次严格递增）
+  - 从 =ForwardRefValIDs= 中寻找是否已经使用过
+    - 如果已经使用过，取出这个旧值 =Sentinel=，使用 =replaceAllUsesWith= 将其替换成新的值
+      - 销毁 =Sentinel=，并从 =ForwardRefValIDs= 中删掉记录
+  - 向 =NumberedVals= 中插入正确的值（=push_back= 即可）
+- 如果是字符串命名的
+  - 类似，但是不用判断值是否递增，并且调用 =Value::setName= 来设置名字
+
+* =GEP= 返回类型的处理
+GEP 指令的格式如下：
+
+#+begin_src llvmir
+<result> = getelementptr <ty>, ptr <ptrval>{, [inrange] <ty> <idx>}*
+#+end_src
+
+其中 =ptr= 表示基地址，={<idx>}*= 表示索引。假设 =ptr= 的类型为 =[10 x [10 x [10 x i32]]]=，那么索引可以是 =3 2=，得到的值的类型为 =[10 x i32]*=。可以看出这里需要根据 ={<idx>}*= 来计算返回值的类型。
+
+LLVM IR parser 用了 =getIndexedTypeInternal= 这个函数进行处理 GEP 的类型。具体操作就是根据 ={<idx>}*= 一层层剥开基地址的类型，就得到了元素类型。然后再包裹一个指针类型便是 GEP 的返回类型。

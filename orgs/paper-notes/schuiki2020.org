@@ -30,6 +30,7 @@ LLHD 借鉴了 LLVM 的设计思想，希望能为 HDL 和整个电路设计流�
 * Proposed Method
 ** LLHD IR
 在设计上，LLHD 非常像 LLVM：
+
 - 采用 SSA 来组织 data flow
 - 有三种表示形式：in-memory, human-readable text, binary on-disk
 - Typed：LLHD 采用了 LLVM 中的 =void= / =iN= / =T*= 等类型，并添加了时间类型 =time=、枚举类型 =nN=、IEEE 1164 九值类型 =lN= 以及信号类型 =T$=（=N= 均表示一个正整数）
@@ -112,6 +113,7 @@ Temporal Code Motion 会将移动 =drv= 信号到 temporal regions 末尾。
 因此不同 TR 中读取信号的结果可能不同。
 
 TR 划分的规则如下：
+
   - 入口块生成新 TR；
   - 如果前驱块以 =wait= 终结，则当前块生成新 TR；
   - 如果所有的前驱块属于相同 TR，则当前块也属于该 TR；否则当前块生成新 TR（因此每个 TR 有唯一的入口基本块）。
@@ -120,6 +122,7 @@ TR 划分的规则如下：
 由于同一个 TR 中读取的信号是相同的，因此最好将 =drv= 移动到 TR 的末尾。
 
 TCM 会将 =drv= 指令尽可能后移至 TR 的*末尾单独的基本块*中，步骤如下：
+
 - 首先为每个 TR 创建唯一的出口：如果 TR A 有多个出口流向 TR B，则先在 AB 间插入一个辅助基本块作为中介（由上面规则知，每个 TR 只有一个 entry block，因此这个操作一定能实现）
 - 然后尝试移动 =drv= 到末尾：
   + 先找 TR 的出口块与 =drv= 所在块的公共支配者（如果没有则不操作，后续操作会 reject 这个程序）
@@ -156,7 +159,7 @@ Desequentialization 处理时序逻辑，并会区分是 flip-flop 还是 latch�
 - \(T_{\mathrm{past}} \land \neg T_{\mathrm{present}} = T_{\mathrm{falling}}\)
 - \((\neg T_{\mathrm{past}} \land T_{\mathrm{present}}) \vee (T_{\mathrm{past}} \land \neg T_{\mathrm{present}}) = T_{\mathrm{both}}\) 
   
-未改写的项与边沿无关，作为 =high=/=low= 触发。
+未改写的项与边沿无关，作为 =high= / =low= 触发。
 
 然后将成功识别出触发边沿 =drv= 转换为 =reg= 指令，并将相关的信号、延时等信息添加到对应 entity 中。剩余的部分作为组合逻辑，用 PL pass 转换，如果不通过则 reject。
 
@@ -179,4 +182,9 @@ Desequentialization 处理时序逻辑，并会区分是 flip-flop 还是 latch�
 - LNAST 也支持电路的行为级描述，使用语言无关的 AST 描述，并提供转换的 pass
 - CoreIR 聚焦于形式验证
 
-其中，值得注意的是 Chisel 项目的 FIRRTL。FIRRTL 和 LLHD 的区别如下： - FIRRTL 主要基于 AST，LLHD 基于 SSA - FIRRTL 不能表示 testbench，也不能进行 simulation，因此不能用于高层 IR - FIRRTL 不能表示四值逻辑或九值逻辑 - FIRRTL 没有清晰地对三层 IR 的区别进行定义
+其中，值得注意的是 Chisel 项目的 FIRRTL。FIRRTL 和 LLHD 的区别如下：
+
+- FIRRTL 主要基于 AST，LLHD 基于 SSA
+- FIRRTL 不能表示 testbench，也不能进行 simulation，因此不能用于高层 IR
+- FIRRTL 不能表示四值逻辑或九值逻辑
+- FIRRTL 没有清晰地对三层 IR 的区别进行定义

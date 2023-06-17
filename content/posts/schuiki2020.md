@@ -190,7 +190,7 @@ Desequentialization 处理时序逻辑，并会区分是 flip-flop 还是 latch�
 -   \\(T\_{\mathrm{past}} \land \neg T\_{\mathrm{present}} = T\_{\mathrm{falling}}\\)
 -   \\((\neg T\_{\mathrm{past}} \land T\_{\mathrm{present}}) \vee (T\_{\mathrm{past}} \land \neg T\_{\mathrm{present}}) = T\_{\mathrm{both}}\\)
 
-未改写的项与边沿无关，作为 `high=/=low` 触发。
+未改写的项与边沿无关，作为 `high` / `low` 触发。
 
 然后将成功识别出触发边沿 `drv` 转换为 `reg` 指令，并将相关的信号、延时等信息添加到对应 entity 中。剩余的部分作为组合逻辑，用 PL pass 转换，如果不通过则 reject。
 
@@ -215,4 +215,9 @@ Desequentialization 处理时序逻辑，并会区分是 flip-flop 还是 latch�
 -   LNAST 也支持电路的行为级描述，使用语言无关的 AST 描述，并提供转换的 pass
 -   CoreIR 聚焦于形式验证
 
-其中，值得注意的是 Chisel 项目的 FIRRTL。FIRRTL 和 LLHD 的区别如下： - FIRRTL 主要基于 AST，LLHD 基于 SSA - FIRRTL 不能表示 testbench，也不能进行 simulation，因此不能用于高层 IR - FIRRTL 不能表示四值逻辑或九值逻辑 - FIRRTL 没有清晰地对三层 IR 的区别进行定义
+其中，值得注意的是 Chisel 项目的 FIRRTL。FIRRTL 和 LLHD 的区别如下：
+
+-   FIRRTL 主要基于 AST，LLHD 基于 SSA
+-   FIRRTL 不能表示 testbench，也不能进行 simulation，因此不能用于高层 IR
+-   FIRRTL 不能表示四值逻辑或九值逻辑
+-   FIRRTL 没有清晰地对三层 IR 的区别进行定义

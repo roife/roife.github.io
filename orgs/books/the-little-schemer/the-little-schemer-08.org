@@ -1,0 +1,285 @@
+#+title: [The Little Schemer] 08 Lambda the Ultimate
+#+date: 2020-01-05
+#+hugo_tags: 程序语言理论 scheme 函数式编程 continuation
+#+hugo_series: "The Little Schemer"
+
+* Currying
+- =(rember-f test? a l)= 从 list l 中移除 atom a，其中 test? 是判断是否相等的函数
+
+#+begin_src scheme
+(define rember-f
+  (lambda (test? a l)
+    (cond
+     ((null? l) '())
+     ((test? a (car l)) (cdr l))
+     (else (cond (car l)
+                 (rember-f test? a (cdr l)))))))
+#+end_src
+
+*柯里化（Curry-ing）* 指传入一个参数后函数返回另一个函数，结构通常为 =(lambda (a) (lambda (x) xxx))=
+
+#+begin_quote
+Thanks to Moses Schönfinkel
+
+Thanks to Haskell B. Curry
+
+#+end_quote
+
+- =(eq?-c a)= 返回一个函数，这个函数的作用是判断参数是否等于 c，如 =(eq?-c 'a) => (lambda (x) (eq? x 'a))=
+
+#+begin_src scheme
+(define eq?-c
+  (lambda (a)
+    (lambda (x)
+      (eq? x a))))
+
+(define eq?-salad (eq?-c 'salad))
+#+end_src
+
+这里注意，我们没有必要为这个新函数取一个名字，完全可以使用 =((eq?-c 'salad) 'tuna)= 调用它
+
+* 高阶函数
+这里用 Curry-ing 改写一下 =rember-f=
+
+#+begin_src scheme
+(define rember-f
+  (lambda (test?)
+    (lambda (a l)
+      (cond
+       ((null? l) '())
+       ((test? a (car l)) (cdr l))
+       (else (cons (car l)
+                   ((rember-f test?) a (cdr l)))))))) ;; 这里注意
+
+(define rember-eq? (rember-f eq?))
+#+end_src
+
+照样写一个 =insertL-f= 和 =insertR-f=
+
+#+begin_src scheme
+(define insertL-f
+  (lambda (test?)
+    (lambda (a b l)
+      (cond
+       ((null? l) '())
+       ((test? b (car l)) (cons a l))
+       (else (cons (car l)
+                   ((insertL-f test?) a b (cdr l))))))))
+
+(define insertR-f
+  (lambda (test?)
+    (lambda (a b l)
+      (cond
+       ((null? l) '())
+       ((test? b (car l)) (cons b (cons a (cdr l))))
+       (else (cons (car l)
+                   ((insertL-f test?) a b (cdr l))))))))
+#+end_src
+
+发现 =insertL-f= 和 =insertR-f= 代码非常相似，不妨合并成一个 =insert-g=。
+
+- =(insert-g seq)= 表示返回一个 insertL 或者 insertR
+
+#+begin_src scheme
+(define seqL (lambda (a b l) (cons a (cons b (cdr l)))))
+(define seqR (lambda (a b l) (cons b (cons a (cdr l)))))
+
+(define insert-g
+  (lambda (seq)
+    (lambda (a b l)
+      (cond
+       ((null? l) '())
+       ((eq? b (car l)) (seq a b l))
+       (else (cons (car l)
+                   ((insert-g seq) a b (cdr l))))))))
+
+(define insertL (insert-g seqL))
+(define insertR (insert-g seqR))
+#+end_src
+
+事实上，可以直接用 lambda 传入 =seq=
+
+#+begin_src scheme
+(define insertL
+  (insert-g (lambda (a b l)
+              (cons a (cons b (cdr l))))))
+#+end_src
+
+现在回头看 =subst=
+
+#+begin_src scheme
+(define subst
+  (lambda (a b lat)
+    (cond
+     ((null? lat) '())
+     ((eq? b (car lat)) (cons a (cdr lat)))
+     (else (cons (car lat)
+                 (subst a b (cdr lat)))))))
+#+end_src
+
+会发现这个函数的结构和 =insert-g= 十分相似，区别在于 =(cons a (cdr lat))=，因此我们可以用 =insert-g= 定义 =subset=。同样我们还可以定义 =rember=
+
+#+begin_src scheme
+(define subst
+  (insert-g (lambda (a b l)
+              (cons a lat))))
+
+(define rember
+  (lambda (a l)
+    ((insert-g (lambda (a b l) l))
+     #f a l))) ;; 注意这里的 #f 用于占位
+#+end_src
+
+#+begin_quote
+这里将函数主体从具体函数中抽象出来。
+
+#+end_quote
+
+这和前面的 =value= 一样，value 的 o+，o*，^ 代码完全一样，区别在于 operator 不同， 所以可以把这个函数结构抽象出来
+
+#+begin_src scheme
+(define atom-to-function
+  (lambda (x)
+    (cond
+     ((eq? x '+) o+)
+     ((eq? x '*) o*)
+     (else ^))))
+
+(define value
+  (lambda (aexp)
+    (cond
+     ((atom? aexp) aexp)
+     (else ((atom-to-function (car aexp))
+            (value (1-sub-exp aexp))
+            (value (2-sub-exp aexp)))))))
+#+end_src
+
+同理写一下 =multirember-f=
+
+#+begin_src scheme
+(define multirember-f
+  (lambda (test?)
+    (lambda (a lat)
+      (cond
+       ((null? lat) '())
+       ((test? (car lat))
+        ((multirember-f test?) a (cdr lat)))
+       (else (cons (car lat)
+                   ((multirember-f test?) a (cdr lat))))))))
+
+(define multirember-eq? (multirember-f eq?))
+#+end_src
+
+还可以把变量 a 也放入 =eq?= 中，如令 =eq?-tuna= 为 一个判断元素是否为 ='tuna= 的函数
+
+#+begin_src scheme
+(define multiremberT
+  (lambda (test? lat)
+    (cond
+     ((null? lat) '())
+     ((test? (car lat))
+      (multiremberT test? (cdr lat)))
+     (else (cons (car lat)
+                 (multiremberT (cdr lat)))))))
+#+end_src
+
+* Continuation
+#+begin_src scheme
+(define multirember&co
+  (lambda (a lat col)
+    (cond
+     ((null? lat)
+      (col '() '()))
+     ((eq? (car lat) a)
+      (multirember&co a (cdr lat)
+                      (lambda (newlat seen)
+                        (col newlat
+                             (cons (car lat) seen)))))
+     (else (multirember&co a (cdr lat)
+                           (lambda (newlat seen)
+                             (col (cons (car lat) newlat) seen)))))))
+
+(define a-friend
+  (lambda (x y) (null? y)))
+#+end_src
+
+这被称为 *collector* 或者 *continuation*。
+
+#+begin_quote
+2021.03.02 备注
+
+什么是 continuation? Continuation 就是将当前程序运行的上下文（运行时情况）保存下来，以后需要的时候再恢复。在这里对应的则是用闭包来保存程序的上下文。
+#+end_quote
+
+分析代码会发现每次递归变化的是函数 col，每次递归改变的信息也是存储在 col 里面，每递归一次 col 就多了一层， 最后会用所有信息进行计算。即将数据和状态用闭包存储。
+
+- =(multirember&co a lat col)= 将等于 a 的元素放到列表 l1，把不等于 a 的元素放到列表 l2，最后计算 =(col l1 l2)=
+
+#+begin_src scheme
+(define multiinsertLR&co
+  (lambda (new oldL oldR lat col)
+    (cond
+     ((null? lat) (col '() 0 0))
+     ((eq? (car lat) oldL)
+      (multiinsertLR&co new oldL oldR (cdr lat)
+                        (lambda (newlat L R)
+                          (col (cons new (cons oldL (cdr newlat))) (add1 L) R))))
+     ((eq? (car lat) oldR)
+      (multiinsertLR&co new oldL oldR (cdr lat)
+                        (lambda (newlat L R)
+                          (col (cons oldR (cons new (cdr newlat))) L (add1 R)))))
+     (else (multiinsertLR&co new oldL oldR (cdr lat)
+                             (lambda (newlat L R)
+                               (col (cons (car lat) newlat) L R)))))))
+#+end_src
+
+- =(evens-only* l)= 从 l 中移除所有奇数
+
+#+begin_src scheme
+(define even? (lambda (n) (= 0 (remainder n 2))))
+
+(define evens-only*
+  (lambda (l)
+    (cond
+     ((null? l) '())
+     ((atom? (car l))
+      (cond
+       ((even? (car l)) (cons (car l) (evens-only* (cdr l))))
+       (else (evens-only* (cdr l)))))
+     (else (cons (evens-only* (car l))
+                 (evens-only* (cdr l)))))))
+#+end_src
+
+- =(evens-only*&co l)= 从 l 中移除所有奇数，同时计算所有奇数的和与偶数的乘积
+
+#+begin_src scheme
+(define evens-only*&co
+  (lambda (l col)
+    (cond
+     ((null? l) (col '() 1 0))
+     ((atom? (car l))
+      (cond
+       ((even? (car l))
+        (evens-only*&co (cdr l)
+                        (lambda (newl p s)
+                          (col (cons newl (car l))
+                               (* p (car l))
+                               s))))
+       (else (evens-only*&co (cdr l)
+                             (lambda (newl p s)
+                               (col newl
+                                    p
+                                    (+ s (car l))))))))
+     (else (evens-only*&co (car l)
+                           (lambda (al ap as)
+                             (evens-only*&co (cdr l)
+                                             (lambda (dl dp ds)
+                                               (col (cons al dl)
+                                                    (* ap dp)
+                                                    (+ as ds)))))))))) ;; 注意这个 collector
+
+(define the-last-friend
+  (lambda (newl p s) (cons newl (cons p s))))
+
+(evens-only*&co '((9 1 2 8) 3 10 ((9 9) 7 6) 2) the-last-friend)
+#+end_src
