@@ -232,7 +232,7 @@ Operational Semantics 用一个 **abstract machine** 来定义程序的语义，
 
 ### Denotational semantics {#denotational-semantics}
 
-Devotional semiotics 将 term 看作是数学上的实体（通常是函数）。
+Denotational semantics 将 term 看作是数学上的实体（通常是函数）。
 
 Denotational Semantics 首先确定了一个 semantics domains，然后定义一个 interpretation function 将 term 映射到 semantics domains（domain theory）。
 
@@ -290,7 +290,13 @@ Denotational Semantics 好处在于可以突出语言的核心概念，并且 se
 
 </div>
 
-An evaluation statement \\(t \rightarrow t'\\) is derivable iff. there is a derivation tree with \\(t \rightarrow t'\\) as the label at its root.
+<div class="definition">
+
+**(Derivability)**
+
+An evaluation statement \\(t \rightarrow t'\\) is **derivable** iff. there is a derivation tree with \\(t \rightarrow t'\\) as the label at its root.
+
+</div>
 
 在一颗 derivation tree 上，`E-If` 是 internal nodes，`E-True` 和 `E-False` 是 leaf nodes。
 
@@ -342,7 +348,7 @@ If \\(t\\) is in normal form, then \\(t\\) is a value.
 
 由规则知，如果 \\(t\\) 不是 value，那么它一定是 \\(\mathtt{if}\ t\_1\ \mathtt{then}\ t\_2\ \mathtt{else}\ t\_3\\) 的形式。
 
--   当 \\(t\_1 = \mathtt{true} \mid \mathtt{false}\\)，可以应用 `E-IfTrue=/=E-IfFalse`，所以不是 normal form
+-   当 \\(t\_1 = \mathtt{true} \mid \mathtt{false}\\)，可以应用 `E-IfTrue` / `E-IfFalse`，所以不是 normal form
 -   否则可以用 `E-If`
 
 **注解**：只对当前的系统成立，对于后面的系统不一定成立
@@ -358,7 +364,7 @@ If \\(t\\) is in normal form, then \\(t\\) is a value.
 
 **(Multi-step evaluation relation \\(\rightarrow^\star\\))**
 
-The multi-step evaluation relation \\(\rightarrow^∗\\) is the reflexive, transitive closure of one-step evaluation. That is, it is the smallest relation such that - if \\(t \rightarrow t'\\) then \\(t \rightarrow^\* t'\\) - \\(t \rightarrow^\* t\\) for all \\(t\\) (reflexivity) - if \\(t \rightarrow^\* t'\\), \\(t' \rightarrow^\* t''\\), then \\(t \rightarrow t''\\) (Transitivity)
+The multi-step evaluation relation \\(\rightarrow^∗\\) is the reflexive, transitive closure of one-step evaluation. That is, it is the smallest relation such that - if \\(t \rightarrow t'\\) then \\(t \rightarrow^\* t'\\) - \\(t \rightarrow^\* t\\) for all \\(t\\) (reflexivity) - if \\(t \rightarrow^\* t'\\), \\(t' \rightarrow^\* t''\\), then \\(t \rightarrow t''\\) (transitivity)
 
 **注解**：是 \\(\rightarrow^\ast\\)，而不是 \\(^\ast t\\)
 
@@ -389,7 +395,7 @@ If \\(r \rightarrow s\\) and \\(r \rightarrow t\\), with \\(s \neq t\\), then th
 
 </div>
 
-**e.g** 例如添加一条规则：
+添加一条规则：
 
 \\[
 \dfrac{
@@ -401,7 +407,7 @@ If \\(r \rightarrow s\\) and \\(r \rightarrow t\\), with \\(s \neq t\\), then th
 
 <div class="lemma">
 
-可以证明它满足 Diamond Property.
+这条规则满足 Diamond Property.
 
 </div>
 
@@ -532,11 +538,10 @@ A closed term is **stuck** if it is in normal form but not a value.
 
 二者的区别在于：
 
--   Small-step Evaluation：如何一步步对程序进行**规约**
-    -   how individual steps of computation are used to rewrite a term, until it eventually becomes a value.
-    -   define a multi-step evaluation relation that allows us to talk about terms evaluating
--   Big-step Evaluation：定义如何从一个表达式或者语句**直接**得到它的结果
-    -   directly formulates the notion of "this term **evaluates** to that final value"
+-   Small-step Evaluation：如何**一步步**对程序进行规约
+    -   设表达式是 \\(E\\)，则规约规则 \\(\rightarrow: E \times E\\)
+-   Big-step Evaluation：定义如何从一个表达式或者语句**直接**得到它的结果（假设各部分都已经规约完毕了）
+    -   设表达式是 \\(E\\)，value 是 \\(V\\)，则规约规则 \\(\Downarrow: E \times V\\)
 
 \\[
 v \Downarrow v \qquad \tag{B-Value}
