@@ -1,4 +1,4 @@
-#+title: 「BUAA-CO-Lab」 P4 单周期 CPU - 2
+#+title: [BUAA-CO-Lab] P4 单周期 CPU - 2
 #+date: 2020-11-19
 #+hugo_aliases: 2020-11-19-buaa-co-lab-p4
 #+hugo_tags: 体系结构 verilog

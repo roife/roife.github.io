@@ -1,4 +1,4 @@
-#+title: 「BUAA-CO-Lab」 P2 MIPS 汇编程序设计
+#+title: [BUAA-CO-Lab] P2 MIPS 汇编程序设计
 #+date: 2020-11-08
 #+hugo_aliases: 2020-11-08-buaa-co-lab-p2
 #+hugo_tags: 体系结构

@@ -1,4 +1,4 @@
-#+title: 「BUAA-CO-Lab」 Pre-02 Verilog
+#+title: [BUAA-CO-Lab] Pre-02 Verilog
 #+date: 2020-09-28
 #+hugo_aliases: 2020-09-28-buaa-co-lab-pre-02-verilog
 #+hugo_tags: 体系结构 verilog

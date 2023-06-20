@@ -1,4 +1,4 @@
-#+title: 「BUAA-CO-Lab」 Pre-03 MIPS 指令
+#+title: [BUAA-CO-Lab] Pre-03 MIPS 指令
 #+date: 2020-10-05
 #+hugo_aliases: 2020-10-05-buaa-co-lab-pre-03-mips
 #+hugo_tags: 体系结构

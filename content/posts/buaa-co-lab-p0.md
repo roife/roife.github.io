@@ -1,5 +1,5 @@
 +++
-title = "「BUAA-CO-Lab」 P0 Logisim 模块及状态机"
+title = "[BUAA-CO-Lab] P0 Logisim 模块及状态机"
 author = ["roife"]
 date = 2020-10-25
 aliases = ["/posts/2020-10-25-buaa-co-lab-p0"]

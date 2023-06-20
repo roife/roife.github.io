@@ -1,5 +1,5 @@
 +++
-title = "「BUAA-CO-Lab」 P1 Verilog 模块及状态机"
+title = "[BUAA-CO-Lab] P1 Verilog 模块及状态机"
 author = ["roife"]
 date = 2020-10-31
 aliases = ["/posts/2020-10-31-buaa-co-lab-p1"]

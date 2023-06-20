@@ -1,4 +1,4 @@
-#+title: 「BUAA-CO-Lab」 P3 单周期 CPU - 1
+#+title: [BUAA-CO-Lab] P3 单周期 CPU - 1
 #+date: 2020-11-15
 #+hugo_aliases: 2020-11-15-buaa-co-lab-p3
 #+hugo_tags: 体系结构

@@ -1,4 +1,4 @@
-#+title: 「BUAA-CO-Lab」 Pre-01 Logisim
+#+title: [BUAA-CO-Lab] Pre-01 Logisim
 #+date: 2020-09-26
 #+hugo_aliases: 2020-09-26-buaa-co-lab-pre-01-logisim
 #+hugo_tags: 体系结构

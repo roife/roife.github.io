@@ -1,4 +1,4 @@
-#+title: 「BUAA-CO-Lab」 P5 流水线 CPU-lite
+#+title: [BUAA-CO-Lab] P5 流水线 CPU-lite
 #+date: 2020-11-23
 #+hugo_aliases: 2020-11-23-buaa-co-lab-p5
 #+hugo_tags: 体系结构 verilog

@@ -1,5 +1,5 @@
 +++
-title = "「BUAA-CO-Lab」 P7 MIPS 微体系"
+title = "[BUAA-CO-Lab] P7 MIPS 微体系"
 author = ["roife"]
 date = 2021-01-02
 aliases = ["/posts/2021-01-02-buaa-co-lab-p7"]

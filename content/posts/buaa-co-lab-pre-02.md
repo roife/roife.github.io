@@ -1,5 +1,5 @@
 +++
-title = "「BUAA-CO-Lab」 Pre-02 Verilog"
+title = "[BUAA-CO-Lab] Pre-02 Verilog"
 author = ["roife"]
 date = 2020-09-28
 aliases = ["/posts/2020-09-28-buaa-co-lab-pre-02-verilog"]

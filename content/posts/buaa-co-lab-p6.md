@@ -1,5 +1,5 @@
 +++
-title = "「BUAA-CO-Lab」 P6 流水线 CPU-lite2"
+title = "[BUAA-CO-Lab] P6 流水线 CPU-lite2"
 author = ["roife"]
 date = 2020-12-02
 aliases = ["/posts/2020-12-02-buaa-co-lab-p6"]
