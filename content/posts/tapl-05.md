@@ -3,7 +3,7 @@ title = "[TaPL] 05 The Untyped Lambda-Calculus"
 author = ["roife"]
 date = 2021-04-15
 series = ["Types and Programming Languages"]
-tags = ["类型系统", "程序语言理论", "程序语义"]
+tags = ["类型系统", "程序语言理论", "程序语义", "Lambda演算"]
 draft = false
 +++
 
@@ -539,7 +539,7 @@ Y\ f = f\ (Y\ f);
   \rightarrow^\*& \mathtt{c}\_6'
 \end{aligned}
 
-上面的 \\(\mathtt{c}\\\_n\\'\\) 是 behavior equivalent 的 \\(c\_n\\)。因为 `pred` 之类的求出来的和 \\(c\_{n-1}\\) 形式并不相同，但是行为是相同的。
+上面的 \\(\mathtt{c}\_n'\\) 是 behavior equivalent 的 \\(c\_n\\)。因为 `pred` 之类的求出来的和 \\(c\_{n-1}\\) 形式并不相同，但是行为是相同的。
 
 观察化简过程，不难发现重点在于 \\(\mathtt{fct}\ n \rightarrow^\*\ g\ \mathtt{fct}\ n\\)。`fct` 是一种 self-replicator，可以复制自身，并将自己作为参数传递给 `g`（when applied to an argument, supplies itself and n as arguments to `g`）。而 `g` 就可以选择要不要继续用 `fct`，用了就能继续递归。
 
@@ -666,7 +666,7 @@ Untyped lambda-calculus 的 evaluation 有两类规则：
 -   `E-App1`、`E-App2`：the congruence rules
 -   `E-AppAbs`：the computation rules
 
-这个规则仅仅是对 call by values 使用的。观察 evaluation relations 可以发现，一般先用 `E-App1` 化简 \\(t\\\_1\\)，接着用 `E-App2` 化简 \\(t\\\_2\\)，最后使用 `E-AppAbs` 进行 reduce。
+这个规则仅仅是对 call by values 使用的。观察 evaluation relations 可以发现，一般先用 `E-App1` 化简 \\(t\_1\\)，接着用 `E-App2` 化简 \\(t\_2\\)，最后使用 `E-AppAbs` 进行 reduce。
 
 由于 pure lambda calculus 中的 values 只有 lambda abstractions，所以化简得到的结果一定也是 lambda abstractions。
 
