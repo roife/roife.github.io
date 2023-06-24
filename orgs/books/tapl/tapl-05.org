@@ -513,8 +513,6 @@ Y\ f = f\ (Y\ f);
 假设有一个程序对数字进行复杂的运算，并返回一个 boolean（或者其他非数字），那么如果将其中所有的 real numbers 和 arithmetic operations 换成对应的 lambda-terms，并且求解程序，则可以得到和原来完全相同的答案。即如果把程序看成一个黑盒，那么 real numbers 和 Church-numerals representation 没有任何区别。
 
 * Formalities
-Formal Definitions for lambda calculus.
-
 ** Syntax
 
 #+begin_definition

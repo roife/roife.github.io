@@ -563,8 +563,6 @@ Y\ f = f\ (Y\ f);
 
 ## Formalities {#formalities}
 
-Formal Definitions for lambda calculus.
-
 
 ### Syntax {#syntax}
 
