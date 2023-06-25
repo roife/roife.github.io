@@ -1,0 +1,101 @@
+#+title: [TaPL] 12 Normalization
+#+date: 2021-09-28
+#+hugo_tags: 类型系统 程序语言理论 程序语义 STLC
+#+hugo_series: "Types and Programming Languages"
+
+* Normalization
+#+begin_definition
+*(Normalization)*
+
+一个程序会在有限步内停机，则称其为 *normalizable* (strongly normalizable)。
+
+设 \(t \rightarrow t_1 \rightarrow t_2 \rightarrow \dots t_n \nrightarrow\)，则 \(t_n\) 为 \(t\) 的 *normal form*。
+#+end_definition
+
+STLC 中的 well-typed 的表达式都是 normalizable 的，即 STLC 满足 normalization。但是大多数语言都不满足 normalization 的特性，因为他们往往包括递归或递归类型。
+
+* Normalization for STLC
+证明 normalization 不能靠长度来证明，因为在 substitution 的过程中，代入的值可能会被替换多次，此时长度会变长。
+
+这里需要给出一个更强的 induction hypothesis：对于类型 \(T\)，用 \(R_T\) 表示 \(T\) 的 closed terms 的集合。并且 \(R_t(t) \Leftrightarrow t \in R_T\)。（\(R_T\) 一般被称作 saturated sets 或 reducibility candidates）。
+
+#+begin_definition
+*\(R_A(t)\)*
+
+- \(R_A(t)\) iff \(t\) halts.
+- \(R_{T_1 \rightarrow T_2}(t)\) iff \(t\) halts and \(\forall s \in R_{T_1}. R_{T_2}(t\ s)\)
+#+end_definition
+
+从定义中可以看到，对于函数类型而言不仅要求函数自己会停机，并且对于任意可停机的输入，这个函数都可以停机。 这里称 \(t : A\) 拥有性质 \(P\)，而函数 \(f : A \rightarrow A\) 能保持性质 \(P\)。
+
+要证明 normalization，需要分为两步：
+
+- 所有满足 \(R_T(t)\) 的 term \(t\) 都会停机
+- 所有 term \(t\) 都满足 \(R_T(t)\)
+
+第一步是显然的：
+
+#+begin_lemma
+If \(R_T(t)\), then \(t\) halts.
+#+end_lemma
+#+begin_proof
+Immediately.
+#+end_proof
+
+第二步分成两个 Lemmas 来证明：
+
+#+begin_lemma
+If \(t : T\) and \(t \rightarrow t'\), then \(R_T(t)\) iff \(R_T(t')\)。
+#+end_lemma
+#+begin_proof
+证明如下：
+
+- \(T = A\), trivial
+- \(T = T_1 \rightarrow T_2\)
+  - \(\Longrightarrow\)：设 \(R_T(t)\) 且 \(R_{T_1}(s)\)，则有 \(t'\ s = t\ s \in R_{T_2}\)，得证
+  - \(\Longleftarrow\)：同理
+#+end_proof
+
+下面正式证明所有 term \(t\) 都满足 \(R_T(t)\)。其中难点是对 λ abstraction 的证明，因为要证明 \(\lambda x : T_1 . t_2 \in R_{T_1 \rightarrow T_2}\)，就要证明 \(R_{T_2}(t_2)\)，但是 \(t_2\) 中存在自由变量 \(x\)，而 \(R_{T_2}\) 是定义在 closed terms 上的，因此不能证明 \(R_{T_2}(t_2)\) 。这里采取的方法是证明对 open term \(t\) 的所有 closed instances 都满足性质。
+
+#+begin_lemma
+If
+\[x_1 : T_1, \dots x_n : T_n \vdash t : T\]
+\[v_1:T_1, \dots, v_n:T_n\]
+\[\forall i \in 1 \dots n. \text{$v_i$ is closed value and $v_i \in R_{T_i}$}\]
+, then \(R_T([x_1 \mapsto v_1] \dots [x_n \mapsto v_n] t)\).
+#+end_lemma
+#+begin_proof
+证明如下：
+
+- =T-Var= \(t = x_i\)，\(T = T_i\) 显然
+- =T-Abs=
+  + \(t = \lambda x : S_1 . s_2\)
+  + \(x_1 : T_1, \dots, x_n : T_n, x:S_1 \vdash s_2 : S_2\)
+  + \(T = S_1 \rightarrow S_2\)
+  + \([x_1 \mapsto v_1] \dots [x_n \mapsto v_n]\ t\) 是一个 value，满足第一条。要证明 \(R_{S_1 \rightarrow S_2}(t)\)，只需要再证明
+      \[\forall s : S_1, R_{S_2}(([x_1 \mapsto v_1] \dots [x_n \mapsto v_n]\ t)\ s)\]
+
+  - 设 \(s : S_1 \text{ and } R_{S_1}(s)\)，则存在 \(s \rightarrow^* v\)。根据归纳假设有 \(R_{S_2}([x_1 \mapsto v_1] \dots [x_n \mapsto v_n][x \mapsto v]\ s_2)\)。即
+
+    \[
+     (\lambda x : S_1. [x_1 \mapsto v_1] \dots [x_n \mapsto v_n] s_2)\ s \rightarrow^* [x_1 \mapsto v_1] \dots [x_n \mapsto v_n][x \mapsto v]s_2 \in R_{S_2}
+     \]
+
+  - 由前面的 Lemma 知 \(\forall s : S_1, R_{S_2}((\lambda x : S_1. [x_1 \mapsto v_1] \dots [x_n \mapsto v_n] s_2)\ s)\)
+
+- =T-App=
+  + \(t = t_1\ t_2\)
+  + \(x_1 : T_1, \dots, x_n : T_n \vdash t_1 : T_{11} \rightarrow T_{12}, t_2 : T_{11}\)
+  + \(T = T_{12}\)
+  + 由归纳假设知 \(R_{T_{11} \rightarrow T_{12}}([x_1 \mapsto v_1] \dots [x_n \mapsto v_n] t_1)\) 且 \(R_{T_{11}}([x_1 \mapsto v_1] \dots [x_n \mapsto v_n] t_2)\)
+  + 根据 \(R_{T_1 \rightarrow T_2}(t)\) 的定义有 \(R_{T_{12}}([x_1 \mapsto v_1] \dots [x_n \mapsto v_n] (t_1\ t_2))\)
+#+end_proof
+
+由上面两个 Lemmas，则可以证明 STLC 的 normalization 性质。
+
+#+begin_corollary
+*(Normalization for STLC)*
+
+In STLC, if \(\vdash t : T\), then \(t\) is normalizable.
+#+end_corollary

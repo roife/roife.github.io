@@ -162,7 +162,7 @@ In a given typing context \(\Gamma\), a term \(t\) (with free variables all in \
 2. If \(v\) is a value of type \(T_1 \rightarrow T_2\), then \(v = \lambda x : T_1. t_2\).
 #+end_lemma
 
-在 STLC 的 progress theorem 中，我们只关心 closed term，不考虑自由变量。（因为兴致对 open terms 不成立）
+在 STLC 的 progress theorem 中，我们只关心 closed term，不考虑自由变量。（因为性质对 open terms 不成立）
 
 #+begin_theorem
 *(Progress)*
