@@ -346,7 +346,7 @@ GC 规则不影响求值结果，只是减少了内存占用：
 注意第一幅图左边 `store` 的规则里的 \\(=\\) 应该是 \\(\mapsto\\)：
 
 \begin{aligned}
-\mu \Coloneqq & & (\text{stores}) \\\\
+\mu \Coloneqq & & & (\text{stores}) \\\\
     & \emptyset & & (\text{empty store}) \\\\
     & \mu, l \mapsto v & & \text{location binding}) \\\\
 \end{aligned}
