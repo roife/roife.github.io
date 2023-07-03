@@ -1,6 +1,6 @@
 #+title: [TaPL] 06 Nameless Representation of Terms
 #+date: 2021-04-24
-#+hugo_tags: 类型系统 程序语言理论 程序语义 Lambda演算 "De Bruijin"
+#+hugo_tags: 类型系统 程序语言理论 程序语义 Lambda演算 "de Bruijn"
 #+hugo_series: "Types and Programming Languages"
 
 * Variable Representations
@@ -24,7 +24,7 @@ De Bruijn 的做法是用自然数来表示变量，其中当前层对应的 bou
     &= (\lambda. 0\ 1\ (\lambda. 0\ 1\ 2));
 \end{aligned}
 
-在定义 De Bruijn terms 时，需要区分项内包含的自由变量的数量。
+下面定义了 De Bruijn terms。在 de Bruijn 表示方法下，abstraction 就写作 \(\lambda. t\) 而非 \(\lambda x. t\)。
 
 #+begin_definition
 *(Terms)*
@@ -36,9 +36,9 @@ Let \(\mathcal{T}\) be the smallest family of sets \(\{\mathcal{T}_0, \mathcal{T
 3. if \(t_1 \in \mathcal{T}_n\) and \(t_2 \in \mathcal{T}_n\), then \((t_1\ t_2) \in \mathcal{T}_{n-1}\)
 #+end_definition
 
-其中，\(T_n\) 集合中的项被称为 *\(n\)-terms*，即包含了不超过 \(n\) 个自由变量，编号为 \(0 \dots n-1\)。
+其中，\(T_n\) 集合中的项被称为 *\(n\)-terms*，其中的项包含了不超过 \(n\) 个自由变量，编号为 \(0 \dots n-1\)。当 \(t \in T_0\)，\(t\) 是一个封闭项。
 
-在 De Bruijin 表示方法下，abstraction 就写作 \(\lambda. t\) 而非 \(\lambda x. t\)。
+在 \(\lambda . t\) 中的 term \(t\) 里，\(0\) 就恰好代表当前这层的 binder，其他的 indices 都可以看作 free variables。
 
 ** Naming context
 对于包含自由变量的 terms，其中的自由变量需要用到 naming context。
@@ -51,12 +51,12 @@ Suppose \(x_0 \dots x_n\) are variable names from \(\mathcal{V}\) . The *naming 
 Note that the rightmost variable in the sequence is given the index \(0\); this matches the way we count λ binders --- from right to left --- when converting a named term to nameless form. We write \(dom(Γ)\) for the set \(\{x_n, \dots ,x_0\}\) of variable names mentioned in \(\Gamma\).
 #+end_definition
 
-对于自由变量，用一个 naming context \(\Gamma\) 记录自由变量和其对应的编号。两个不同的自由变量对应的编号应当不同。假设目前的深度为 \(m\)（当前层对应的 bound variable 为 \(m\)），自由变量 \(x_0\) 的编号为 \(x\)，那么自由变量 \(x_0\) 在 \(\lambda\) 表达式中的编号即为 \(m + x + 1\)，这样就保证了自由变量编号的唯一性，且不与 bound variables 重复。
+对于自由变量，用一个 naming context \(\Gamma\) 记录变量和其对应的编号。两个不同的变量（包括 binder 和自由变量）对应的编号应当不同。Naming context 中所有的变量直接线性排列为 \(x_n, \dots, x_0\)，且 \(x_i \mapsto i\)。其中当前层所对应的 binder 恰好为 \(x_0\)，对应 \(0\)。
 
 #+begin_sample
-对于 naming context \(\Gamma = x \rightarrow 4; y \rightarrow 3; z \rightarrow 2; a \rightarrow 1; b \rightarrow 0\)，
+对于 context \(\Gamma = x \rightarrow 4; y \rightarrow 3; z \rightarrow 2; a \rightarrow 1; b \rightarrow 0\)，
 
-\(\lambda w. y. w\) 可以表示成 \(\lambda . \lambda . 4\ 0\)。其中 \(y\) 的编号为 \(3 + 0 + 1\)。
+\(\lambda w. y\ w\) 可以表示成 \(\lambda . 4\ 0\)。其中在 \(w\) 这层的 naming context 为 \(x : 5, y : 4, z : 3, a : 2, b : 1, w : 0\)。其中 \(x, y, z, a, b\) 均为自由变量。
 #+end_sample
 
 * Shifting and Substitution
@@ -138,5 +138,7 @@ if \(s\) and \(t\) are \(n\)-terms and \(j \le n\), then \([j \mapsto s]t\) is a
 \]
 
 其它规则和原来相同。
+
+* de Bruijn levels
 
 *de Bruijn levels* 是一种和 de Bruijn indices 同构的表示方法，与 indices 的差别在于后者是从内到外编码，而前者是从外到内编码，例如：\(\lambda x. (\lambda y. x\ y)\ x = \lambda. (\lambda. 0\ 1)\ 0\)。

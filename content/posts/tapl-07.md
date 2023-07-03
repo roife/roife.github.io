@@ -3,7 +3,7 @@ title = "[TaPL] 07 Lambda-Calculus in ML"
 author = ["roife"]
 date = 2021-04-25
 series = ["Types and Programming Languages"]
-tags = ["类型系统", "程序语言理论", "程序语义", "Lambda演算", "De Bruijin"]
+tags = ["类型系统", "程序语言理论", "程序语义", "Lambda演算", "de Bruijn"]
 draft = false
 +++
 
@@ -37,7 +37,7 @@ type term =
 
 ```ocaml
 type binding = NameBind
-type context = (string * bingding) list
+type context = (string * binding) list
 
 let rec printtm ctx t = match t with
     TmAbs(fi, x, t1) ->
@@ -52,9 +52,13 @@ let rec printtm ctx t = match t with
         pr "[bad index]"
 ```
 
-其中 `pr` 用于打印字符到标准输出，`ctxlength` 用于返回 context 的长度，`index2name` 会根据 index 返回字符串，`pickfreshname` 通过 `ctx` 和 hint string `x` 查找一个不在 `ctx` 中的 `x'`，并返回 `ctx'` 与 `x'`。
+此处的 `context` 用 `list` 记录了当前的上下文，其中的 `binding` 在此处没有特别的作用，可以省略。
+
+`pr` 用于打印字符到标准输出，`ctxlength` 用于返回 context 的长度，`index2name` 会根据 index 返回字符串，`pickfreshname` 通过 `ctx` 和 hint string `x` 查找一个不在 `ctx` 中的 `x'`，并返回 `ctx'` 与 `x'`。
 
 在实际的程序中会用更复杂的 print 策略，例如添加括号、换行等。
+
+在实现时，可以直接使用 `context` 中变量字符串的下标对应 de Bruijn indices，即 \\(i \mapsto \operatorname{\mathtt{context}}\_{\operatorname{\mathtt{len}} - i - 1}\\)。
 
 
 ## Shifting and Substitution {#shifting-and-substitution}
@@ -85,9 +89,7 @@ let termSubst j s t =
   in walk 0 t
 ```
 
-这里我们一次性做完 \\(s\\) 的 shifting。
-
-从上可以看到 `termShift` 和 `termSubst` 的定义非常相似，唯一的区别在于归纳的叶子节点 `TmVar`。基于这一点，可以写出一个统一二者的函数 `tmmap`。
+此处为了统一，记录一个额外的 \\(c\\) 表示当前所在的层级，因此公式中的 \\(j\\) 在代码中为 \\(j + c\\)。此时可以发现 `termShift` 和 `termSubst` 的定义非常相似，唯一的区别在于归纳的叶子节点 `TmVar`。基于这一点，可以写出一个统一二者的函数 `tmmap`。
 
 ```ocaml
 let tmmap onvar c t =
@@ -123,18 +125,18 @@ let termSubstTop s t =
 
 ```ocaml
 let rec isval ctx t = match t with
-    TmAbs(_,_,_) -> true
+    TmAbs(_, _, _) -> true
   | _ -> false
 
 exception NoRuleApplies
 
 let rec eval1 ctx t = match t with
-    TmApp(fi,TmAbs(_,x,t12),v2) when isval ctx v2 ->
+    TmApp(fi, TmAbs(_, x, t12), v2) when isval ctx v2 ->
       termSubstTop v2 t12
-  | TmApp(fi,v1,t2) when isval ctx v1 ->
+  | TmApp(fi, v1, t2) when isval ctx v1 ->
       let t2' = eval1 ctx t2 in
       TmApp(fi, v1, t2')
-  | TmApp(fi,t1,t2) ->
+  | TmApp(fi, t1, t2) ->
       let t1' = eval1 ctx t1 in
       TmApp(fi, t1', t2)
   | _ ->

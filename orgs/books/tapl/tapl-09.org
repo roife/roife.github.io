@@ -11,6 +11,8 @@
 \operatorname{\mathtt{if}} \langle \text{long and tricky computation} \rangle \operatorname{\mathtt{then}} \operatorname{\mathtt{true}} \operatorname{\mathtt{else}} (\lambda x. x)
 \]
 
+本章实现的 STLC 记作 \(\lambda_\rightarrow\)。
+
 * Function Types
 函数类型：
 

@@ -609,7 +609,7 @@ The set of **free variables** of a term t, written \\(FV(t)\\), is defined as fo
 
 ### Substitution {#substitution}
 
-Substitution 是一个比较 tricky 的操作。这里会介绍一种比较直观的做法，可以用数学定义和证明。在 Chapter 6 会介绍一种 heavier 的做法，其依赖于 `de Bruijin presentation`，但是更容易用 ML 来实现。
+Substitution 是一个比较 tricky 的操作。这里会介绍一种比较直观的做法，可以用数学定义和证明。在 Chapter 6 会介绍一种 heavier 的做法，其依赖于 `de Bruijn presentation`，但是更容易用 ML 来实现。
 
 > The names of bound variables do not matter
 
