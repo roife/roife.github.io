@@ -540,8 +540,10 @@ A closed term is **stuck** if it is in normal form but not a value.
 
 -   Small-step Evaluation：如何**一步步**对程序进行规约
     -   设表达式是 \\(E\\)，则规约规则 \\(\rightarrow: E \times E\\)
+    -   在实现上 small-step 会不断对**整个表达式**应用 rules
 -   Big-step Evaluation：定义如何从一个表达式或者语句**直接**得到它的结果（假设各部分都已经规约完毕了）
     -   设表达式是 \\(E\\)，value 是 \\(V\\)，则规约规则 \\(\Downarrow: E \times V\\)
+    -   在实现上，big-step 着重于寻找表达式的 value，会直接对每个部分进行递归求值
 
 \\[
 v \Downarrow v \qquad \tag{B-Value}

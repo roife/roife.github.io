@@ -105,7 +105,13 @@ let termShiftAbove d c t =
 let termShift d t = termShiftAbove d 0 t
 ```
 
-在 beta-conversion 中，一共包含了三个步骤： 1. shift the term being substituted 2. 进行 substitution 3. shift down the whole result
+在 beta-conversion 中，一共包含了三个步骤：
+
+1.  shift the term being substituted
+2.  substitution
+3.  shift down the whole result
+
+<!--listend-->
 
 ```ocaml
 let termSubstTop s t =

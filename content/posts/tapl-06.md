@@ -31,6 +31,8 @@ De Bruijn 的做法是用自然数来表示变量，其中当前层对应的 bou
     &= (\lambda. 0\ 1\ (\lambda. 0\ 1\ 2));
 \end{aligned}
 
+在定义 De Bruijn terms 时，需要区分项内包含的自由变量的数量。
+
 <div class="definition">
 
 **(Terms)**
