@@ -83,6 +83,8 @@ Suppose \\(t\\) is a closed, well-typed normal form. Then either \\(t\\) is a va
 
 发生异常时可以携带一些信息，包括异常类型等。此时用 \\(\operatorname{\mathtt{t}}\\) 来代替普通的 `error` 引发异常，其中 `raise` 可以当作一个 constructor。
 
+上面的规则中 `T-Exn` 规则使得异常能在被静态的类型检查器所检查，而异常本身的触发是动态的。
+
 注意上面的规则都要求携带的信息必须是一个 value，其类型为 \\(T\_{exn}\\)。\\(T\_{exn}\\) 可以有很多情况：
 
 1.  `Nat`，即作为 `errno` 错误号，但是需要查表得到错误信息
@@ -101,26 +103,7 @@ Suppose \\(t\\) is a closed, well-typed normal form. Then either \\(t\\) is a va
     &\qquad \vert\ \\\_ \Rightarrow \operatorname{\mathtt{raise}}\ e
     \end{aligned}
 
-5.  Java 使用 `class` 来表示异常，其中异常相关的类需要继承自 `Throwable`。因此 Java 的异常类之间可以有继承关系（而 ML 中的异常都是平级的）。并且在 Java 中还区分了 `Exceptions` 和 `Errors`，前者可以被捕获处理，而后者会终止程序。
-
-
-## Checked exceptions {#checked-exceptions}
-
-Java 的另一个特殊点在于它是 **checked exceptions**，即方法抛出的异常是方法签名的一部分，并且方法调用者必须要处理方法中的所有异常。
-
-下面尝试模仿上面的规则对 checked exceptions 进行形式化，使用的语言为 \\(\lambda\_\rightarrow\\) 加上 unit type 和 checked exceptions。
-
-
-### Syntax {#syntax}
-
-\begin{aligned}
-t \Coloneqq & \dots & & (\text{terms}) \\\\
-    & \operatorname{\mathtt{raise}}\ t & & (\text{raise exception}) \\\\
-    & \operatorname{\mathtt{try}}\ t\ \operatorname{\mathtt{with}}\ t & & \text{handle exception}) \\\\
-\end{aligned}
-
-
-### New evaluation rules {#new-evaluation-rules}
+5.  Java 使用 `class` 来表示异常，其中异常相关的类需要继承自 `Throwable`。因此 Java 的异常类之间可以有继承关系（而 ML 中的异常都是平级的）。并且在 Java 中还区分了 `Exceptions` 和 `Errors`，前者可以被捕获处理，而后者会终止程序。Java 的另一个特殊点在于它是 **checked exceptions**，即方法抛出的异常是方法签名的一部分，并且方法调用者必须要处理方法中的所有异常。
 
 
 ## Exceptions as a control flow {#exceptions-as-a-control-flow}

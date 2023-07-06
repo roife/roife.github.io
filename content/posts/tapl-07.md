@@ -58,7 +58,7 @@ let rec printtm ctx t = match t with
 
 在实际的程序中会用更复杂的 print 策略，例如添加括号、换行等。
 
-在实现时，可以直接使用 `context` 中变量字符串的下标对应 de Bruijn indices，即 \\(i \mapsto \operatorname{\mathtt{context}}\_{\operatorname{\mathtt{len}} - i - 1}\\)。
+在实现时，`context` 遵循 naming context 的规则，即 de Bruijn indices \\(i \mapsto \operatorname{\mathtt{context}}\_{\operatorname{\mathtt{len}} - i - 1}\\)。创建内部的 abstraction 时，直接在 `context` 尾部压入新的名字即可。
 
 
 ## Shifting and Substitution {#shifting-and-substitution}

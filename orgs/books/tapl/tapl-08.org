@@ -40,6 +40,9 @@ A term \(t\) is *typable* (or *well typed*) if there is some \(T\) such that \(t
 6. If \(\operatorname{\mathtt{pred}} t_1 : R\), then \(R = \operatorname{\mathtt{Nat}}\) and \(t_1 : \operatorname{\mathtt{Nat}}\).
 7. If \(\operatorname{\mathtt{iszero}} t_1 : R\), then \(R = \operatorname{\mathtt{Bool}}\) and \(t_1 : \operatorname{\mathtt{Nat}}\).
 #+end_lemma
+#+begin_proof
+此处 typing rules 都是双射，易证。
+#+end_proof
 
 通过 generation lemma，可以根据 term 的 syntactic form 来计算出其 type。类型的推导（typing derivation）可以也用一棵树来表示。
 

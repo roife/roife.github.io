@@ -61,7 +61,6 @@ term 的定义如下，唯一值得注意的是在 =TmAbs= 中增加了类型的
 
 =typeof= 可以看成是 \(\lambda_\rightarrow\) 的 typing rules 的翻译，也可以看成是 inversion lemma 的翻译。前者说明了在某些条件下 term 是 well-typed 的，而后者说明了 well-typeness 需要满足的条件，因此后者更加准确。
 
-
 #+begin_src ocaml
   let rec typeof ctx t =
     match t with

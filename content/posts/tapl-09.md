@@ -15,6 +15,8 @@ draft = false
 \operatorname{\mathtt{if}} \langle \text{long and tricky computation} \rangle \operatorname{\mathtt{then}} \operatorname{\mathtt{true}} \operatorname{\mathtt{else}} (\lambda x. x)
 \\]
 
+本章实现的 STLC 记作 \\(\lambda\_\rightarrow\\)。
+
 
 ## Function Types {#function-types}
 
@@ -165,6 +167,12 @@ T \Coloneqq & & \text{types} \\\\
 
 </div>
 
+<div class="proof">
+
+此处 typing rules 都是双射，易证。
+
+</div>
+
 <div class="question">
 
 是否存在 \\(\Gamma \vdash x\ x : T\\)？
@@ -204,7 +212,7 @@ In a given typing context \\(\Gamma\\), a term \\(t\\) (with free variables all 
 
 </div>
 
-在 STLC 的 progress theorem 中，我们只关心 closed term，不考虑自由变量。（因为兴致对 open terms 不成立）
+在 STLC 的 progress theorem 中，我们只关心 closed term，不考虑自由变量。（因为性质对 open terms 不成立）
 
 <div class="theorem">
 
@@ -353,10 +361,11 @@ By induction on a derivation of the statement \\(\Gamma, x : S \vdash t : T\\)
 -   `T-App`
 
     \\[
-      t = t\_1\ t\_2 \quad \text{where}\ \Gamma \vdash t\_1 : T\_{11} \rightarrow T\_{12}, \Gamma \vdash t\_2 : T\_{11}
+      t = t\_1\ t\_2 \quad \text{where}\ \Gamma \vdash t\_1 : T\_{11} \rightarrow T\_{12}, \Gamma \vdash t\_2 : T\_{11}, T = T\_{12}
       \\]
 
-    -   如果 \\(t\_1\\) 或 \\(t\_2\\) 能继续 evaluation，则使用 `E-App1` 或 `E-App2`
+    -   如果能使用 `E-App1`，即 \\(t\_1 \rightarrow t\_1'\\)，根据归纳假设，有 \\(t\_1' : T\_{11} \rightarrow T\_{12}\\)，则 \\(t\_1'\ t\_2 : T\_{12} = T\\)
+    -   如果能使用 `E-App2`，同理
 
     -   否则需要 `E-AppAbs`，\\(t\_2 \rightarrow v\_2 \text{ and } t\_1\ t\_2 = (\lambda x. t\_{12})\ t\_2 = [x \mapsto v\_2] t\_{12}\\)
 

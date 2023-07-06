@@ -136,6 +136,9 @@ T \Coloneqq & & \text{types} \\
 5. If \(\Gamma \vdash \operatorname{\mathtt{false}} : R\), then \(R = \operatorname{\mathtt{Bool}}\).
 6. If \(\Gamma \vdash \operatorname{\mathtt{if}} t_1 \operatorname{\mathtt{then}} t_2 \operatorname{\mathtt{else}} t_3 : R\), then \(\Gamma \vdash t_1 : \operatorname{\mathtt{Bool}}, \Gamma \vdash t_2 : R, \Gamma \vdash t_3 : R\).
 #+end_lemma
+#+begin_proof
+此处 typing rules 都是双射，易证。
+#+end_proof
 
 #+begin_question
 是否存在 \(\Gamma \vdash x\ x : T\)？
@@ -294,10 +297,11 @@ By induction on a derivation of the statement \(\Gamma, x : S \vdash t : T\)
 - =T-App=
 
   \[
-  t = t_1\ t_2 \quad \text{where}\ \Gamma \vdash t_1 : T_{11} \rightarrow T_{12}, \Gamma \vdash t_2 : T_{11}
+  t = t_1\ t_2 \quad \text{where}\ \Gamma \vdash t_1 : T_{11} \rightarrow T_{12}, \Gamma \vdash t_2 : T_{11}, T = T_{12}
   \]
 
-  - 如果 \(t_1\) 或 \(t_2\) 能继续 evaluation，则使用 =E-App1= 或 =E-App2=
+  - 如果能使用 =E-App1=，即 \(t_1 \rightarrow t_1'\)，根据归纳假设，有 \(t_1' : T_{11} \rightarrow T_{12}\)，则 \(t_1'\ t_2 : T_{12} = T\)
+  - 如果能使用 =E-App2=，同理
 
   - 否则需要 =E-AppAbs=，\(t_2 \rightarrow v_2 \text{ and } t_1\ t_2 = (\lambda x. t_{12})\ t_2 = [x \mapsto v_2] t_{12}\)
 

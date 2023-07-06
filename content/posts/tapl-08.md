@@ -51,6 +51,12 @@ A term \\(t\\) is **typable** (or **well typed**) if there is some \\(T\\) such 
 
 </div>
 
+<div class="proof">
+
+此处 typing rules 都是双射，易证。
+
+</div>
+
 通过 generation lemma，可以根据 term 的 syntactic form 来计算出其 type。类型的推导（typing derivation）可以也用一棵树来表示。
 
 -   **Statements** are formal assertions about the typing of programs.

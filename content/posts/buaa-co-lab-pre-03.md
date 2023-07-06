@@ -2,9 +2,9 @@
 title = "[BUAA-CO-Lab] Pre-03 MIPS 指令"
 author = ["roife"]
 date = 2020-10-05
-aliases = ["/posts/2020-09-28-buaa-co-lab-pre-03-mips"]
+aliases = ["/posts/2020-10-05-buaa-co-lab-pre-03-mips"]
 series = ["buaa-co"]
-tags = ["体系结构", "verilog"]
+tags = ["体系结构"]
 draft = false
 +++
 

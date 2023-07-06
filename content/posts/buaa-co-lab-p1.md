@@ -4,7 +4,7 @@ author = ["roife"]
 date = 2020-10-31
 aliases = ["/posts/2020-10-31-buaa-co-lab-p1"]
 series = ["buaa-co"]
-tags = ["体系结构"]
+tags = ["体系结构", "verilog"]
 draft = false
 +++
 

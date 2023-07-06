@@ -5,6 +5,7 @@ date = 2020-09-26
 aliases = ["/posts/2020-09-26-buaa-co-lab-pre-01-logisim"]
 series = ["buaa-co"]
 tags = ["体系结构"]
+draft = false
 +++
 
 Logisim 是课上用于模拟仿真电路的一个软件。
