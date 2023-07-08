@@ -406,7 +406,7 @@ Induction on typing derivations.
 
     \\[
       \dfrac{
-        \vdash v\_1 : T
+        \nvdash v\_1 : T
       }{
         (\operatorname{\mathtt{if}}\ v\_1\ \operatorname{\mathtt{in}}\ T\ \operatorname{\mathtt{then}}\ x \rightarrow t\_2\ \operatorname{\mathtt{else}}\ t\_3) \rightarrow t\_3
       } \tag{E-Typetest2}
