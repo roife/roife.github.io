@@ -26,18 +26,22 @@ draft = false
 
 在定义的过程中，无论是 `claim` 还是 `define` 中的 `A` 和 `D` 都只是一个符号，表示一种类型，没有特殊的意义，也不需要相互对应。（不过一般 `claim` 和 `define` 中的参数化类型的符号会相同）
 
-> **(The Intermediate Law of Application)**
->
-> If `f` is a
->
-> ```lisp
-> (Π ((Y U))
->   X)
-> ```
->
-> and `Z` is a U, then `(f Z)` is an `X`, and every `Y` in `X` has been consistently replaced by `Z`.
->
-> **注解**：Π Type 相当于全称量词，因为 Pie 中的函数都是 total function，所以 Π 表达式的参数可以传入对应类型任意的值，它们都可以使类型成立，即其类型为 \\(\forall\ Y:U, X[Y:=a]\\)。
+<div class="definition">
+
+**(Π-type)**
+
+If `f` is a
+
+```lisp
+(Π ((Y U))
+  X)
+```
+
+and `Z` is a U, then `(f Z)` is an `X`, and every `Y` in `X` has been consistently replaced by `Z`.
+
+**注解**：Π Type 相当于全称量词，因为 Pie 中的函数都是 total function，所以 Π 表达式的参数可以传入对应类型任意的值，它们都可以使类型成立，即其类型为 \\(\forall\ Y:U, X[Y:=a]\\)。
+
+</div>
 
 Π 表达式和 → 表达式都可以**描述 λ 表达式的类型**，区别在于**传入参数后表达式的类型**。Π 表达式传入全部参数后返回一个 → 表达式。
 
@@ -48,7 +52,7 @@ draft = false
 
 <!--listend-->
 
-````lisp
+```lisp
 (claim elim-Pair
   (Π ((A U)
       (D U)
@@ -62,7 +66,7 @@ draft = false
   (λ (A D X)
     (λ (p f)
       (f (car p) (cdr p)))))
-````
+```
 
 
 ### `twin` {#twin}
@@ -71,7 +75,7 @@ draft = false
 
 <!--listend-->
 
-````lisp
+```lisp
 (claim twin
   (Π ((Y U))
     (→ Y
@@ -81,18 +85,18 @@ draft = false
   (λ (Y)
     (λ (x)
       (cons x x))))
-````
+```
 
 
 ### Π 表达式的 curry-ing {#π-表达式的-curry-ing}
 
 Π 表达式也可以进行类似于 curry-ing 的操作：
 
-````lisp
+```lisp
 (claim twin-Atom
   (→ Atom
     (Pair Atom Atom)))
 
 (define twin-Atom
   (twin Atom)) ; 返回一个函数
-````
+```

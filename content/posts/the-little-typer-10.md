@@ -1,7 +1,9 @@
 +++
-title = "「The Little Typer」 10 It also depends on the List"
+title = "[The Little Typer] 10 It also depends on the List"
 author = ["roife"]
 date = 2021-03-29
+series = ["The Little Typer"]
+tags = ["Dependent Type", "形式化验证", "Pie", "类型系统", "程序语言理论"]
 draft = false
 +++
 
@@ -11,6 +13,8 @@ draft = false
 ### Σ 的定义 {#σ-的定义}
 
 <div class="definition">
+
+**(Σ-type)**
 
 If `(cons a d)` is a
 

@@ -1,12 +1,14 @@
-#+title: 「The Little Typer」 10 It also depends on the List
-
-#+author: roife
+#+title: [The Little Typer] 10 It also depends on the List
 #+date: 2021-03-29
+#+hugo_tags: "Dependent Type" 形式化验证 Pie 类型系统 程序语言理论
+#+hugo_series: "The Little Typer"
 
 * Sigma Type：Σ
 
 ** Σ 的定义
 #+begin_definition
+*(Σ-type)*
+
 If =(cons a d)= is a
 
 #+begin_src lisp
@@ -17,12 +19,12 @@ If =(cons a d)= is a
 then =a:A= and =d='s type is found by consistently replacing every =x= in =D= with =a=.
 
 *注解*：Σ Type 相当于存在量词，即提供一个 =a: A= 的值代入 =D= 使得 =D= 成立，其类型为 \(\exist\ a:A, D[x:=a]\)。
+#+end_definition
 
 它和 Π Type 的区别在于：
 
 - =(Π ((Y U)) X)= 中，Π 可以代入 =Y= 类型所有的值，并且 Π 类型描述的值就是 =X=，其中 =X= 由 =Y= 构建
 - Σ 需要找到可以构建类型的特定值 =a=，并且 Σ 类型描述的值为 =a= 和 =d= 组成的 Pair =(cons a d): (Pair A D[x:=a])=，其中不能将 =D= 独立于 =a= 作为命题
-#+end_definition
 
 Σ 类型类似于一个 type constructor：在 Pair =(cons a d): (Σ ((x A)) D)= 中，=x= 是一个变量，值为 =a: A=。=d= 的类型为将类型 =D= 中出现的所有 =x= 替换为值 =a= 的结果。
 
