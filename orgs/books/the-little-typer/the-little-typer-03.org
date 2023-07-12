@@ -32,7 +32,7 @@ A function that always assigns a value to every possible argument is called a to
 =iter-Nat= 也是一个*模式匹配*，但是他可以对自然数进行递归。
 
 #+begin_quote
-*The Law of =iter-Nat=*
+*(The Law of =iter-Nat=)*
 
 If =target= is a =Nat=, =base= is an =X=, and =step= is an =(→ X X)=, then
 
@@ -46,7 +46,7 @@ is an =X=.
 #+end_quote
 
 #+begin_quote
-*The First Commandment of =iter-Nat=*
+*(The First Commandment of =iter-Nat=)*
 
 If
 
@@ -61,7 +61,7 @@ is an =X=, then it is the same =X= as =base=.
 #+end_quote
 
 #+begin_quote
-*The Second Commandment of =iter-Nat=*
+*(The Second Commandment of =iter-Nat=)*
 
 If
 
@@ -131,7 +131,7 @@ is an =X=, then it is the same =X= as
 =rec-Nat= 其实就是 *primitive recursion*。
 
 #+begin_quote
-*The Law of =rec-Nat=*
+*(The Law of =rec-Nat=)*
 
 If =target= is a Nat, =base= is an =X=, and =step= is an
 
@@ -152,7 +152,7 @@ is an =X=
 #+end_quote
 
 #+begin_quote
-*The First Commandment of =rec-Nat=*
+*(The First Commandment of =rec-Nat=)*
 
 If
 
@@ -166,7 +166,7 @@ is an =X=, then it is the same =X= as =base=
 #+end_quote
 
 #+begin_quote
-*The Second Commandment of =rec-Nat=*
+*(The Second Commandment of =rec-Nat=)*
 
 If
 

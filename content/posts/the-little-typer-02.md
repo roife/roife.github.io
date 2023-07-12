@@ -11,7 +11,7 @@ draft = false
 
 `cons` 是 constructor，`Pair` 是 type constructor，它们都用来构建值；而 `car` 这种用来分解值，称为 eliminator。Eliminators 可以使用 values（不单是可以用于提取内部的值，例如还可以用于归纳等）。
 
-> **Constructors and Eliminators**
+> **(Constructors and Eliminators)**
 >
 > Constructors build values, and eliminators take apart values built by constructors.
 
@@ -20,7 +20,7 @@ draft = false
 
 λ 也是一个 constructor，可以构建 `(λ (x0 x ...) body)` 这样的 value。而对应的 eliminators 则是将 lambda 应用参数。
 
-> **Eliminating Functions**
+> **(Eliminating Functions)**
 >
 > Applying a function to arguments is the eliminator for functions.
 
@@ -60,7 +60,7 @@ draft = false
   (Pair (cdr (cons 'salt Atom)) Atom))
 ```
 
-> **The Initial Law of Application**
+> **(The Initial Law of Application)**
 >
 > If `f` is an
 >
@@ -82,19 +82,19 @@ draft = false
 
 两个 λ 表达式如果参数数量和函数体相同，则它们相同，并且比较的过程中允许对参数进行“重命名”（alpha 变换）。
 
-> **The Initial First Commandment of λ**
+> **(The Initial First Commandment of λ)**
 >
 > Two λ-expressions that expect the same number of arguments are the same if their **bodies are the same** after **consistently renaming their variables** (alpha-conversion).
 
 <!--quoteend-->
 
-> **The Law of Renaming Variables**
+> **(The Law of Renaming Variables)**
 >
 > Consistently renaming variables can't change the meaning of anything.
 
 <!--quoteend-->
 
-> **The Initial Second Commandment of λ (eta-expansion)**
+> **(The Initial Second Commandment of λ (eta-expansion))**
 >
 > If `f` is an
 >
@@ -159,7 +159,7 @@ Expressions that are not values and cannot yet be evaluated due to a variable ar
 
 如果两个 neutral expressions 的 top eliminator 是相同的，而且 eliminator 的参数都是相同的，那么它们是相同的。
 
-> **The Commandment of Neutral Expressions**
+> **(The Commandment of Neutral Expressions)**
 >
 > Neutral expressions that are written identically are the same, **no matter their type**.
 
@@ -168,7 +168,7 @@ Expressions that are not values and cannot yet be evaluated due to a variable ar
 
 用 `define` 可以简化程序：
 
-> **The Law and Commandment of `define`**
+> **(The Law and Commandment of `define`)**
 >
 > Following `(claim name X)` and `(define name expr)`,
 >
@@ -180,13 +180,13 @@ Expressions that are not values and cannot yet be evaluated due to a variable ar
 
 <!--quoteend-->
 
-> **The Second Commandment of `cons`**
+> **(The Second Commandment of `cons`)**
 >
 > If `p` is a `(Pair A D)`, then it is the same `(Pair A D)` as `(cons (car p) (cdr p))`.
 
 使用 `define` 或 `claim` 定义名字时，不能与已有名字重复。
 
-> **Names in Definitions**
+> **(Names in Definitions)**
 >
 > In Pie, only names that are not already used, whether for constructors, eliminators, or previous definitions, can be used with claim or define.
 
@@ -219,7 +219,7 @@ Expressions that are not values and cannot yet be evaluated due to a variable ar
 ; 返回 'more
 ```````````
 
-> **The Law of which-Nat**
+> **(The Law of which-Nat)**
 >
 > If `target` is a Nat, `base` is an `X`, and `step` is an
 >
@@ -239,7 +239,7 @@ Expressions that are not values and cannot yet be evaluated due to a variable ar
 
 <!--quoteend-->
 
-> **The First Commandment of which-Nat**
+> **(The First Commandment of which-Nat)**
 >
 > If
 >
@@ -253,7 +253,7 @@ Expressions that are not values and cannot yet be evaluated due to a variable ar
 
 <!--quoteend-->
 
-> **The Second Commandment of which-Nat**
+> **(The Second Commandment of which-Nat)**
 >
 > If
 >
@@ -304,7 +304,7 @@ Similarly, an expression that is a type is a value when it has a **type construc
 
 </div>
 
-> **Type constructor &amp; Constructor 的区别**
+> **(Type constructor &amp; Constructor 的区别)**
 >
 > Type constructors 构建类型，而 constructors 构建值（value），值可以被类型所描述
 
@@ -316,7 +316,7 @@ Values 可以用 Types 来描述，而 Types 可以用 U 来描述。
 -   `(cons 'plum 'plum)` is a `(Pair Atom Atom)`.
 -   `(cons Atom Nat)` is a `(Pair U U)`, not a `U`.
 
-> **Every U Is a Type**
+> **(Every U Is a Type)**
 >
 > Every expression described by U is a type, but not every type is described by U.
 >
@@ -414,13 +414,13 @@ Values 可以用 Types 来描述，而 Types 可以用 U 来描述。
     (cons 'kale 'cauliflower))) ; 内层的 cons 不需要另外的 the
 ```````````````
 
-> **The Law of `the`**
+> **(The Law of `the`)**
 >
 > If `X` is a type and `e` is an `X`, then `(the X e)` is an `X`.
 
 <!--quoteend-->
 
-> **The Commandment of `the`**
+> **(The Commandment of `the`)**
 >
 > If `X` is a type and `e` is an `X`, then `(the X e)` is the same `X` as `e`.
 

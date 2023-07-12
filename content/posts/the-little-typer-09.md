@@ -13,7 +13,7 @@ draft = false
 
 类似 `ind-Nat` 和 `cong`，有一个类似的 eliminator `replace`。
 
-> **Leibniz's Law**
+> **(Leibniz's Law)**
 >
 > 1.  If two expressions are equal, then whatever is true for one is true for the other.
 > 2.  if whatever is true for one is true for the other, then they are equal.
@@ -22,7 +22,7 @@ draft = false
 
 即传入 `(= A B)` 与 `(f A)`，返回 `(f B)`。
 
-> **The Law of `replace`**
+> **(The Law of `replace`)**
 >
 > If `target` is an `(= X from to)`, `mot` is an `(→ X U)` and `base` is a `(mot from)`, then
 >
@@ -259,7 +259,7 @@ draft = false
        (mot-twice=double (add1 n-1)))))
 ````
 
-> **Observation about +**
+> **(Observation about +)**
 >
 > No matter which Nats `j` and `k` are, `(+ (add1 j) k)` is the same Nat as `(add1 (+ j k))`.
 
@@ -436,12 +436,12 @@ draft = false
 
 `symm` 可以用来交换 `=` 的两边。
 
-> **The Law of `symm`**
+> **(The Law of `symm`)**
 >
 > If `e` is an `(= X from to)`, then `(symm e)` is an `(= X to from)`.
 
 <!--quoteend-->
 
-> **The Commandment of `symm`**
+> **(The Commandment of `symm`)**
 >
 > If `x` is an `X`, then `(symm (same x))` is the same `(= X x x)` as `(same x)`.

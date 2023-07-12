@@ -24,19 +24,19 @@ draft = false
 -   当 `e` 为 `E` 类型，而且 `es` 为 `(Vec E k)` 类型时，`(vec:: e es)` 的类型为 `(Vec E (add1 k))`
 -   如果一个表达式的类型为 `(Vec E (add1 k))`，则这个列表一定至少有一个 entry
 
-> **The Law of `Vec`**
+> **(The Law of `Vec`)**
 >
 > If `E` is a type and `k` is a Nat, then `(Vec E k)` is a type.
 
 <!--quoteend-->
 
-> **The Law of `vecnil`**
+> **(The Law of `vecnil`)**
 >
 > `vecnil` is a `(Vec E zero)`.
 
 <!--quoteend-->
 
-> **The Law of `vec::`**
+> **(The Law of `vec::`)**
 >
 > If `e` is an `E` and `es` is a `(Vec E k)`, then `(vec:: e es)` is a `(Vec E (add1 k))`.
 
@@ -85,7 +85,7 @@ draft = false
       (head es))))
 ```
 
-> **The Law of Π**
+> **(The Law of Π)**
 >
 > The expression
 >
@@ -135,7 +135,7 @@ when `y` is not used in `X`.
     E))
 ````
 
-> **The Final Law of λ**
+> **(The Final Law of λ)**
 >
 > If `x` is an `X` when `y` is a `Y`, then
 >
@@ -153,7 +153,7 @@ when `y` is not used in `X`.
 
 <!--quoteend-->
 
-> **The Final Law of Application**
+> **(The Final Law of Application)**
 >
 > If `f` is a
 >
@@ -172,7 +172,7 @@ when `y` is not used in `X`.
 
 <!--quoteend-->
 
-> **The Final First Commandment of λ**
+> **(The Final First Commandment of λ)**
 >
 > If two λ-expressions can be made the same
 >
@@ -185,7 +185,7 @@ when `y` is not used in `X`.
 
 <!--quoteend-->
 
-> **The Final Second Commandment of λ**
+> **(The Final Second Commandment of λ)**
 >
 > If `f` is a
 >

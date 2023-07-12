@@ -1,0 +1,382 @@
+#+title: 「The Little Typer」 10 It also depends on the List
+
+#+author: roife
+#+date: 2021-03-29
+
+* Sigma Type：Σ
+
+** Σ 的定义
+#+begin_definition
+If =(cons a d)= is a
+
+#+begin_src lisp
+(Σ ((x A))
+  D)
+#+end_src
+
+then =a:A= and =d='s type is found by consistently replacing every =x= in =D= with =a=.
+
+*注解*：Σ Type 相当于存在量词，即提供一个 =a: A= 的值代入 =D= 使得 =D= 成立，其类型为 \(\exist\ a:A, D[x:=a]\)。
+
+它和 Π Type 的区别在于：
+
+- =(Π ((Y U)) X)= 中，Π 可以代入 =Y= 类型所有的值，并且 Π 类型描述的值就是 =X=，其中 =X= 由 =Y= 构建
+- Σ 需要找到可以构建类型的特定值 =a=，并且 Σ 类型描述的值为 =a= 和 =d= 组成的 Pair =(cons a d): (Pair A D[x:=a])=，其中不能将 =D= 独立于 =a= 作为命题
+#+end_definition
+
+Σ 类型类似于一个 type constructor：在 Pair =(cons a d): (Σ ((x A)) D)= 中，=x= 是一个变量，值为 =a: A=。=d= 的类型为将类型 =D= 中出现的所有 =x= 替换为值 =a= 的结果。
+
+例如 =(cons 'bagel (same 'bagel))= 的类型可以是（即证明对应的命题为）
+
+#+begin_src lisp
+(Σ ((bread Atom)) ; 注意 bread 是一个变量
+  (= Atom bread 'bagel))
+#+end_src
+
+#+begin_quote
+*(The Law of Σ)*
+
+The expression
+
+#+begin_src lisp
+(Σ ((x A))
+  D)
+#+end_src
+
+is a type when =A= is a type, and =D= is a type if =x= is an =A=.
+
+*注解*：=D= is a family of types over =A=.
+#+end_quote
+
+#+begin_quote
+*(The Commandment of =cons=)*
+
+If =p= is a
+
+#+begin_src lisp
+  (Σ ((x A))
+     D)
+#+end_src
+
+then =p= is the same as =(cons (car p) (cdr p))=
+#+end_quote
+
+一个特殊的 Σ 表达式是 =(Σ ((A U)) A)=，这个类型可以让一个 type 和其描述的值一起组成一个 Pair：如 =(cons Nat 4)= 与 =(cons Atom 'porridge)=。
+
+** Pair 与 Σ 的联系
+
+对于一个 Σ 表达式：
+
+#+begin_src lisp
+(Σ ((x A))
+  D)
+#+end_src
+
+其中 =D= 中没有出现 =x=，那么这个类型即为 =(Pair A D)=。
+
+因此 =(Pair A D)= 是 =(Σ ((x A)) D)= 的特殊形式。
+
+这个关系类似于 Π 表达式和 → 表达式的关系。如果 Π 表达式的参数在 Π 表达式的主体中没有出现，那么就是一个 → 表达式。即 → 表达式是 Π 表达式的特殊形式。
+
+** Σ 与 Vec
+
+用 Σ 表达式可以让列表长度和内容组成一个 Pair，例如 =(cons 17 (peas 17))= 或者 =(cons 2 (vec:: 'a (vec:: 'b vecnil)))=。
+
+Π 需要传入所依赖的值，而 Σ 的依赖有时候可以被计算出来（比如 List 的长度）。
+
+** Pair/Σ as statement
+
+=(Pair A D)= 的值为 =(cons a d)=，即包含了 =A= 的 evidence =a= 和 =D= 的 evidence =d=，所以可以看作是 "A and D"。
+
+=(Σ ((x A)) D)= 可以如果把 =D= 里面的 =x= 全部换成类型为 =A= 的 =a=，那么 =d= 即为 =D= 的 evidence，可以看作 "There exists"。
+
+例如：
+
+#+begin_src lisp
+  (Σ ((es (List Atom)))
+    (= (List Atom)
+      es
+      (reverse Atom es)))
+
+  ; There exists a list of atoms that is equal to itself reversed.
+  ; Proof:
+  ; (cons nil (same nil))
+#+end_src
+
+** eliminator for Σ
+
+Σ 的 eliminator 还是 =car= 和 =cdr=。
+
+设 =p= 为
+
+#+begin_src lisp
+(Σ ((x A))
+  D)
+#+end_src
+
+则：
+
+- =(car p) : A=
+- =(cdr p) : D[x:=(car p)]=
+
+举个例子，若 =p= 为：
+
+#+begin_src lisp
+(Σ ((l Nat))
+  (Vec Atom l))
+#+end_src
+
+则：
+
+- =(car p): Nat=
+- =(cdr p): (Vec Atom (car p))=
+
+* =list→vec=
+** Definition with non-specific type
+#+begin_src lisp
+  (claim list→vec
+    (Π ((E U))
+      (→ (List E)
+        (Σ ((l Nat))
+          (Vec E l)))))
+
+  (define list→vec
+    (λ (E)
+      (λ (es)
+        (rec-List es
+          (cons 0 vecnil)
+          (step-list→vec E)))))
+#+end_src
+
+考虑用 =rec-List=，首先定义 =step=。
+
+需要注意的是 Σ 表示 exists，所以定义返回类型的时候不需要用 =(Σ ((l Nat)) (Vec E (add1 l)))=，因为只要传入 =(add1 l)=，那么类型自然是 =(Vec E (add1 l))=。
+
+一个声明和定义如下：
+
+#+begin_src lisp
+  (claim step-list→vec
+    (Π ((E U))
+      (→ E (List E) (Σ ((l Nat))
+                      (Vec E l)))
+        (Σ ((l Nat))
+          (Vec E l)))) ; 注意返回值是 (Vec E (add1 l))
+
+  (define step-list→vec
+    (λ (E)
+      (λ (e es list→vec_es)
+        (cons
+          (add1 (car list→vec_es))
+          (vec:: e (cdr list→vec_es))))))
+#+end_src
+
+然而这样是错误的，这会导致下面的定义也能被接受，然而实际上是不对的。这是因为 Σ 表达式隐藏了一个信息“长度”，导致类型是不精确的。
+
+#+begin_src lisp
+(define list→vec
+  (λ (E)
+    (λ (es)
+      (cons 0 vecnil))))
+#+end_src
+
+#+begin_quote
+*(Use a Specific Type for Correctness)*
+
+Specific types can rule out foolish definitions.
+#+end_quote
+
+** =replicate=
+- =(replicate x n)=：将元素 =x: E= 复制 =n= 遍
+
+#+begin_src lisp
+(claim replicate
+  (Π ((E U)
+      (l Nat))
+    (→ E
+      (Vec E l))))
+
+(claim mot-replicate
+  (→ U Nat
+     U))
+
+(define mot-replicate
+  (λ (E k)
+    (Vec E k)))
+
+(claim step-replicate
+  (Π ((E U)
+      (e E)
+      (l-1 Nat))
+    (→ (mot-replicate E l-1)
+       (mot-replicate E (add1 l-1)))))
+
+(define step-replicate
+  (λ (E e l-1)
+    (λ (step-replicate_l-1)
+        (vec:: e step-replicate_l-1))))
+
+(define replicate
+  (λ (E l)
+    (λ (e)
+      (ind-Nat l
+        (mot-replicate E)
+        vecnil
+        (step-replicate E e)))))
+#+end_src
+
+利用 =replicate= 我们可以写出另一个错误的 =list→vec=：
+
+#+begin_src lisp
+(claim copy-52-times
+  (Π ((E U))
+    (→ E
+        (List E)
+        (Σ ((l Nat))
+          (Vec E l))
+      (Σ ((l Nat))
+        (Vec E l)))))
+
+(define copy-52-times
+  (λ (E)
+    (λ (e es copy-52-times_es)
+      (cons 52 (replicate E 52 e)))))
+
+(define list→vec
+  (λ (E)
+    (λ (es)
+      (rec-List es
+        (cons 0 vecnil)
+        (copy-52-times E)))))
+#+end_src
+
+* =ind-List=
+
+类似于 =ind-Nat=。
+
+=ind-List= 需要一个 motive，其类型为：
+
+#+begin_src lisp
+(→ List
+  U)
+#+end_src
+
+=ind-List= 的类型为 =(mot target)=，=base= 的类型为 =(mot nil)=，=step= 的类型为
+
+#+begin_src lisp
+(Π ((e E)
+    (es (List E))) ; 比 ind-Nat 多了一个参数
+  (→ (mot es)
+    (mot (:: e es))))
+#+end_src
+
+=e= 和 =es= 分别代表头部元素和去掉头部元素后的列表。每次会对 =es= 进行递归。
+
+#+begin_quote
+*(The Law of =ind-List=)*
+
+If =target= is a =(List E)=, mot is an =(→ (List E) U)=, =base= is a =(mot nil)=, and =step= is a
+
+#+begin_src lisp
+(Π ((e E)
+    (es (List E)))
+  (→ (mot es)
+    (mot (:: e es))))
+#+end_src
+
+then
+
+#+begin_src lisp
+(ind-List target
+  mot
+  base
+  step)
+#+end_src
+
+is a =(mot target)=.
+#+end_quote
+
+#+begin_quote
+*(The First Commandment of =ind-List=)*
+
+The ind-List-expression
+
+#+begin_src lisp
+(ind-List nil
+  mot
+  base
+  step)
+#+end_src
+
+is the same =(mot nil)= as =base=.
+#+end_quote
+
+#+begin_quote
+*(The Second Commandment of =ind-List=)*
+
+The ind-List-expression
+
+#+begin_src lisp
+(ind-List (:: e es)
+  mot
+  base
+  step)
+#+end_src
+
+is the same =(mot (:: e es))= as
+
+#+begin_src lisp
+  (step e es
+        (ind-List es
+                  mot
+                  base
+                  step)).
+#+end_src
+#+end_quote
+
+** Better definition for =list→vec=
+将长度纳入类型定义。
+
+#+begin_src lisp
+(claim list→vec
+  (Π ((E U)
+      (es (List E)))
+    (Vec E (length E es))))
+
+(claim mot-list→vec
+  (Π ((E U))
+    (→ (List E)
+      U)))
+
+(define mot-list→vec
+  (λ (E es)
+    (Vec E (length E es))))
+
+(claim step-list→vec
+  (Π ((E U)
+      (e E)
+      (es (List E)))
+    (→ (mot-list→vec E es)
+       (mot-list→vec E (:: e es)))))
+
+(define step-list→vec
+  (λ (E e es)
+    (λ (step-list→vec_es)
+      (vec:: e step-list→vec_es)))) ; (Vec E (add1 (length E es)))
+
+(define list→vec
+  (λ (E es)
+    (ind-List es
+      (mot-list→vec E)
+      vecnil
+      (step-list→vec E))))
+#+end_src
+
+遗憾的是，这个定义依然有漏洞。如果更改 =step= 的定义，并且使用 =replicate= 重新定义，将其变成第一个元素的重复：
+
+#+begin_src lisp
+(define step-list→vec
+  (λ (E e es)
+    (λ (list→vec_es)
+      (replicate E (length E (:: e es))
+        e))))
+#+end_src

@@ -41,7 +41,7 @@ draft = false
 
 Sameness 是一种表达二者相等的 judgment，而“相等”可以写成一个 type `=` 来表达 sameness（自反性）。
 
-> **The Law of `=`**
+> **(The Law of `=`)**
 >
 > An expression `(= X from to)` is a type if `X` is a type, `from` is an `X`, and `to` is an `X`.
 >
@@ -101,7 +101,7 @@ Sameness 是一种表达二者相等的 judgment，而“相等”可以写成�
 
 `=` 对应的 constructor 只有一个，即 `same`。`same` 需要一个参数 `e`。
 
-> **The Law of `same`**
+> **(The Law of `same`)**
 >
 > The expression `(same e)` is an `(= X e e)` if `e` is an `X`.
 
@@ -145,7 +145,7 @@ For every Nat `n`, `(incr n)` is equal to `(add1 n)`.
 
 <div class="definition">
 
-**Neutral Expressions**
+**(Neutral Expressions)**
 
 **Variables** that are not defined are neutral. If the target of an eliminator expression is neutral, then the eliminator expression is neutral.
 
@@ -236,7 +236,7 @@ motive 的类型由 `incr=add1` 可以显然得到。
 
 其中 → 表达式可以理解为 `if...then...`（归纳步骤）。
 
-> **"If" and "Then" as Types**
+> **("If" and "Then" as Types)**
 >
 > The expression `(→ X Y)` can be read as the statement, "if X then Y."
 >
@@ -283,7 +283,7 @@ motive 的类型由 `incr=add1` 可以显然得到。
 
 `cong` 是 `=` 的 eliminator，类似于 `map`，可以将证明 `a = b` 变成证明 `f(a) = f(b)`。
 
-> **The Law of `cong`**
+> **(The Law of `cong`)**
 >
 > If `f` is an `(→ X Y)` and `target` is an `(` X from to)=, then `(cong target f)` is an `(= Y (f from) (f to))`.
 
@@ -310,6 +310,6 @@ motive 的类型由 `incr=add1` 可以显然得到。
 -   如果 target 不是 neutral 的，那么整个表达式 `(cong (same x) f)` 会被化简成 `(same (f x))`
 -   如果 target 是 neutral 的，那么整个 `cong` 表达式也是 neutral 的
 
-> **The Commandment of `cong`**
+> **(The Commandment of `cong`)**
 >
 > If `x` is an `X`, and `f` is an `(→ X Y)`, then `(cong (same x) f)` is the same `(= Y (f x) (f x))` as `(same (f x))`

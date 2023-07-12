@@ -11,7 +11,7 @@ draft = false
 
 一个单引号 `'` 开头，后面跟着的是字母或者连词符 `-` 的符号被称为 `Atom`，如 `'atom` 或者 `'---`，但是注意不能有数字。
 
-> **The Law of Tick Marks**
+> **(The Law of Tick Marks)**
 >
 > A tick mark directly followed by one or more letters and hyphens is an `Atom`.
 
@@ -34,13 +34,13 @@ draft = false
 
     -   Judgement 2 的第二个空也必须填 type。
 
-    > **The Commandment of Tick Marks**
+    > **(The Commandment of Tick Marks)**
     >
     > Two expressions are the same Atom if their values are tick marks followed by identical letters and hyphens.
 
 -   Judgments 3：`____ is a type.`，用来描述另一个表达式的表达式被称为类型 **type**，形如 `Atom` 或者 `(Pair Atom Atom)`，如 `Atom is a type.`。
 
-    > **The Law of Atom**
+    > **(The Law of Atom)**
     >
     > Atom is a type.
 
@@ -66,11 +66,17 @@ Normal Forms 是指描述一个表达式的最简单的形式，注意描述时�
 >
 > `(cons 'ratatouille 'baguette)` is a normal `(Pair Atom Atom)`
 
-<!--quoteend-->
+<div class="question">
 
-> **所有的表达式都有 Normal Form 吗？**
->
-> 在不给定类型的情况下讨论是否有 normal form 是没有意义的。但是对于每一个可以用类型描述的表达式，都有一个由该类型所决定的 normal form。
+**所有的表达式都有 Normal Form 吗？**
+
+</div>
+
+<div class="answer">
+
+在不给定类型的情况下讨论是否有 normal form 是没有意义的。但是对于每一个可以用类型描述的表达式，都有一个由该类型所决定的 normal form。
+
+</div>
 
 我们可以通过比较两个表达式的 normal form 来判断它们是否相同（sameness）。
 
@@ -89,7 +95,7 @@ Given a type, every expression described by that type has a **normal form**, whi
 
 如果一个表达式和某个类型为 `(Pair Atom Atom)` 的表达式相同，那么它也是一个 `(Pair Atom Atom)`。
 
-> **Normal Forms and Types**
+> **(Normal Forms and Types)**
 >
 > Sameness is always accoding to a type, so normal forms are also **determined by a type**.
 >
@@ -97,7 +103,7 @@ Given a type, every expression described by that type has a **normal form**, whi
 
 比较 `cons` 表达式是否相同，只要它们都由 `cons` 开头，并且它们的 `car` 和 `cdr` 相同。
 
-> **The Fist Commandment of `cons`**
+> **(The Fist Commandment of `cons`)**
 >
 > Two `cons`-expressions are the same `(Pair A D)` if their cars are the same `A` and their cdrs are the same `D`. Here, `A` and `D` stand for any type.
 
@@ -134,7 +140,7 @@ Given a type, every expression described by that type has a **normal form**, whi
 
 <div class="definition">
 
-**Normal Forms of Types**
+**(Normal Forms of Types)**
 
 Every expression that is a type has a normal form, which is the most direct way of writing that type. If two expressions are the same type, then they have identical normal forms, and if two types have identical normal forms, then they are the same type.
 
@@ -160,7 +166,7 @@ Every expression that is a type has a normal form, which is the most direct way 
 
 在定义前必须要用 `claim` 来声明类型。
 
-> **Claims before Definitions**
+> **(Claims before Definitions)**
 >
 > Using define to associate a name with an expression requires that the expression's type has previously been associated with the name using claim.
 
@@ -184,7 +190,7 @@ An expression with a constructor at the top is called a **value**.
 
 对于一个 Value，如果 top constructor 的参数**都**是 normal 的，那么这个式子是 normal 的。例如 `zero` 是 normal，并且 `add1` 是 normal 的，所以 `one` 是 normal 的。
 
-> **Values and Normal Forms**
+> **(Values and Normal Forms)**
 >
 > **Not every value is in normal form.** This is because the arguments to a constructor need not be normal.
 >
@@ -203,7 +209,7 @@ An expression with a constructor at the top is called a **value**.
 
 寻找一个 value 来描述表达式的过程被称为 evaluation（注意，不是 normal forms）。
 
-> **Everything Is an Expression**
+> **(Everything Is an Expression)**
 >
 > In Pie, values are also expressions. Evaluation in Pie finds an expression, not some other kind of thing.
 >
@@ -218,13 +224,13 @@ An expression with a constructor at the top is called a **value**.
 
 首先两个 `zero` 是相同的。如果两个 values 的 top constructor，且 arguments 是相同的，则它们是相同的。
 
-> **The Commandment of `zero`**
+> **(The Commandment of `zero`)**
 >
 > `zero` is the same Nat as `zero`.
 
 <!--quoteend-->
 
-> **The Commandment of `add1`**
+> **(The Commandment of `add1`)**
 >
 > If `n` is the same Nat as `k`, then `(add1 n)` is the same Nat as `(add1 k)`.
 

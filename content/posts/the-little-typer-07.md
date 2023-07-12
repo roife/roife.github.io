@@ -52,7 +52,7 @@ draft = false
 
 一个 `int-Nat` 表达式的类型即为将 Nat 传入 motive 后返回的结果。
 
-> **Use ind-Nat for Dependent Types**
+> **(Use ind-Nat for Dependent Types)**
 >
 > Use ind-Nat instead of rec-Nat when the rec-Nat- or ind-Nat-expression's type depends on the target Nat. The ind-Nat-expression's type is the motive applied to the target.
 
@@ -78,7 +78,7 @@ draft = false
 
 ### `ind-Nat` {#ind-nat}
 
-> **The Law of ind-Nat**
+> **(The Law of ind-Nat)**
 >
 > If `target` is a `Nat`, `mot` is an \`(→ Nat U)\`, `base` is a `(mot zero)`, and `step` is a
 >
@@ -101,7 +101,7 @@ draft = false
 
 <!--quoteend-->
 
-> **The First Commandment of ind-Nat**
+> **(The First Commandment of ind-Nat)**
 >
 > The ind-Nat-expression
 >
@@ -116,7 +116,7 @@ draft = false
 
 <!--quoteend-->
 
-> **The Second Commandment of ind-Nat**
+> **(The Second Commandment of ind-Nat)**
 >
 > The ind-Nat-expression
 >
@@ -156,7 +156,7 @@ draft = false
 
 这里 `step-peas` 的类型声明中出现了两次 `mot-peas`，创建的类型分别为 `(Vec Atom l-1)` 和 `(Vec Atom (add1 l-1))`，后者是由前者构造的，这是一个数学归纳的过程。
 
-> **Induction on Natural Numbers**
+> **(Induction on Natural Numbers)**
 >
 > Building a value for any natural number by giving a value for zero and a way to transform a value for `n` into a value for `n + 1` is called induction on natural numbers.
 
@@ -233,7 +233,7 @@ draft = false
 
 `base` 的类型就是 motive 传入 `zero` 的结果。
 
-> **`ind-Nat`'s Base Type**
+> **(`ind-Nat`'s Base Type)**
 >
 > In `ind-Nat`, the `base`'s type is the motive applied to the target `zero`.
 
@@ -276,7 +276,7 @@ motive 反映了 `ind-Nat` 的类型。
     E))
 ````````
 
-> **`ind-Nat`'s Step Type**
+> **(`ind-Nat`'s Step Type)**
 >
 > In `ind-Nat`, the `step` must take two arguments: some `Nat n` and an almost-answer whose type is the motive applied to `n`. The type of the answer from the `step` is the motive applied to `(add1 n)`. The `step`'s type is:
 >

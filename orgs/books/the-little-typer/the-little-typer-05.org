@@ -9,19 +9,19 @@
 可以发现，=List= 和 =Nat= 很像，=nil= 对应 =zero=，=::= 对应 =add1=。
 
 #+begin_quote
-*The Law of List*
+*(The Law of List)*
 
 if =E= is a type, then =(List E)= is a type.
 #+end_quote
 
 #+begin_quote
-*The Law of =nil=*
+*(The Law of =nil=)*
 
 =nil= is a =(List E)=, no matter what type =E= is.
 #+end_quote
 
 #+begin_quote
-*The Law of =::=*
+*(The Law of =::=)*
 
 If =e= is an =E= and =es= is a =(ListE)=, then =(:: e es)= is a =(List E)=.
 #+end_quote
@@ -30,7 +30,7 @@ If =e= is an =E= and =es= is a =(ListE)=, then =(:: e es)= is a =(List E)=.
 类似 =rec-Nat=，有 =rec-List=。=(step e es step-n-1)= 的三个参数分别代表 =car=、=cdr=、下一层递归的返回值。
 
 #+begin_quote
-*The Law of =rec-List=*
+*(The Law of =rec-List=)*
 
 If target is a =(List E)=, =base= is an =X=, and =step= is an
 
@@ -52,7 +52,7 @@ is an =X=.
 #+end_quote
 
 #+begin_quote
-*The First Commandment of =rec-List=*
+*(The First Commandment of =rec-List=)*
 
 If
 
@@ -67,7 +67,7 @@ is an =X=, then it is the same =X= as =base=.
 #+end_quote
 
 #+begin_quote
-*The Second Commandment of =rec-List=*
+*(The Second Commandment of =rec-List=)*
 
 If
 

@@ -13,19 +13,19 @@ draft = false
 
 可以发现，`List` 和 `Nat` 很像，`nil` 对应 `zero`，`::` 对应 `add1`。
 
-> **The Law of List**
+> **(The Law of List)**
 >
 > if `E` is a type, then `(List E)` is a type.
 
 <!--quoteend-->
 
-> **The Law of `nil`**
+> **(The Law of `nil`)**
 >
 > `nil` is a `(List E)`, no matter what type `E` is.
 
 <!--quoteend-->
 
-> **The Law of `::`**
+> **(The Law of `::`)**
 >
 > If `e` is an `E` and `es` is a `(ListE)`, then `(:: e es)` is a `(List E)`.
 
@@ -34,7 +34,7 @@ draft = false
 
 类似 `rec-Nat`，有 `rec-List`。`(step e es step-n-1)` 的三个参数分别代表 `car`、`cdr`、下一层递归的返回值。
 
-> **The Law of `rec-List`**
+> **(The Law of `rec-List`)**
 >
 > If target is a `(List E)`, `base` is an `X`, and `step` is an
 >
@@ -55,7 +55,7 @@ draft = false
 
 <!--quoteend-->
 
-> **The First Commandment of `rec-List`**
+> **(The First Commandment of `rec-List`)**
 >
 > If
 >
@@ -69,7 +69,7 @@ draft = false
 
 <!--quoteend-->
 
-> **The Second Commandment of `rec-List`**
+> **(The Second Commandment of `rec-List`)**
 >
 > If
 >

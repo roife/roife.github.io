@@ -26,7 +26,7 @@ draft = false
 
 在定义的过程中，无论是 `claim` 还是 `define` 中的 `A` 和 `D` 都只是一个符号，表示一种类型，没有特殊的意义，也不需要相互对应。（不过一般 `claim` 和 `define` 中的参数化类型的符号会相同）
 
-> **The Intermediate Law of Application**
+> **(The Intermediate Law of Application)**
 >
 > If `f` is a
 >

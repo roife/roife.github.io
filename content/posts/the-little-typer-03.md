@@ -40,7 +40,7 @@ A function that always assigns a value to every possible argument is called a to
 
 `iter-Nat` 也是一个**模式匹配**，但是他可以对自然数进行递归。
 
-> **The Law of `iter-Nat`**
+> **(The Law of `iter-Nat`)**
 >
 > If `target` is a `Nat`, `base` is an `X`, and `step` is an `(→ X X)`, then
 >
@@ -54,7 +54,7 @@ A function that always assigns a value to every possible argument is called a to
 
 <!--quoteend-->
 
-> **The First Commandment of `iter-Nat`**
+> **(The First Commandment of `iter-Nat`)**
 >
 > If
 >
@@ -68,7 +68,7 @@ A function that always assigns a value to every possible argument is called a to
 
 <!--quoteend-->
 
-> **The Second Commandment of `iter-Nat`**
+> **(The Second Commandment of `iter-Nat`)**
 >
 > If
 >
@@ -139,7 +139,7 @@ A function that always assigns a value to every possible argument is called a to
 
 `rec-Nat` 其实就是 **primitive recursion**。
 
-> **The Law of `rec-Nat`**
+> **(The Law of `rec-Nat`)**
 >
 > If `target` is a Nat, `base` is an `X`, and `step` is an
 >
@@ -160,7 +160,7 @@ A function that always assigns a value to every possible argument is called a to
 
 <!--quoteend-->
 
-> **The First Commandment of `rec-Nat`**
+> **(The First Commandment of `rec-Nat`)**
 >
 > If
 >
@@ -174,7 +174,7 @@ A function that always assigns a value to every possible argument is called a to
 
 <!--quoteend-->
 
-> **The Second Commandment of `rec-Nat`**
+> **(The Second Commandment of `rec-Nat`)**
 >
 > If
 >

@@ -18,19 +18,19 @@
 - 如果一个表达式的类型为 =(Vec E (add1 k))=，则这个列表一定至少有一个 entry
 
 #+begin_quote
-*The Law of =Vec=*
+*(The Law of =Vec=)*
 
 If =E= is a type and =k= is a Nat, then =(Vec E k)= is a type.
 #+end_quote
 
 #+begin_quote
-*The Law of =vecnil=*
+*(The Law of =vecnil=)*
 
 =vecnil= is a =(Vec E zero)=.
 #+end_quote
 
 #+begin_quote
-*The Law of =vec::=*
+*(The Law of =vec::=)*
 
 If =e= is an =E= and =es= is a =(Vec E k)=, then =(vec:: e es)= is a =(Vec E (add1 k))=.
 #+end_quote
@@ -73,7 +73,7 @@ If =e= is an =E= and =es= is a =(Vec E k)=, then =(vec:: e es)= is a =(Vec E (ad
 #+end_src
 
 #+begin_quote
-*The Law of Π*
+*(The Law of Π)*
 
 The expression
 
@@ -123,7 +123,7 @@ when =y= is not used in =X=.
 #+end_src
 
 #+begin_quote
-*The Final Law of λ*
+*(The Final Law of λ)*
 
 If =x= is an =X= when =y= is a =Y=, then
 
@@ -142,7 +142,7 @@ is a
 #+end_quote
 
 #+begin_quote
-*The Final Law of Application*
+*(The Final Law of Application)*
 
 If =f= is a
 
@@ -161,7 +161,7 @@ is an =X=, where every =y= has been consistently replaced by =z=.
 #+end_quote
 
 #+begin_quote
-*The Final First Commandment of λ*
+*(The Final First Commandment of λ)*
 
 If two λ-expressions can be made the same
 
@@ -174,7 +174,7 @@ by consistently renaming their variables, then they are the same.
 #+end_quote
 
 #+begin_quote
-*The Final Second Commandment of λ*
+*(The Final Second Commandment of λ)*
 
 If =f= is a
 
