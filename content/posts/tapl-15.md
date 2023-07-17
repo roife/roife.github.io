@@ -266,7 +266,7 @@ Induction on typing derivations.
 
         \\(t\_1 = \\{k\_a = v\_a ^{a \in 1 \dots m}\\} \quad \text{where } l\_j = k\_b, t' = v\_b\\)
 
-        -   根据 lemma，有 \\(\\{l\_{i}^{i \in 1 \dots n}\\} \subseteq \\{k\_{a}^{a \in 1 \dots m}\\}\\) 且 \\(\forall k\_{a} = l\_{i}. \Gamma \vdash v\_a : T\_i\\)，因此 \\{&Gamma; \vdash v_b : T_j\\}
+        -   根据 lemma，有 \\(\\{l\_{i}^{i \in 1 \dots n}\\} \subseteq \\{k\_{a}^{a \in 1 \dots m}\\}\\) 且 \\(\forall k\_{a} = l\_{i}. \Gamma \vdash v\_a : T\_i\\)，因此 \\(\Gamma \vdash v\_b : T\_j\\)
 -   `T-Sub`：\\(t : S, S <: T\\)，根据归纳假设 \\(t' : S <: T\\)
 
 </div>
