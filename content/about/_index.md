@@ -22,3 +22,5 @@ header_img: "/img/about-bg.jpg"
 - 斯拉夫民谣（Любэ / Ludola / etc.），摇滚
 
 [>> 查看 roife 的简历 <<](https://github.com/roife/resume/blob/master/resume-cn.pdf)
+
+> [原来的博客文章](https://github.com/roife/roife.github.io/tree/master/_posts)正在陆续搬迁中
