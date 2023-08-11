@@ -1,25 +1,25 @@
 ---
 title: "About"
-description: "[R]emember [OI] [F]or [E]ver"
+description: "关于 roife"
 aliases: ["about-us", "contact", "author"]
 sidebar: true
 header_img: "/img/about-bg.jpg"
 ---
 
-我是 roife，本科就读于北航 CS，研究生在南大 [PASCAL Lab](https://pascal-lab.net)。
+> **R**emember **OI** **F**or **E**ver
 
-我对这些东西很感兴趣：
+我是 roife，本科就读于北航 6 系，研究生在南大 [PASCAL Lab](https://pascal-lab.net)。我对这些东西很感兴趣：
 
-- 计算机
-  + 编译器 / 程序分析
-  + 程序语言理论 / 函数式编程 / 类型系统
-  + HDL / 计算机体系结构 / FPGA
+- 计算机科学
+  + Compilers / Program Analysis
+  + PL / FP / Type System
+  + Computer Architecture / FPGA / EDA
   + Emacs
-- 数学：代数 / 数理逻辑
-- ACGN
-- 摄影
 - Furry
-- 斯拉夫民谣（Любэ / Ludola / etc.），摇滚
+- ACGN
+- 数学 Algebra / Mathematical Logic
+- 摄影 ℤ
+- 斯拉夫民谣（Любэ / Ludola / etc.），摇滚（万青 / 草东 / Deca Joins / 腰 / etc.）
 
 [>> 查看 roife 的简历 <<](https://github.com/roife/resume/blob/master/resume-cn.pdf)
 
