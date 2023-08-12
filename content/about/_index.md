@@ -19,7 +19,7 @@ header_img: "/img/about-bg.jpg"
 - ACGN
 - 数学 Algebra / Mathematical Logic
 - 摄影 ℤ
-- 斯拉夫民谣（Любэ / Ludola / etc.），摇滚（万青 / 草东 / Deca Joins / 腰 / etc.）
+- 摇滚，（斯拉夫）民谣
 
 [>> 查看 roife 的简历 <<](https://github.com/roife/resume/blob/master/resume-cn.pdf)
 

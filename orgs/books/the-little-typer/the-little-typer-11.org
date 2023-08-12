@@ -1,0 +1,349 @@
+#+title: [The Little Typer] 11 All lists are created equals
+#+date: 2021-03-30
+#+hugo_tags: "Dependent Type" 形式化验证 Pie 类型系统 程序语言理论
+#+hugo_series: "The Little Typer"
+
+* =ind-Vec=
+
+一个 =ind-Vec= 表达式为：
+
+#+begin_src lisp
+(ind-Vec n es
+  mot
+  base
+  step)
+#+end_src
+
+相比于 =ind-List=，=ind-Vec= 的每个参数都多了一个 Nat =k= 表示数量。
+
+=mot= 的类型为：
+
+#+begin_src lisp
+(Π ((k Nat))
+  (→ (Vec E k)
+    U))
+#+end_src
+
+可以发现 =mot= 的参数中没有 =E= 而有 =k=。因为对于一个 =Vec=，=E= 是确定不变的，而 =k= 会改变（例如 =step= 调用 motive 推导类型时，每次的 =n= 都会改变）。确定不变的称为 parameters，而有可能会改变的称为 indices。这里没出现的 parameter 用 curry-ing 的方法提前传入。
+
+#+begin_quote
+A family of types whose argument is an index is sometimes called “an indexed family.
+#+end_quote
+
+=base= 的类型为 =(mot zero vecnil)=，=step= 的类型为：
+
+#+begin_src lisp
+(Π ((k Nat)
+    (h E)
+    (t (Vec E k)))
+  (→ (mot k t)
+    (mot (add1 k) (vec:: h t))))
+#+end_src
+
+#+begin_quote
+*The Law of =ind-Vec=*
+
+If =n= is a Nat, =target= is a =(VecE n)=, =mot= is a
+
+#+begin_src lisp
+(Π ((k Nat))
+  (→ (Vec E k)
+    U))
+#+end_src
+
+=base= is a =(mot zero vecnil)=, and =step= is a
+
+#+begin_src lisp
+(Π ((k Nat)
+    (h E)
+    (t (Vec E k)))
+  (→ (mot k t)
+    (mot (add1 k) (vec:: h t))))
+#+end_src
+
+then
+
+#+begin_src lisp
+(ind-Vec n target
+  mot
+  base
+  step)
+#+end_src
+
+is a =(mot n target)=
+
+#+end_quote
+
+=ind-Vec= 中的 motive 接受两个参数；前面的 motive 虽然也是接受两个参数，但是其中一个会通过 curry-ing 提前传入，所以实际上只有一个参数。
+
+#+begin_quote
+*The First Commandment of =ind-Vec=*
+
+The ind-Vec-expression
+
+#+begin_src lisp
+(ind-Vec zero vecnil
+  mot
+  base
+  step)
+#+end_src
+
+is the same =(mot zero vecnil)= as =base=.
+
+#+end_quote
+
+#+begin_quote
+*The Second Commandment of =ind-Vec=*
+
+The ind-Vec-expression
+
+#+begin_src lisp
+(ind-Vec (add1 n) (vec:: e es)
+  mot
+  base
+  step)
+#+end_src
+
+is the same =(mot (add1 n) (vec:: e es))= as
+
+#+begin_src lisp
+(step n e es
+  (ind-Vec n es
+    mot
+    base
+    step))
+#+end_src
+
+#+end_quote
+
+* =vec-append=
+
+- =(vec-append E l j v1 v2)=：合并两个 Vec
+
+#+begin_src lisp
+(claim vec-append
+  (Π ((E U)
+      (l Nat)
+      (j Nat))
+    (→ (Vec E l) (Vec E j)
+       (Vec E (+ l j)))))
+
+(define vec-append
+  (λ (E l j)
+    (λ (es end)
+      (ind-Vec l es
+        (mot-vec-append E j)
+        end
+        (step-vec-append E j)))))
+#+end_src
+
+** motive
+
+#+begin_src lisp
+(claim mot-vec-append
+  (Π ((E U)
+      (j Nat)
+      (k Nat))
+    (→ (Vec E k)
+       U)))
+
+(define mot-vec-append
+  (λ (E j k)
+    (λ (es)
+      (Vec E (+ j k)))))
+#+end_src
+
+这里 motive 先传入 =end= 的长度 =j= 再传入剩余列表长度 =k=，是因为 =j= 每次是不变的，所以可以直接通过 curry-ing 传入。否则就要写成下面的形式来交换参数：
+
+#+begin_src lisp
+  (claim mot-vec-append
+    (Π ((E U)
+        (k Nat)
+        (j Nat))
+      (→ (Vec E j)
+         U)))
+
+  (define vec-append
+    (λ (E l j es end)
+      (ind-Vec l es
+        (λ (k) (mot-vec-append E k j))
+        end
+        step-vec-append )))
+#+end_src
+
+** =step=
+#+begin_src lisp
+(claim step-vec-append
+  (Π ((E U)
+      (j Nat)
+      (k Nat)
+      (e E)
+      (es (Vec E k)))
+    (→ (mot-vec-append E j k es)
+      (mot-vec-append E j (add1 k) (vec:: e es)))))
+
+(define step-vec-append
+  (λ (E j l-1 e es) ; es 是当前拆分的列表
+    (λ (vec-append_es) ; vec-append_es 是递归返回的结果
+      (vec:: e vec-append_es))))
+#+end_src
+
+* Extrinsic Proof for =list→vec=
+
+用一个 specific 的类型相当于将证明用类型来实现，所以称为 instrinsic proof。反之，用一个额外的证明则称为 extrinsic proof。
+
+例如对于 =list→vec= 的一个证明是将 List 变为 Vec，然后变回 List 仍然是同样的列表。因此，这需要定义 =vec→list=。
+
+** =vec→list=
+#+begin_src lisp
+(claim vec→list
+  (Π ((E U)
+      (l Nat))
+    (→ (Vec E l)
+       (List E))))
+
+(claim mot-vec→list
+  (Π ((E U)
+      (l Nat))
+    (→ (Vec E l)
+       U)))
+
+(define mot-vec→list
+  (λ (E l)
+    (λ (es)
+      (List E))))
+
+(claim step-vec→list
+  (Π ((E U)
+      (l Nat)
+      (e E)
+      (es (Vec E l)))
+    (→ (List E)
+       (List E))))
+
+(define step-vec→list
+  (λ (E l e es)
+    (λ (vec→list_es)
+      (:: e vec→list_es))))
+
+(define vec→list
+  (λ (E l)
+    (λ (es)
+      (ind-Vec l es
+        (mot-vec→list E)
+        nil
+        (step-vec→list E)))))
+#+end_src
+
+** =list→vec→list==
+
+#+begin_src lisp
+(claim list→vec→list=
+  (Π ((E U)
+      (es (List E)))
+    (= (List E)
+       es
+       (vec→list E (length E es)
+         (list→vec E es)))))
+
+(claim mot-list→vec→list=
+  (Π ((E U))
+    (→ (List E)
+       U)))
+
+(define mot-list→vec→list=
+  (λ (E)
+    (λ (es)
+      (= (List E)
+        es
+        (vec→list E (length E es)
+          (list→vec E es))))))
+
+(claim step-list→vec→list=
+  (Π ((E U)
+      (e E)
+      (es (List E)))
+    (→ (mot-list→vec→list= E es)
+       (mot-list→vec→list= E (:: e es)))))
+
+(define step-list→vec→list=
+  (λ (E e es)
+    (λ (list→vec→list=_es)
+      (cong list→vec→list=_es
+        (lambda (es) (:: e es))))))
+
+(define list→vec→list=
+  (λ (E es)
+    (ind-List es
+      (mot-list→vec→list= E)
+      (same nil)
+      (step-list→vec→list= E))))
+#+end_src
+
+这里的 =step= 比较特殊：
+
+step 要把
+
+#+begin_src lisp
+(= (List E)
+  es
+  (vec→list E (length E es)
+    (list→vec E es)))
+#+end_src
+
+变成
+
+#+begin_src lisp
+(= (List E)
+  (:: e es)
+  (vec→list E (length E (:: e es))
+    (list→vec E (:: e es))))
+#+end_src
+
+即
+
+#+begin_src lisp
+(= (List E)
+  (:: e es)
+  (vec→list E (add1 (length E es))
+    (vec:: e (list→vec E es))))
+#+end_src
+
+再求值一次得到：
+
+#+begin_src lisp
+(= (List E)
+  (:: e es)
+  (::e
+    (vec→list E (length E es)
+      (list→vec E es))))
+#+end_src
+
+所以只要用一次 =cong= 就好了。
+
+#+begin_quote
+*When in Doubt, Evaluate*
+
+Gain insight by finding the values of expressions in types and working out examples in "same-as" charts.
+#+end_quote
+
+** =length-treats==
+
+两个相同的列表具有相同的长度：
+
+#+begin_src lisp
+(claim length-treats=
+  (Π ((some-treats (List Atom))
+      (more-treats (List Atom)))
+    (→ (= (List Atom)
+          some-treats
+          more-treats)
+      (= Nat
+        (length Atom some-treats)
+        (length Atom more-treats)))))
+
+(define length-treats=
+  (λ (some-treats more-treats)
+    (λ (treats=)
+      (cong treats= (length Atom)))))
+#+end_src
