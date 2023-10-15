@@ -95,7 +95,7 @@ Each term \\(t\\) has at most one type. That is, if \\(t\\) is typable, then its
 **(Canonical Forms)**
 
 1.  If \\(v\\) is a value of type `Bool`, then \\(v\\) is either `true` or `false`
-2.  If \\(v\\) is a value of type `Nat`, then \\(v\\) is a numeric value according to the grammar in Figure 3-2.
+2.  If \\(v\\) is a value of type `Nat`, then \\(v\\) is a numeric value.
 
 </div>
 

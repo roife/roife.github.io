@@ -7,9 +7,9 @@
 * DFA
 ** 定义
 #+begin_definition
-*(DFA)*​
+*(DFA)*
 
-*确定性有穷状态自动机*​（Deterministic finite automata，DFA）是一个五元组：
+*确定性有穷状态自动机*（Deterministic finite automata，DFA）是一个五元组：
 
 \[M = (Q, \Sigma, \delta, q_0, F)\]
 
@@ -44,7 +44,7 @@ L(M) = \{x | \delta(q_0, x) \in F\}
 \]
 #+end_definition
 
-如果 \(L(M_1) = L(M_2)\) 则两个 FA ​*等价*​。
+如果 \(L(M_1) = L(M_2)\) 则两个 FA *等价*。
 
 ** 即时描述
 #+begin_definition
@@ -58,7 +58,7 @@ xq_0ay \vdash_M xayqb
 #+end_definition
 
 ** 陷阱状态
-DFA 中缺少的边（状态转移）都默认转移到一个​*陷阱状态*​（trap）中。陷阱状态只有入边，没有出边，因此 FA 会在这个陷阱状态中读完剩下的字母，并且不会接受这个字符串。
+DFA 中缺少的边（状态转移）都默认转移到一个*陷阱状态*（trap）中。陷阱状态只有入边，没有出边，因此 FA 会在这个陷阱状态中读完剩下的字母，并且不会接受这个字符串。
 
 一般可以省略图中的陷阱状态。
 
@@ -128,7 +128,7 @@ DFA 与 NFA 等价
 #+begin_definition
 *(\(\varepsilon\)-NFA)*
 
-​*带空转移的非确定性有穷状态自动机*​​（non-deterministic finite automaton with \(\varepsilon\) moves，\(\varepsilon\)-NFA）
+*带空转移的非确定性有穷状态自动机*（non-deterministic finite automaton with \(\varepsilon\) moves，\(\varepsilon\)-NFA）
 
 \[M =(Q, \Sigma, \delta, q_0, F)\]
 
@@ -284,7 +284,7 @@ RL 与 FA 等价。
 #+begin_definition
 *(2DFA)*
 
-​*确定性双向有穷状态自动机*​（two-way deterministic finite automation, 2DFA）是一个八元组
+*确定性双向有穷状态自动机*（two-way deterministic finite automation, 2DFA）是一个八元组
 
 \[M = (Q, \Sigma, \vdash, \dashv, \delta, q_0, t, r)\]
 
@@ -304,7 +304,7 @@ RL 与 FA 等价。
 \[L(M) = \{x | q_0 x \vdash^{*} xt\}\]
 #+end_definition
 
-有趣的是，2DFA 也被称为​*只读图灵机*​（read-only Turing Machine），因为它长度有限且无法在纸带上打印东西。
+有趣的是，2DFA 也被称为*只读图灵机*（read-only Turing Machine），因为它长度有限且无法在纸带上打印东西。
 
 #+begin_theorem
 2DFA 与 FA 等价。
@@ -316,7 +316,7 @@ RL 与 FA 等价。
 
 注意到 2DFA 的状态仅与读头位置和当前状态相关。
 
-假设目前状态为 \(q\)，将需要读入的串 \(x = yz\) 分为两段，2DFA 的读头可以若干次穿越两段的分割点。将其穿越分割点后的状态记录下来，称其为​*有效穿越序列*​（valid crossing sequence）。
+假设目前状态为 \(q\)，将需要读入的串 \(x = yz\) 分为两段，2DFA 的读头可以若干次穿越两段的分割点。将其穿越分割点后的状态记录下来，称其为*有效穿越序列*（valid crossing sequence）。
 
 设有效穿越序列 \(C = q_1 q_2 \dots q_n\) 如果 2DFA 接受这个串，那么：
 

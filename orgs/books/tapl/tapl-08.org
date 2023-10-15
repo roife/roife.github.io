@@ -75,7 +75,7 @@ Each term \(t\) has at most one type. That is, if \(t\) is typable, then its typ
 *(Canonical Forms)*
 
 1. If \(v\) is a value of type =Bool=, then \(v\) is either =true= or =false=
-2. If \(v\) is a value of type =Nat=, then \(v\) is a numeric value according to the grammar in Figure 3-2.
+2. If \(v\) is a value of type =Nat=, then \(v\) is a numeric value.
 #+end_lemma
 #+begin_proof
 Values 有四种可能：=true=、=false=、=0=、=succ nv=。根据 inversion lemma 4 和 5 可知后两种情况的类型是 =Nat=，排除。故命题 1 成立。

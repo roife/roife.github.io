@@ -33,7 +33,7 @@ Let \(\mathcal{T}\) be the smallest family of sets \(\{\mathcal{T}_0, \mathcal{T
 
 1. \(k \in \mathcal{T}_n\) whenever \(0 \le k < n\)
 2. if \(t_1 \in \mathcal{T}_n\) and \(n > 0\), then \(\lambda. t_1 \in \mathcal{T}_{n-1}\)
-3. if \(t_1 \in \mathcal{T}_n\) and \(t_2 \in \mathcal{T}_n\), then \((t_1\ t_2) \in \mathcal{T}_{n-1}\)
+3. if \(t_1 \in \mathcal{T}_n\) and \(t_2 \in \mathcal{T}_n\), then \((t_1\ t_2) \in \mathcal{T}_n\)
 #+end_definition
 
 其中，\(T_n\) 集合中的项被称为 *\(n\)-terms*，其中的项包含了不超过 \(n\) 个自由变量，编号为 \(0 \dots n-1\)。当 \(t \in T_0\)，\(t\) 是一个封闭项。

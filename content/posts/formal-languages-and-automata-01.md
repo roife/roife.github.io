@@ -47,7 +47,7 @@ draft = false
 
 **(语言)**
 
-设 \\(G = (V, T, P, S)\\)，则称 \\(L(G) = \\{w \vert w \in T^\* \wedge S \xRightarrow{\*} w\\}\\) 是文法的**语言**（language）。
+设 \\(G = (V, T, P, S)\\)，则称 \\(L(G) = \\{w \vert w \in T^ \* \wedge S \xRightarrow{\* } w\\}\\) 是文法的**语言**（language）。
 
 </div>
 

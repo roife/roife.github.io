@@ -41,7 +41,7 @@ Let \\(\mathcal{T}\\) be the smallest family of sets \\(\\{\mathcal{T}\_0, \math
 
 1.  \\(k \in \mathcal{T}\_n\\) whenever \\(0 \le k < n\\)
 2.  if \\(t\_1 \in \mathcal{T}\_n\\) and \\(n > 0\\), then \\(\lambda. t\_1 \in \mathcal{T}\_{n-1}\\)
-3.  if \\(t\_1 \in \mathcal{T}\_n\\) and \\(t\_2 \in \mathcal{T}\_n\\), then \\((t\_1\ t\_2) \in \mathcal{T}\_{n-1}\\)
+3.  if \\(t\_1 \in \mathcal{T}\_n\\) and \\(t\_2 \in \mathcal{T}\_n\\), then \\((t\_1\ t\_2) \in \mathcal{T}\_n\\)
 
 </div>
 

@@ -9,10 +9,10 @@
 #+begin_definition
 *(文法)*
 
-​*文法*​（Grammar）是一个四元组：\(G = (V, T, P, S)\)。
+*文法*（Grammar）是一个四元组：\(G = (V, T, P, S)\)。
 
-- \(V\) 是非​*终结符*​（nonterminal）的非空有穷集。\(\forall A \in V\)，\(A\) 表示了一个​*语法范畴*​（Syntactic Category）
-- \(T\) 是​*终结符*​（terminal）的非空有穷集，\(V \cap T = \emptyset\)
+- \(V\) 是非*终结符*（nonterminal）的非空有穷集。\(\forall A \in V\)，\(A\) 表示了一个*语法范畴*（Syntactic Category）
+- \(T\) 是*终结符*（terminal）的非空有穷集，\(V \cap T = \emptyset\)
 - \(P\) 是产生式（production）的非空有穷集
   + 规则形式为 \(\alpha \rightarrow \beta\)，其中 \(\alpha \in (V \cup T)^{+}\)，\(\beta \in (V \cup T)^{*}\)
 - \(S\) 是开始符号（start symbol），\(S \in V\)
@@ -22,7 +22,7 @@
 #+begin_definition
 *(推导与规约)*
 
-设 \(G = (V, T, P, S)\) 是一个文法，如果 \(\alpha \rightarrow \beta \in P\)，\(\gamma, \delta \in (V \cup T)^*\)，则称 \(\gamma \alpha \delta \xRightarrow[G]{} \gamma \beta \delta\) 为​*推导*​（derivation）。反之称为​*规约*​（reduction）。
+设 \(G = (V, T, P, S)\) 是一个文法，如果 \(\alpha \rightarrow \beta \in P\)，\(\gamma, \delta \in (V \cup T)^*\)，则称 \(\gamma \alpha \delta \xRightarrow[G]{} \gamma \beta \delta\) 为*推导*（derivation）。反之称为*规约*（reduction）。
 #+end_definition
 
 \(\xRightarrow{+}\)，\(\xRightarrow{*}\)，\(\xRightarrow{n}\) 分别表示至少推一步、推若干步和推 \(n\) 步
@@ -31,23 +31,23 @@
 #+begin_definition
 *(语言)*
 
-设 \(G = (V, T, P, S)\)，则称 \(L(G) = \{w \vert w \in T^* \wedge S \xRightarrow{*} w\}\) 是文法的​*语言*​（language）。
+设 \(G = (V, T, P, S)\)，则称 \(L(G) = \{w \vert w \in T^ * \wedge S \xRightarrow{* } w\}\) 是文法的*语言*（language）。
 #+end_definition
 
 #+begin_definition
 *(句子)*
 
-设 \(G\) 是文法，\(\forall w \in L(G)\)，\(w\) 是 \(G\) 的一个​*句子*​（sentence）。
+设 \(G\) 是文法，\(\forall w \in L(G)\)，\(w\) 是 \(G\) 的一个*句子*（sentence）。
 #+end_definition
 
 ** 句型
 #+begin_definition
 *(句型)*
 
-设 \(G = (V, T, P, S)\)，则 \(\forall \alpha \in (V \cup T)^\ast\) ，如果 \(S \xRightarrow{*} \alpha\)，则称 \(\alpha\) 是 \(G\) 产生的一个​*句型*​（sentence form）。
+设 \(G = (V, T, P, S)\)，则 \(\forall \alpha \in (V \cup T)^\ast\) ，如果 \(S \xRightarrow{*} \alpha\)，则称 \(\alpha\) 是 \(G\) 产生的一个*句型*（sentence form）。
 #+end_definition
 
-句子和句型的区别在于是否​*可能*​包含非终结符。
+句子和句型的区别在于是否*可能*包含非终结符。
 
 * Chomosky 体系
 ** 文法
@@ -99,10 +99,10 @@ B_1 B_2 \dots B_{n-1} C_n &\rightarrow B_1 B_2 \dots B_{n-1} B_n \dots B_{m}
 #+begin_definition
 *(线性文法)*
 
-- ​*线性文法*​（liner grammar）：设 \(G = (V, T, P, S)\)，如果 \(\forall \alpha \rightarrow \beta \in P\) 都具有以下形式：
+- *线性文法*（liner grammar）：设 \(G = (V, T, P, S)\)，如果 \(\forall \alpha \rightarrow \beta \in P\) 都具有以下形式：
   - \(A \rightarrow w\) 或 \(A \rightarrow wB\)（\(A, B \in V, w \in T^**\)），则 \(G\) 为线性文法
-- ​*左线性文法*​（left liner grammar）：\(\alpha \rightarrow \beta\) 为 \(A \rightarrow w\) 或 \(A \rightarrow Bw\)
-- ​*右线性文法*​（right liner grammar）：\(\alpha \rightarrow \beta\) 为 \(A \rightarrow w\) 或 \(A \rightarrow wB\)
+- *左线性文法*（left liner grammar）：\(\alpha \rightarrow \beta\) 为 \(A \rightarrow w\) 或 \(A \rightarrow Bw\)
+- *右线性文法*（right liner grammar）：\(\alpha \rightarrow \beta\) 为 \(A \rightarrow w\) 或 \(A \rightarrow wB\)
 #+end_definition
 
 右线性文法即为 RG。由于左线性文法和右线性文法等价，所以左线性文法也是 RG。但是如果一个语言的规则混合了左右线性文法，则不是 RG。

@@ -112,7 +112,7 @@ Application 的步骤为将左侧的 abstraction 中的约束变量替换成右�
 
   Haskell 的更加特殊，使用了一个优化过的形式 *call by need*：即当使用的时候才进行 reduce 和 substitute。这样的 reduce 方法使得运行时环境要记录下这个 term 出现的位置（方便实时替换），因此这种 reduction relation 是基于 syntax graph 的，而非 AST。
 
-- *Call by value* strategy：最常用的 redex 策略。reduce 外层，且一个 redex 会被 reduce 仅当它的参数已经是一个 value。value 即一个不能被 reduce 的形式，包括 lambda abstractions，numbers，booleans 等。
+- *Call by value* strategy (Applicative-order)：最常用的 redex 策略。reduce 外层，且一个 redex 会被 reduce 仅当它的参数已经是一个 value。value 即一个不能被 reduce 的形式，包括 lambda abstractions，numbers，booleans 等。
 
   \begin{aligned}
     & \mathtt{id}\ \underline{(\mathtt{id}\ (\lambda z. \mathtt{id}\ z))} \\
@@ -122,7 +122,7 @@ Application 的步骤为将左侧的 abstraction 中的约束变量替换成右�
 
 其中，=normal order strategy= 和 =call by name= 都是 partial evaluation。它们在 reduce 的时候可能函数还没有被 apply。
 
-=Call by value= 是 strict 的，即无论参数有没有用到，都会被 evaluate；反之 =call by name= 和 =call by need= 则只有在用到的时候才计算。
+=Call by value= 是 strict 的，即无论参数有没有用到，都会被 evaluate；反之 =call by name= 和 =call by need= 则只有在用到某个参数的时候才计算。
 
 *本书后面都使用 =call by value=*。因为这样实现 exceptions 和 reference 会更简单。
 
@@ -138,8 +138,8 @@ f = \lambda x. \lambda y. s
 
 \begin{aligned}
 f v w & = (f\ v) w \\
-      & = (\lambda y.[x \mapsto v]s)\ w \\
-      & = [y \mapsto w][x \mapsto v]s
+      & \rightarrow (\lambda y.[x \mapsto v]s)\ w \\
+      & \rightarrow [y \mapsto w][x \mapsto v]s
 \end{aligned}
 
 这种参数一个个被 apply 的过程称为 currying。
@@ -511,6 +511,25 @@ Y\ f = f\ (Y\ f);
 - The term =iszro= represents the operation =iszero=（严格来说 =iszro= 返回的是 =tru=，但是这里先将其看作等价）
 
 假设有一个程序对数字进行复杂的运算，并返回一个 boolean（或者其他非数字），那么如果将其中所有的 real numbers 和 arithmetic operations 换成对应的 lambda-terms，并且求解程序，则可以得到和原来完全相同的答案。即如果把程序看成一个黑盒，那么 real numbers 和 Church-numerals representation 没有任何区别。
+
+** \(\beta\)-equivalance
+
+#+begin_comment
+非 TaPL 内容。
+#+end_comment
+
+上面在推导的时候用的都是 \(\rightarrow\)，因为到目前为止的 \(=\) 都是按照定义展开。这里也可以定义 \(\beta\)-equivalance，定义 beta-reduction 下的等价关系：
+
+#+begin_definition
+*(\(beta\)-equivalance)*
+
+等价关系 \[\equiv_{\beta}\] 的定义如下：
+
+- \(M \rightarrow_{\beta} M' \Leftrightarrow M \equiv_{\beta} M'\)
+- \(\forall M, M \equiv_{\beta} M'\)
+- \(M \equiv_{\beta} M' \Leftrightarrow M' \equiv_{\beta} M\)
+- \(M \equiv_{\beta} M' \wedge M' \equiv_{\beta} M'' \Leftrightarrow M \equiv_{\beta} M''\)
+#+end_definition
 
 * Formalities
 ** Syntax

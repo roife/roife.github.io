@@ -90,7 +90,7 @@ DFA 中缺少的边（状态转移）都默认转移到一个**陷阱状态**（
 
 **(NFA)**
 
-\*非确定性有穷状态自动机\*（non-deterministic finite automaton，NFA）
+**非确定性有穷状态自动机**（non-deterministic finite automaton，NFA）
 
 \\[M =(Q, \Sigma, \delta, q\_0, F)\\]
 
