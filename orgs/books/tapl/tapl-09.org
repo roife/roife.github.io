@@ -330,14 +330,20 @@ Induction/Elimination 这两个词来自类型论和逻辑之间的联系，即 
 | Logic                         | Programming Languages                  |
 |-------------------------------+----------------------------------------|
 | propositions                  | types                                  |
-| proposition \(P \supset Q\)   | type \(P \rightarrow Q\)               |
-| proposition \(P \wedge Q\)    | type \(P \times Q\)                    |
+| proposition \(P \supset Q\)         | type \(P \rightarrow Q\)                         |
+| proposition \(P \wedge Q\)         | type \(P \times Q\)                         |
 | proof of proposition \(P\)    | term \(t\) of type \(P\)               |
 | proposition \(P\) is provable | type \(P\) is inhabited (by some term) |
 
 STLC 中的一个 term 是其类型对应的逻辑命题的一个证明。计算（computation）对应了逻辑运算中用来化简证明的 cut elimination。
 
 由于 CH 同构的存在，逻辑和类型系统两个领域的进展往往可以相互转换。
+
+如果在这个系统能再引入 =fix=，就会得到
+
+\[\dfrac{\Gamma \vdash M : \tau \rightarrow \tau}{\Gamma \vdash \operatorname{\mathtt{fix}}\ : \tau}\]
+
+也就是说不终止的证明可以证明任意命题成立，所以引入 =fix= 的系统是 inconsistent logic。
 
 * Erasure and Typability
 很多编译器会在类型检查的阶段利用类型信息进行分析，但是在运行时会将类型信息抹掉，还原成无类型程序。这个过程可以用 erasure 函数完成。

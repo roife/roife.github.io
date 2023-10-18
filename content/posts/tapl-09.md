@@ -411,6 +411,12 @@ STLC 中的一个 term 是其类型对应的逻辑命题的一个证明。计算
 
 由于 CH 同构的存在，逻辑和类型系统两个领域的进展往往可以相互转换。
 
+如果在这个系统能再引入 `fix`，就会得到
+
+\\[\dfrac{\Gamma \vdash M : \tau \rightarrow \tau}{\Gamma \vdash \operatorname{\mathtt{fix}}\ : \tau}\\]
+
+也就是说不终止的证明可以证明任意命题成立。
+
 
 ## Erasure and Typability {#erasure-and-typability}
 

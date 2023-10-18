@@ -39,7 +39,9 @@ q, & x = \varepsilon \\\\
 \delta(\hat{\delta}(q, w), a), & x = wa\\\\
 \end{cases}\\]
 
-DFA 可以看成具有有穷的存储功能。
+{{< figure src="/img/in-post/post-formal-language-and-automata/dfa.png" caption="<span class=\"figure-number\">Figure 1: </span>DFA" width="50%" >}}
+
+DFA 可以看成具有有穷的状态存储功能。
 
 
 ### 接受 {#接受}
