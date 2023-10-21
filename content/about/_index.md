@@ -20,6 +20,6 @@ header_img: "/img/about-bg.jpg"
 - 摇滚 / （斯拉夫）民谣
 - Furry
 
-[>> 查看 roife 的简历 <<](https://github.com/roife/resume/blob/master/resume-cn.pdf)
+[>> 查看 roife 的简历 <<](https://github.com/roife/resume/blob/master/resume.pdf)
 
 > [原来的博客文章](https://github.com/roife/roife.github.io/tree/master/_posts)正在陆续搬迁中
