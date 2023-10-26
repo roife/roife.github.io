@@ -19,6 +19,7 @@ header_img: "/img/about-bg.jpg"
 - 摄影 ℤ
 - 摇滚 / （斯拉夫）民谣
 - Furry
+- HAM
 
 [>> 查看 roife 的简历 <<](https://github.com/roife/resume/blob/master/resume.pdf)
 
