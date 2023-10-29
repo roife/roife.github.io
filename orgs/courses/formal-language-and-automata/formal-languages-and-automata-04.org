@@ -170,7 +170,11 @@
 \end{algorithm}
 #+end_pseudocode
 
-化简时不能直接删除会产生空产生式的推导。在去除空串时，需要先求出可空变量集合 \(U\)。对于 \(A \rightarrow X_1 X_2 \dots X_n\)，如果 \(X_i \rightarrow \varepsilon\)，那么应该令 \(A \rightarrow X_1 X_2 \dots X_{i-1} X_{i+1} \dots X_n | \)
+化简时不能直接删除会产生空产生式的推导。在去除空串时，需要先求出可空变量集合 \(U\)。对于 \(A \rightarrow X_1 X_2 \dots X_n\)，，令 \(A \rightarrow \alpha_1 \alpha_2 \dots \alpha_n\)，其中
+
+- 如果 \(X_i \in U\)，那么 \(\alpha_i = X_i\) 或 \(\alpha_i = ε\)
+- 否则 \(\alpha_i = X_i\)
+- \(\alpha_1, \alpha_2, \dots, \alpha_n\) 不能同时为空
 
 ** 去除单一产生式
 
@@ -194,6 +198,8 @@
 
 其中 \(A, B, C \in V\)，\(a \in T\)，则称 \(G\) 为*乔姆斯基范式文法*（Chomsky normal form），简称 CNF。
 #+end_definition
+
+CNF 的特点是它的语法树是一颗类似二叉树的形式。
 
 对于一个普通的文法，转换为 CNF 的步骤如下：
 

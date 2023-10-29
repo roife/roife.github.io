@@ -17,7 +17,6 @@ header_img: "/img/about-bg.jpg"
   + Emacs
 - 数学 Algebra / Mathematical Logic
 - 摄影 ℤ
-- 摇滚 / （斯拉夫）民谣
 - Furry
 - HAM
 

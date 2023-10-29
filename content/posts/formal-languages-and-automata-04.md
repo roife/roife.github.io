@@ -205,7 +205,11 @@ draft = false
 
 </div>
 
-化简时不能直接删除会产生空产生式的推导。在去除空串时，需要先求出可空变量集合 \\(U\\)。对于 \\(A \rightarrow X\_1 X\_2 \dots X\_n\\)，如果 \\(X\_i \rightarrow \varepsilon\\)，那么应该令 \\(A \rightarrow X\_1 X\_2 \dots X\_{i-1} X\_{i+1} \dots X\_n | \\)
+化简时不能直接删除会产生空产生式的推导。在去除空串时，需要先求出可空变量集合 \\(U\\)。对于 \\(A \rightarrow X\_1 X\_2 \dots X\_n\\)，，令 \\(A \rightarrow \alpha\_1 \alpha\_2 \dots \alpha\_n\\)，其中
+
+-   如果 \\(X\_i \in U\\)，那么 \\(\alpha\_i = X\_i\\) 或 \\(\alpha\_i = ε\\)
+-   否则 \\(\alpha\_i = X\_i\\)
+-   \\(\alpha\_1, \alpha\_2, \dots, \alpha\_n\\) 不能同时为空
 
 
 ### 去除单一产生式 {#去除单一产生式}
@@ -235,6 +239,8 @@ draft = false
 其中 \\(A, B, C \in V\\)，\\(a \in T\\)，则称 \\(G\\) 为**乔姆斯基范式文法**（Chomsky normal form），简称 CNF。
 
 </div>
+
+CNF 的特点是它的语法树是一颗类似二叉树的形式。
 
 对于一个普通的文法，转换为 CNF 的步骤如下：
 
