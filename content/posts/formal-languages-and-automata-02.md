@@ -508,3 +508,32 @@ Moore 机与 Mealy 机描述能力等价。
     -   \\(\forall [p, q, x] \in Q\_2, \lambda\_2([p, q, x]) = \lambda\_1(p, x)\\)
 
 </div>
+
+
+### 一个有趣的题 {#一个有趣的题}
+
+<div class="proposition">
+
+定义语言 \\(L\\) 上的运算 \\(\operatorname{\mathrm{Hlf}}\\) 为 \\(\operatorname{\mathrm{Hlf}}(L) = \\{x | \exists y. |x| = |y| \wedge xy \in L\\}\\)。
+
+证明 RL 对于 \\(\operatorname{\mathrm{Hlf}}\\) 封闭。
+
+</div>
+
+<div class="proof">
+
+不妨设 RL \\(L\\) 对应 DFA \\(M(Q, \Sigma, \delta, q\_0, F)\\)，现构造一个 FA \\(M'(Q \cup \\{q\_0'\\}, \Sigma, \delta', q\_0', \emptyset)\\)，其中
+
+\\[\delta'(q, \varepsilon) = \begin{cases}
+F, & q = q\_0' \\\\
+\\{ p | \exists b \in \Sigma. \delta(p, b) = q \\}, & q \in Q
+\end{cases}\\]
+
+即 \\(M'\\) 是一个从 \\(M\\) 的终态集开始与 \\(M\\) 逆向运动的状态机。下面用这两个状态机来联合构造一个 FA \\(M''(Q \times 2^Q, \Sigma, \delta'', [q\_0, F], F'')\\)，其中
+
+-   \\(F'' = \\{[q, q] | q \in Q\\}\\)
+-   \\(\delta''([q, p], a) = \\{[s, t] | \delta(q, a) = s \wedge t \in \delta'(p, a)\\}\\)
+
+\\(M''\\) 的状态有两个分量，第一个分量表示 \\(M\\) 的运动，即对于 \\(x\\) 的构造；第二个分量表示 \\(M''\\) 的运动，即对于 \\(y\\) 的构造。由于每次转移两个分量都需要走一步，因此 \\(|x| = |y|\\)。当两个分量的状态相遇时，满足 \\(xy \in L\\)。
+
+</div>
