@@ -1,6 +1,6 @@
 #+title: [形式语言] 03 Regular Expression and Regular Language
 #+date: 2023-09-23
-#+hugo_tags: 形式语言
+#+hugo_tags: 形式语言 自动机理论 理论计算机
 #+hugo_series: formal-language-and-automata
 
 * 正则表达式

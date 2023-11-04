@@ -3,7 +3,7 @@ title = "[形式语言] 06 Context-free Language"
 author = ["roife"]
 date = 2023-10-29
 series = ["formal-language-and-automata"]
-tags = ["形式语言"]
+tags = ["形式语言", "自动机理论", "理论计算机"]
 draft = false
 +++
 
@@ -17,7 +17,7 @@ draft = false
 
 -   \\(|v w x| \le N\\)
 -   \\(|vx| \ge 1\\)
--   \\(u v^i w x^i y \in L\ (i = 0, 1, \dots)\\)
+-   \\(u v^i w x^i y \in L\ (i = 0, 1, \dots)\\)（或者等价表述为 \\(\exists A \in V. S \xRightarrow{\*} uAy; A \xRightarrow{\*} vAx | w\\)）
 
 </div>
 
@@ -65,7 +65,7 @@ CFL 上的泵引理的用法与 RL 的泵引理一致，通常使用反证法来
 ## Ogden 引理 {#ogden-引理}
 
 
-### 描述和证明 {#描述和证明}
+### Ogden 定理的证明 {#ogden-定理的证明}
 
 <div class="lemma">
 
@@ -197,6 +197,126 @@ Bader 和 Moura 推广了 Ogden 引理，加入了“排除点”：
 -   \\(uv^iwx^iy \in L\ (i = 0, 1, \dots)\\)
 
 </div>
+
+
+## Parihk 定理 {#parihk-定理}
+
+
+### Parihk 定理的证明 {#parihk-定理的证明}
+
+Parihk 定理表明对于一个 CFL，如果我们只关心其中每个字母出现的**次数**而不关心顺序，那么这个 CFL 可以对应到一个 RL。
+
+<div class="definition">
+
+**(Parikh Vector)**
+
+设字母表 \\(\Sigma = \\{a\_1, a\_2, \dots, a\_k\\}\\)，定义一个句子 \\(w\\) 的 **parihk vector** 为
+
+\\[p : \Sigma^\* \rightarrow \mathbb{N}^k \overset{\text{def}}{=} p(w) = (|w|\_{a\_1}, |w|\_{a\_2}, \dots, |w|\_{a\_k})\\]
+
+其中 \\(|w|\_{a\_i}\\) 表示 \\(a\_i\\) 在 \\(w\\) 中出现的次数。
+
+</div>
+
+<div class="definition">
+
+**(Linear and Semilinear)**
+
+定义**线性**（linear）集合 \\(u\\) 满足 \\(\exists u\_0, u\_1, \dots, u\_k. u = \\{u\_0 + t\_1 u\_1 + \dots + t\_k u\_k | t\_1, t\_2, \dots, t\_k \in \mathbb{N} \\}\\)，或者写作 \\(u = u\_0 + \\{u\_1, u\_2, \dots, u\_k\\}^{\*}\\)。
+
+定义**半线性**（semilinear）集合 \\(u\\) 满足 \\(\exists u\_0, u\_1, \dots, u\_k. u = u\_1 \cup u\_2 \cup \dots u\_k \\)，其中 \\(u\_i\ (1 \le i \le k)\\) 是线性集合。根据定义，有限个半线性集合的并仍然是半线性集合。
+
+</div>
+
+显然任何的 parihk vector 都可以表示成基向量（单字母对应的 parihk vector）的线性组合。
+
+在描述 parihk's theorem 前，需要证明一个泵引理的增强形式：
+
+<div class="lemma">
+
+设 CFL \\(L\\)，考虑对应的 CNF \\(G\\) 且 \\(L(G) = L\\)。存在 \\(N \ge 1\\)，对于任意 \\(k \ge 1\\)，对于任意 \\(z \in L\\) 且 \\(|z| \ge N^k\\)，存在 \\(u, x\_1, \dots, x\_k, w, y\_k, \dots, y\_1, v\\) 使得 \\(z = u x\_1 x\_2 \dots x\_k w y\_k y\_{k-1} \dots y\_1 v\\) 满足
+
+-   \\(|x\_1 x\_2 \dots x\_k w y\_k y\_{k-1} \dots y\_1| \le N^k\\)
+-   \\(|x\_i y\_i| \ge 1\\)
+-   \\(\exists A \in V. S \xRightarrow{\*} uAv; A \xRightarrow{\*} w | x\_1 A y\_1 | x\_2 A y\_2 | \dots | x\_k A y\_k\\)
+
+</div>
+
+<div class="proof">
+
+由于 \\(|z| \ge N^k\\) 因此派生树上存在一条长度大于 \\(k|V| + 1\\) 的路径。
+
+类似泵引理的证明，根据鸽巢原理，路径上有 \\(k + 1\\) 个相同的语法变量，即语法变量 \\(A\\)。
+
+</div>
+
+<div class="theorem">
+
+**(Parihk's Theorem)**
+
+设 CFL \\(L\\)，令 \\(P(L)\\) 为 \\(L\\) 中句子对应的 parihk vectors 组成的集合（即 \\(P(L) = \\{p(w) | w \in L\\}\\)），则 \\(P(L)\\) 是半线性集合。
+
+如果 \\(S\\) 是一个半线性集合，那么存在一个 RL \\(L'\\)，其 parihk vector \\(P(L') = S\\)。
+
+</div>
+
+<div class="proof">
+
+Parihk 定理的证明分为两个部分。
+
+首先证明第一部分。设 CFL \\(L\\)，对应 CNF \\(G\\) 且 \\(L(G) = L\\)。
+
+设 \\(U \subseteq V\\)，定义 \\(L\_U \subseteq L\\)，其中 \\(\forall w \in L\_U\\)，存在一个推导 \\(S \xRightarrow{\*} w\\) **使用且仅使用**了 \\(U\\) 中的所有语法变量。
+
+显然有 \\(L = \cup\_U L\_U\\)。因此只要证明 \\(p(L\_U)\\) 是一个半线性集合。定义 \\(\xRightarrow[\subseteq U]{\*}\\) 表示推导中只使用了 \\(U\\) 中的语法变量（可以有没使用的）。对于某个 \\(U \in V\\)，可以构建两个有限集合 \\(F, G\\) 使得 \\(p(L\_U) = p(F G^\*)\\)：
+
+\\[F = \\{w \in L\_U \vert |w| < N^k\\}\\]
+
+\\[G = \\{xy | 1 \le |xy| \le N^k \wedge \exists A \in U. A \xRightarrow[\subseteq U]{\*} xAy\\}\\]
+
+-   首先证明 \\(p(L\_U) \subseteq p(F G^{\*})\\)，取 \\(w \in L\_U\\)，对 \\(|w|\\) 进行归纳
+    -   如果 \\(|w| < N^k\\)，那么 \\(w \in F\\)，即 \\(p(w) \in p(F G^\*)\\) 成立
+    -   否则，由增强的泵引理知 \\(\exists A \in V.\\)
+
+        \begin{aligned}
+        S
+        & \xRightarrow[d\_0]{\*} uAv \xRightarrow[d\_1]{\*} u x\_1 A y\_1 v \xRightarrow[d\_2]{\*} u x\_1 x\_2 A y\_2 y\_1 v \xRightarrow[d\_3]{\*} \dots \\\\
+        & \xRightarrow[d\_k]{\*} u x\_1 \dots x\_k A y\_k \dots y\_1 v \xRightarrow[d\_{k+1}]{\*} u x\_1 \dots x\_k w y\_k \dots y\_1 v
+        \end{aligned}
+
+        根据定义有 \\(A \in U\\)，因此 \\(U \backslash \\{A\\} \\) 中共有 \\(k - 1\\) 个元素。而在上面的推导 \\(d\_1, d\_2, \dots, d\_k\\) 一共有 \\(k\\) 次，因此有一个变量在这里至少被推出了两次，不妨设是 \\(d\_i, d\_j\\)。因此可以将 \\(A \xRightarrow[d\_i]{\*} x\_i A y\_i\\) 从中删掉，得到 \\(w'\\)，且仍然可以保证满足 \\(L\_U\\) 的定义。
+
+        \\[p(w) = p(uzv) + \sum\_{i=1}^k p(x\_i y\_i) = p(w') + p(x\_i y\_i)\\]
+
+        根据归纳假设知 \\(p(w') \in p(F G^\*)\\)，且根据定义有 \\(x\_i y\_i \in G\\)，所以 \\(p(w) \in p(F G^\*)\\)。
+
+-   下面证明 \\(p(FG^\*) \subset p(L\_U)\\)，对取 \\(w \in FG^\*\\)，对 \\(|w|\\) 进行归纳：
+    -   当 \\(|w| < N^k\\) 时，\\(w \in F \subset L\_U\\)，即 \\(p(w) \subset p(L\_U)\\)
+    -   否则令 \\(w = FG^\*G = w' x y \ (w' \in FG^\* \wedge xy \in G)\\)。根据归纳假设，\\(p(w') \subset p(L\_U)\\)，且 \\(\exists A \in U. A \xRightarrow[\subseteq U]{\*} xAy\\)。因此 \\(p(w') + p(xy) \subset p(L\_U)\\) 仍然成立。
+-   综上，第一部分证明完成
+
+第二部分的证明较为简单：首先空集和单字母都是 RL；如果 \\(u\_i\ (0 \le i \le k)\\) 都能表示成 RL，那么对于线性集合 \\(u = \\{u\_0 + t\_1 u\_1 + \dots + t\_k u\_k | t\_1, t\_2, \dots, t\_k \in \mathbb{N} \\}\\)，其对应的 RL 为 \\(\\{u\_0\\} (u\_1 + u\_2 + \dots + u\_k)^\*\\)。归纳知所有的线性集合都可以表示成 RL。由于 RL 对于并操作封闭，且半线性集合是线性集合的并，因此半线性集合也存在对应的 RL。
+
+</div>
+
+
+### 推论 {#推论}
+
+<div class="corollary">
+
+单字母表（\\(|\Sigma| = 1\\)）上的 CFL 一定是 RL。
+
+</div>
+
+<div class="proof">
+
+根据 Parihk theorem，对于 CFL \\(L\\) 一定存在 RL \\(L'\\) 与之对应。由于 \\(L\\) 中所有字母相同，因此 \\(L = L'\\)。所以 \\(L\\) 也是 RL。
+
+</div>
+
+如果一个语言与另个语言的 parihk vector 相同，而后者不是 RL，那么前者也不可能是 CFL。
+
+例如证明 \\(L = \\{a^n | \text{$n$ is a prime}\\}\\) 不是 CFL，根据推论有 \\(L\\) 一定是 RL。而这一点在前面证明了是不成立的，因此 \\(L\\) 一定也不是 CFL。
 
 
 ## 判定性质 {#判定性质}

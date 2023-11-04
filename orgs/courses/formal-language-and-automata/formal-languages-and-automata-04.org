@@ -1,6 +1,6 @@
 #+title: [形式语言] 04 Context-free Grammar
 #+date: 2023-10-15
-#+hugo_tags: 形式语言
+#+hugo_tags: 形式语言 自动机理论 理论计算机
 #+hugo_series: formal-language-and-automata
 
 * 派生

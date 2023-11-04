@@ -4,7 +4,7 @@ author = ["roife"]
 date = 2021-09-22
 aliases = ["/posts/2021-09-22-formal-languages-and-automata-01-grammar"]
 series = ["formal-language-and-automata"]
-tags = ["形式语言"]
+tags = ["形式语言", "自动机理论", "理论计算机"]
 draft = false
 +++
 

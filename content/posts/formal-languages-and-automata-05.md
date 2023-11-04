@@ -3,7 +3,7 @@ title = "[形式语言] 05 Pushdown Automaton"
 author = ["roife"]
 date = 2023-10-17
 series = ["formal-language-and-automata"]
-tags = ["形式语言"]
+tags = ["形式语言", "自动机理论", "理论计算机"]
 draft = false
 +++
 

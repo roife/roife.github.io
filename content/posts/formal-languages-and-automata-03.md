@@ -3,7 +3,7 @@ title = "[形式语言] 03 Regular Expression and Regular Language"
 author = ["roife"]
 date = 2023-09-23
 series = ["formal-language-and-automata"]
-tags = ["形式语言"]
+tags = ["形式语言", "自动机理论", "理论计算机"]
 draft = false
 +++
 
@@ -615,6 +615,41 @@ RL 的同态原像是 RL。
 -   \\(|x| = 0\\)，显然成立
 -   设 \\(|x| = |y| = k\\) 的时候成立，那么当 \\(|x| = |ya| = k + 1\\) 时，
 
-    \\[\delta(q\_0, x) = \delta'(q\_0, ya) = \delta'(\delta'(q\_0, y), a) = \delta(\delta(q\_0, f(y)), f(a)) = \delta(q\_0, f(y)f(a)) = = \delta(q\_0, f(x))\\]
+    \\[\delta(q\_0, x) = \delta'(q\_0, ya) = \delta'(\delta'(q\_0, y), a) = \delta(\delta(q\_0, f(y)), f(a)) = \delta(q\_0, f(y)f(a)) = \delta(q\_0, f(x))\\]
+
+由归纳知原命题成立，因此 \\(\delta'(q\_0, x) \in F \Leftrightarrow \delta(q\_0, f(x)) \in F\\)，即原命题成立。
+
+</div>
+
+
+#### 商 {#商}
+
+<div class="definition">
+
+**(商)**
+
+设 \\(L\_1, L\_2 \subseteq \Sigma^\*\\)，则**商**（quotient）定义为
+
+\\[L\_1 / L\_2 = \\{ x | \exists y \in L\_2, xy \in L\_1 \\}\\]
+
+</div>
+
+从定义可以看出，计算商主要考虑一个语言是否为另一个语言的后缀。
+
+<div class="theorem">
+
+设 \\(L\_1, L\_2 \subseteq \Sigma^\*\\)，如果 \\(L\_1\\) 是 RL，那么 \\(L\_1 / L\_2\\) 也是 RL。
+
+**注意此处并不要求 \\(L\_2\\) 是 RL。**
+
+</div>
+
+<div class="proof">
+
+设 \\(L\_1\\) 对应的 DFA 为 \\(M(Q, \Sigma, \delta, q\_0, F)\\)。定义 \\(M_2(Q, &Sigma;, &delta;, q_0, F')，其中
+
+\\[F' = \\{q | \exists y \in L\_2, \delta(q, y) \in F\\}\\]
+
+显然 \\(L(M') = L\_1 / L\_2\\)
 
 </div>
