@@ -753,7 +753,7 @@ DCFL 对补运算封闭。
 下面用反证法证明 \\(L\\) 不是 DCFL：
 
 -   假设 \\(L\\) 是 DCFL，那么它对补集封闭
--   则其补集 \\(L' = \\{a^ib^jc^k | i = j = k \ge 0\\} \cup \\{(a|b|c)^\*\\}\\) 也是 DCFL，同时也是一个 CFL
+-   则其补集 \\(L' = \\{a^ib^jc^k | i = j = k \ge 0\\} \cup \\{(a|b|c)^\* | a, b, c \text{ are unordered}\\}\\) 也是 DCFL，同时也是一个 CFL
 -   那么 \\(L'' = L' \cap (a\*b\*c\*) = \\{a^ib^jc^k | i = j = k \ge 0\\}\\) 也是一个 CFL
 -   显然这并不成立，因此 \\(L\\) 不是 DCFL。
 
