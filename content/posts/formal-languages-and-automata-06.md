@@ -122,8 +122,6 @@ CFL 上的泵引理的用法与 RL 的泵引理一致，通常使用反证法来
 
 </div>
 
-<div class="proof">
-
 首先不妨尝试使用泵引理来证明：设 \\(N\\) 为仅依赖于 \\(L\\) 的正整数，取
 
 \\[z = a^N b^{N + n} c^{N + m}\\]
@@ -139,6 +137,8 @@ CFL 上的泵引理的用法与 RL 的泵引理一致，通常使用反证法来
 \\[uv^iwx^iy = a^{N + 2N!} b^{N + N! + (2N!/k) h} c^{N + 2N!} \notin L\\]
 
 但是当 \\(v = b^k, x = c^h\\) 时用这种思路就无法找到矛盾了。这里需要用 Ogden 引理。
+
+<div class="proof">
 
 取 \\(z = \underline{a^N} b^{N + N!} c^{N + 2N!}\\)，设 \\(z = uvwxy\\) 满足 Ogden 引理，那么 \\(vx\\) 中一定存在至少一个 \\(a\\)，因此可能有三种情况：
 
@@ -295,7 +295,7 @@ Parihk 定理的证明分为两个部分。
     -   否则令 \\(w = FG^\*G = w' x y \ (w' \in FG^\* \wedge xy \in G)\\)。根据归纳假设，\\(p(w') \subset p(L\_U)\\)，且 \\(\exists A \in U. A \xRightarrow[\subseteq U]{\*} xAy\\)。因此 \\(p(w') + p(xy) \subset p(L\_U)\\) 仍然成立。
 -   综上，第一部分证明完成
 
-第二部分的证明较为简单：首先空集和单字母都是 RL；如果 \\(u\_i\ (0 \le i \le k)\\) 都能表示成 RL，那么对于线性集合 \\(u = \\{u\_0 + t\_1 u\_1 + \dots + t\_k u\_k | t\_1, t\_2, \dots, t\_k \in \mathbb{N} \\}\\)，其对应的 RL 为 \\(\\{u\_0\\} (u\_1 + u\_2 + \dots + u\_k)^\*\\)。归纳知所有的线性集合都可以表示成 RL。由于 RL 对于并操作封闭，且半线性集合是线性集合的并，因此半线性集合也存在对应的 RL。
+第二部分的证明较为简单：首先空集和单字母都是 RL；如果 \\(u\_i\ (0 \le i \le k)\\) 都能表示成 RL，那么对于线性集合 \\(u = \\{u\_0 + t\_1 u\_1 + \dots + t\_k u\_k | t\_1, t\_2, \dots, t\_k \in \mathbb{N} \\}\\)，其对应的 RL 为 \\(\\{u\_0\\} (u\_1 | u\_2 | \dots | u\_k)^\*\\)。归纳知所有的线性集合都可以表示成 RL。由于 RL 对于并操作封闭，且半线性集合是线性集合的并，因此半线性集合也存在对应的 RL。
 
 </div>
 
@@ -339,7 +339,7 @@ Parihk 定理的证明分为两个部分。
 
 ### Membership problem (CYK) {#membership-problem--cyk}
 
-一般使用 CYK 算法判定一个句子是否属于一个 CFL，其复杂度为 \\(O(n^3)\\) ，思想是区间 DP。
+一般使用 CYK 算法判定一个句子是否属于一个 CFL，其复杂度为 \\(O(n^3 |P|)\\) ，思想是区间 DP。
 
 <div class="pseudocode">
 
@@ -603,3 +603,200 @@ CFL 的同态原像是 CFL。
 综上，定理得证。
 
 </div>
+
+
+## DCFL {#dcfl}
+
+
+### DCFL 对补封闭 {#dcfl-对补封闭}
+
+设 DCFL \\(L\\)，以终态接收的 DPDA \\(M\\) 满足 \\(L = L(M)\\)。
+
+考虑 \\(\Sigma^\* - L\\) 一个简单的想法是为 DPDA 中状态机的部分取反，这使得 \\(L\\) 中的句子会被拒绝，并且大部分 \\(\Sigma^\* - L\\) 的句子会被接收。但是这还有两个问题：
+
+-   对于 \\(w \notin L\\)，有可能 \\(M\\) 在没有读完 \\(w\\) 时没有下一个动作（例如栈空了）导致无法接收；那么在新自动机中依然无法接收 \\(w\\)
+-   \\(M\\) 中可能存在 \\(\varepsilon\\) 转移
+    -   对于 \\(w \notin L\\)，在 \\(M\\) 可以通过 \\(\varepsilon\\) 使其在 DPDA 内无限循环从而不接收它；那么在新自动机中 \\(w\\) 仍然会无限循环，仍然无法接收
+    -   对于 \\(w \in L\\)，这使得 \\(M\\) 可以先在非终止状态读完 \\(w\\) 然后用一个 \\(\varepsilon\\) 转移到终止状态；那么在新自动机中仍然会接受 \\(w\\)
+
+下面首先解决第一个问题和第二个问题的第一部分：
+
+-   对于第一个问题
+    -   在栈底增加一个符号（\\(Z\_0'\\)）避免读至空栈无法接收的情况
+    -   补充状态机的陷阱状态（\\(d\\)）
+-   对于第二个问题，用类似 \\(\varepsilon\\)-NFA 到 NFA 的思路，消除 \\(\varepsilon\\) 移动
+    -   对于无限循环直接 stuck
+    -   否则，增加一个状态 \\(f\\) 作为最终状态：到达 \\(f\\) 时如果读完则接收，否则 stuck
+
+<div class="lemma">
+
+对于任意 DPDA \\(M\\) 存在一个与 \\(M\\) 等价的 DPDA \\(M'\\) 使得 \\(\forall w \in \Sigma^\*. M'\\) 都能读完 \\(w\\)。
+
+</div>
+
+<div class="proof">
+
+设 DPDA \\(M = (Q, \Sigma, \Gamma, \delta, q\_0, Z\_0, F)\\)。
+
+令 DPDA \\(M' = (Q \cup \\{q\_0', d, f\\}, \Sigma, \Gamma \cup \\{Z\_0'\\}, \delta\_0', q\_0', Z\_0', F \cup \\{f\\})\\)，其中：
+
+-   \\(\delta'(q\_0', \varepsilon, Z\_0') = \\{(q\_0, Z\_0 Z\_0')\\}\\)
+-   处理读不完 stuck 的情况：
+
+    \\[\forall q \in Q, a \in \Sigma, Z \in \Gamma. \delta(q, a, Z) = \emptyset \wedge \delta(q, \varepsilon, Z) = \emptyset \rightarrow \delta'(q, a, Z) = \\{(d, Z)\\} \\]
+
+-   如果一个状态后续只有 \\(\varepsilon\\) 转移，即对于 \\(q \in Q, Z \in \Gamma. \forall i \in \mathbb{N}. (q, \varepsilon, Z) \xRightarrow[M]{i} (q\_i, \varepsilon, \gamma\_i)\\)：
+    -   如果这导致无限循环并无法终止，则令其 stuck，即：
+
+        \\[\forall i \in \mathbb{N}. q\_i \notin F \rightarrow \delta'(q, \varepsilon, Z) = \\{(d, Z)\\}\\]
+
+    -   否则，若它可以终止，那么它可能会导致第二个问题的第一种情况。这里使用一个特殊的状态 \\(f\\)
+
+        \\[\exists i \in \mathbb{N}. q\_i \in F \rightarrow \delta'(q, \varepsilon, Z) = \\{(f, Z)\\}\\]
+
+    -   根据定义，如果此时已经读完 \\(w\\)，由于已进入接受状态 \\(f\\)，因此 \\(w\\) 会被接受；否则 \\(w\\) 不会被 \\(M\\) 接收，\\(M'\\) 会进入 \\((d, Z)\\)（见下面的陷阱状态处理）
+
+-   \\(\forall q \in Q, a \in \Sigma \cup \\{\varepsilon\\}, Z \in \Gamma.\\) 如果 \\(\delta'(q, a, Z)\\) 没有被上面的步骤定义，那么 \\(\delta'(q, a, Z) = \delta(q, a, Z)\\)
+
+最后是陷阱状态的处理：
+
+-   \\(\forall a \in \Sigma, Z \in \Gamma \cup \\{Z\_0'\\}. \delta'(d, a, Z) = \\{(d, Z)\\}\\)
+-   \\(\forall Z \in \Gamma \cup \\{Z\_0'\\}. \delta'(f, \varepsilon, Z) = (d, Z)\\)
+
+</div>
+
+最后考虑处理第二个问题的第二种情况，需要记录当前状态是不是刚从终态通过 \\(\varepsilon\\) 转移出来。
+
+<div class="theorem">
+
+DCFL 对补运算封闭。
+
+</div>
+
+<div class="proof">
+
+对于给定的 DFCL \\(L\\)，设对应的 DPDA 为 \\(M\\)，那么根据上面的 lemma 存在一个与 \\(M\\) 等价的 DPDA \\(M' = \\{Q, \Sigma, \Gamma, \delta, q\_0, Z\_0, F\\}\\) 使得 \\(\forall w \in \Sigma^\*\\)，\\(M'\\) 都能读完 \\(w\\)。
+
+构造 \\(M'' = (Q', \Sigma, \Gamma, \delta', q\_0', Z\_0, F')\\)，其中：
+
+-   \\(Q' = \\{[q, k] | q \in Q, k \in \\{1, 2, 3\\}\\}\\)
+-   \\(F' = \\{[q, 3] | q \in Q\\}\\)
+-   \\(q\_0' = \begin{cases} [q\_0, 1], &q\_0 \in F \\\ [q\_0, 2], &q\_0 \notin F \end{cases}\\)
+
+此处 \\(k = 1\\) 表示 \\(M'\\) 正处于终态或刚从终态通过 \\(\varepsilon\\) 移动转出；\\(k = 2\\) 是普通状态；\\(k = 3\\) 是 \\(M''\\) 的真正终态。
+
+-   如果 \\(\delta(q, \varepsilon, Z) = (p, \gamma)\\)，对于 \\(k = 1 \vee 2\\)
+
+    \\[\delta'([q, k], \varepsilon, Z) = \begin{cases}
+      \\{([p, 1], \gamma)\\}, & k = 1 \vee p \in F \\\\
+      \\{([p, 2], \gamma)\\}, & \text{else}
+      \end{cases}\\]
+
+-   如果 \\(\delta(q, a, Z) = (p, \gamma)\\)
+
+    -   对于非终态允许取反接受：
+
+        \\[\delta'([q, 2], \varepsilon, Z) = \\{([q, 3], Z)\\}\\]
+
+    -   对于特殊状态，考虑要不要返回普通状态
+
+    \\[\delta'([q, 1], a, Z) = \delta'([q, 3], a, Z) = \begin{cases}
+      \\{([p, 1], \gamma)\\}, & p \in F \\\\
+      \\{([p, 2], \gamma)\\}, & p \notin F \\\\
+      \end{cases}\\]
+
+    这里的 \\(\varepsilon\\) 转移隐含了 \\(([q, 2], ax, Z) \vdash\_{M''} ([q, 3], ax, Z) \vdash\_{M''} \begin{cases}
+      ([p, 1], x, \gamma), & p \in F \\\\
+      ([p, 2], x, \gamma), & p \notin F \\\\
+      \end{cases}\\)。也就是说 \\(M''\\) 在读入一个字符后行为是一致的，只需要考虑 \\(M'\\) 会不会转移到终态。
+
+显然 \\(M''\\) 是 DPDA。
+
+下面证明 \\(L(M'')\\) 是 \\(L(M')\\)（即 \\(L(M'')\\)）的补集。
+
+-   设 \\(w = a\_1 a\_2 \dots a\_n \in L(M')\\)，\\(M'\\) 读完 \\(a\_n\\) 后经过数步必然会进入到某一终态 \\(q\\)，即 \\((p, a\_n, Z) \vdash\_{M'}^\* (q, \varepsilon, \gamma)\\)。不妨设 \\(q\\) 是 \\(M'\\) 遇到的第一个终态
+    -   读完 \\(a\_n\\) 后，在遇到终态前，\\(M'\\) 可能会先经过一串 \\(\varepsilon\\) 转移；遇到终态后，也会经过一串 \\(\varepsilon\\) 转移
+    -   根据定义，\\(M''\\) 读完 \\(a\_n\\) 后处于 \\([p', 2]\\)（因为后面的 \\(q\\) 才是第一个遇到的终态，\\(M'\\) 还处于非终态）；然后经过一串 \\(\varepsilon\\) 转移。这个过程中 \\(k\\) 保持不变，直到遇到终态 \\(q\\)
+    -   遇到终态 \\(q\\) 后 \\(k = 1\\)
+    -   在经过 \\(q\\) 之后只有 \\(\varepsilon\\) 转移，因此一直有 \\(k = 1\\)，所以 \\(M''\\) 不会接受 \\(w\\)
+-   设 \\(w = a\_1 a\_2 \dots a\_n \notin L(M')\\)
+    -   读完 \\(a\_n\\) 后，\\(M'\\) 可能会先经过一串 \\(\varepsilon\\) 转移
+    -   \\(M'\\) 读完 \\(a\_n\\) 后一定在非终态，根据分析此时 \\(M''\\) 处于 \\([p, 2]\\)
+    -   其后会经历一串 \\(\varepsilon\\) 转移，根据定义始终有 \\(k = 2\\)
+    -   结束时处于 \\([q, 2]\\) 此时通过一个 \\(\varepsilon\\) 转移即得到 \\([q, 3]\\)。因此 \\(M''\\) 可以接收 \\(w\\)
+
+综上，\\(L(M'')\\) 就是 \\(L(M)\\) 的补集。同时由于 \\(M''\\) 是 DPDA，因此 DCFL 的补集也是 DCFL。
+
+</div>
+
+<div class="corollary">
+
+对每个 DCFL \\(L\\) 都存在一个 DPDA \\(M\\) 接受 \\(L\\) 并且
+
+\\[\forall q \in F, x \in \Gamma. \delta(q, \varepsilon, x) = \emptyset\\]
+
+</div>
+
+<div class="proof">
+
+上面构造的 \\(M''\\) 满足 \\(\forall q \in Q. \delta'([q, 3], \varepsilon, Z) = \emptyset\\)。
+
+因此只要构造其补集 \\(M'''\\) 则 \\(L(M''') = L(M)\\) 且满足条件。
+
+</div>
+
+
+### DCFL 与 NCFL {#dcfl-与-ncfl}
+
+下面证明 \\(L = \\{a^ib^jc^k | i \ne j \vee j \ne k\\}\\) 不是 DCFL。其 CFG 非常好构造，考虑原语言等价于 \\(\\{a^ib^jc^k | i > j \vee i < j \vee j > k \vee j < k\\}\\)，后者显然可以构造 CFG，因此 \\(L\\) 是 CFL。
+
+下面用反证法证明 \\(L\\) 不是 DCFL：
+
+-   假设 \\(L\\) 是 DCFL，那么它对补集封闭
+-   则其补集 \\(L' = \\{a^ib^jc^k | i = j = k \ge 0\\} \cup \\{(a|b|c)^\*\\}\\) 也是 DCFL，同时也是一个 CFL
+-   那么 \\(L'' = L' \cap (a\*b\*c\*) = \\{a^ib^jc^k | i = j = k \ge 0\\}\\) 也是一个 CFL
+-   显然这并不成立，因此 \\(L\\) 不是 DCFL。
+
+即存在是 CFL 但不是 DCFL 的语言。
+
+
+### DCFL 对并，交不封闭 {#dcfl-对并-交不封闭}
+
+<div class="theorem">
+
+DCFL 对并运算不封闭。
+
+</div>
+
+<div class="proof">
+
+-   \\(L\_1 = \\{a^i b^i c^k | i, k \ge 0\\}\\)
+-   \\(L\_2 = \\{a^i b^k c^k | i, k \ge 0\\}\\)
+-   \\(L\_3 = L\_1 \cup L\_2 = \\{a^i b^j c^k | i \ne j \vee j \ne k\\}\\)
+
+前面已经证明 \\(L\_3\\) 不是 DCFL。
+
+</div>
+
+<div class="theorem">
+
+DCFL 对交运算不封闭。
+
+</div>
+
+<div class="proof">
+
+取：
+
+-   \\(L\_1 = \\{a^i b^i c^k | i, k \ge 0\\}\\)
+-   \\(L\_2 = \\{a^i b^k c^k | i, k \ge 0\\}\\)
+-   \\(L\_3 = L\_1 \cap L\_2 = \\{a^n b^n c^n | n \ge 0\\}\\)
+
+显然 \\(L\_1, L\_2\\) 都是 DCFL，但是 \\(L\_3\\) 不是 CFL。
+
+</div>
+
+
+### CFL 的层次结构 {#cfl-的层次结构}
+
+> CFL \\(\rightarrow\\) 非固有二义 CFL \\(\rightarrow\\) DCFL \\(\rightarrow\\) RL
