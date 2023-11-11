@@ -352,6 +352,17 @@ CFL 对交运算不封闭。
 设 \(L_1 = \{0^n 1^n 2^m | n, m \ge 1\}, L_2 = \{0^n 1^m 2^m | n, m \ge 1\}\)，那么 \(L_1 \cap L_2 = \{0^n 1^n 2^n | n \ge 1\}\)，显然这不是一个 CFL。
 #+end_proof
 
+#+begin_theorem
+CFL 对补运算和差运算不封闭。
+#+end_theorem
+#+begin_proof
+\(L_1 \cap L_2 = \overline{\overline{L_1} \cup \overline{L_2}}\)，由于 CFL 对并运算封闭但是对交运算不封闭，因此可以推出 CFL 对补运算也不封闭。
+
+\(L_1 \cup L_2 = L_1 - (L_1 - L_2)\)，同理 CFL 对差运算也不封闭。
+#+end_proof
+
+** CFL 与 RL
+
 尽管 CFL 和 CFL 的交不一定是 CFL，但是 CFL 与 RL 的交依然是 CFL。
 
 #+begin_theorem
@@ -368,7 +379,7 @@ DFA \(M_2 = (Q_2, \Sigma, \delta_2, q_{02}, F_2)\)
 
 \(M = (Q_1 \times Q_2, \Sigma, \Gamma, \delta, [q_{01}, q_{02}], Z_0, F_1 \times F_2)\)
 
-其中 \(\forall([q, p], a, Z) \in (Q_1 \times Q_2) \times (\Sigma \cup \{\varepsilon\}) \times \Gamma.\)
+其中 \(\forall([q, p], a, Z) \in (Q_1 \times Q_2) \times \Sigma \times \Gamma.\)
 
 \[\delta([q, p], a, Z) = \{([q', p'], \gamma) | (q', \gamma) \in \delta_1(q, a, Z) \wedge p' = \delta(p, a)\}\]
 
@@ -378,12 +389,28 @@ DFA \(M_2 = (Q_2, \Sigma, \delta_2, q_{02}, F_2)\)
 #+end_proof
 
 #+begin_theorem
-CFL 对补运算和差运算不封闭。
+CFL 与 RL 的差仍然是 CFL。
 #+end_theorem
 #+begin_proof
-\(L_1 \cap L_2 = \overline{\overline{L_1} \cup \overline{L_2}}\)，由于 CFL 对并运算封闭但是对交运算不封闭，因此可以推出 CFL 对补运算也不封闭。
+\[L - R = L \cap \overline{R}\]
+#+end_proof
 
-\(L_1 \cup L_2 = L_1 - (L_1 - L_2)\)，同理 CFL 对差运算也不封闭。
+但是 RL - CFL 不是 CFL：
+
+#+begin_theorem
+RL 与 CFL 的差不一定是 CFL。
+#+end_theorem
+#+begin_proof
+\[B = \{ a^*b^*c^* \}\]
+\[A_1 = \{ a^i b^j c^* | i > j \}\]
+\[A_2 = \{ a^i b^j c^* | i < j \}\]
+\[A_3 = \{ a^*b^i c^j | i > j \}\]
+\[A_4 = \{ a^*b^i c^j | i < j \}\]
+\[A = A_1 \cup A_2 \cup A_3 \cup A_4\]
+
+显然 \(A_1 \dots A_4\) 都是 CFL，因此 \(A\) 也是 CFL；且 \(B\) 是 RL。
+
+然而 \(B - A = \{a^i b^i c^i\}\) 不是 CFL。
 #+end_proof
 
 ** 同态映射

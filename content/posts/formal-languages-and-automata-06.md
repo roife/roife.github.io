@@ -433,6 +433,23 @@ CFL 对交运算不封闭。
 
 </div>
 
+<div class="theorem">
+
+CFL 对补运算和差运算不封闭。
+
+</div>
+
+<div class="proof">
+
+\\(L\_1 \cap L\_2 = \overline{\overline{L\_1} \cup \overline{L\_2}}\\)，由于 CFL 对并运算封闭但是对交运算不封闭，因此可以推出 CFL 对补运算也不封闭。
+
+\\(L\_1 \cup L\_2 = L\_1 - (L\_1 - L\_2)\\)，同理 CFL 对差运算也不封闭。
+
+</div>
+
+
+### CFL 与 RL {#cfl-与-rl}
+
 尽管 CFL 和 CFL 的交不一定是 CFL，但是 CFL 与 RL 的交依然是 CFL。
 
 <div class="theorem">
@@ -453,7 +470,7 @@ DFA \\(M\_2 = (Q\_2, \Sigma, \delta\_2, q\_{02}, F\_2)\\)
 
 \\(M = (Q\_1 \times Q\_2, \Sigma, \Gamma, \delta, [q\_{01}, q\_{02}], Z\_0, F\_1 \times F\_2)\\)
 
-其中 \\(\forall([q, p], a, Z) \in (Q\_1 \times Q\_2) \times (\Sigma \cup \\{\varepsilon\\}) \times \Gamma.\\)
+其中 \\(\forall([q, p], a, Z) \in (Q\_1 \times Q\_2) \times \Sigma \times \Gamma.\\)
 
 \\[\delta([q, p], a, Z) = \\{([q', p'], \gamma) | (q', \gamma) \in \delta\_1(q, a, Z) \wedge p' = \delta(p, a)\\}\\]
 
@@ -465,15 +482,36 @@ DFA \\(M\_2 = (Q\_2, \Sigma, \delta\_2, q\_{02}, F\_2)\\)
 
 <div class="theorem">
 
-CFL 对补运算和差运算不封闭。
+CFL 与 RL 的差仍然是 CFL。
 
 </div>
 
 <div class="proof">
 
-\\(L\_1 \cap L\_2 = \overline{\overline{L\_1} \cup \overline{L\_2}}\\)，由于 CFL 对并运算封闭但是对交运算不封闭，因此可以推出 CFL 对补运算也不封闭。
+\\[L - R = L \cap \overline{R}\\]
 
-\\(L\_1 \cup L\_2 = L\_1 - (L\_1 - L\_2)\\)，同理 CFL 对差运算也不封闭。
+</div>
+
+但是 RL - CFL 不是 CFL：
+
+<div class="theorem">
+
+RL 与 CFL 的差不一定是 CFL。
+
+</div>
+
+<div class="proof">
+
+\\[B = \\{ a^\*b^\*c^\* \\}\\]
+\\[A\_1 = \\{ a^i b^j c^\* | i > j \\}\\]
+\\[A\_2 = \\{ a^i b^j c^\* | i < j \\}\\]
+\\[A\_3 = \\{ a^\*b^i c^j | i > j \\}\\]
+\\[A\_4 = \\{ a^\*b^i c^j | i < j \\}\\]
+\\[A = A\_1 \cup A\_2 \cup A\_3 \cup A\_4\\]
+
+显然 \\(A\_1 \dots A\_4\\) 都是 CFL，因此 \\(A\\) 也是 CFL；且 \\(B\\) 是 RL。
+
+然而 \\(B - A = \\{a^i b^i c^i\\}\\) 不是 CFL。
 
 </div>
 
