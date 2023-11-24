@@ -130,6 +130,11 @@ L(M) = \\{x | \delta(q\_0, x) \cap F \ne \emptyset\\}
 
 ### DFA 与 NFA 等价 {#dfa-与-nfa-等价}
 
+注意：
+
+-   证明两个自动机 \\(M, N\\) 等价，需要分别证明 \\((\forall x \in L(M), x \in L(N)) \wedge \forall x \in L(N), x \in L(M)\\)。
+-   证明两种自动机（两个语言类）等价，需要分别证明 \\((\forall M \in M^\*, \exists N \in N^\*, L(M) = L(N)) \wedge (\forall N \in N^\*, \exists M \in M^\*, L(N) = L(M))\\)。
+
 <div class="theorem">
 
 DFA 与 NFA 等价
