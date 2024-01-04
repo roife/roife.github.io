@@ -77,7 +77,7 @@ custom_js = []
 custom_css = [] # ["css/custom.css"]  Add your file to assets folder  [assets/css/custom.css]
 
 lightTabColor = "#FFFFFF"
-darkTabColor = "#000000"
+darkTabColor = "#171717"
 
 comment = true
 katex = true
