@@ -56,8 +56,8 @@ RL 可以用一个 DFA 识别，其中 DFA 的每个状态都对应了 RL 的右
   + \(\delta(q_0, 0, S) = \{(q_0, SA)\}\)，\(\delta(q_0, 1, S) = \{(q_0, SB)\}\)，\(\delta(q_0, 2, S) = \{(q_0, \varepsilon)\}\)
   + \(\delta(q_0, 0, A) = \{(q_0, \varepsilon)\}\)，\(\delta(q_0, 1, B) = \{(q_0, \varepsilon)\}\)
   + 此时是一个空栈接收的语言
-- 同时可以将其转换成一个终态接收的语言 \(M = (\{q_0, q_1\}, \{0, 1, 2\}, \{S, A, B, Z\}, \delta, q_0, S, \{q_1\})\)
-  + \(\delta(q_0, 0, Z_0) = \{(q_0, SAZ_0)\}\)，\(\delta(q_0, 1, Z_0) = \{(q_0, SBZ_0)\}\)，\(\delta(q_0, 2, Z_0) = \{(q_1, \varepsilon)\}\)
+- 同时可以将其转换成一个终态接收的语言 \(M = (\{q_0, q_1\}, \{0, 1, 2\}, \{S, A, B, Z\}, \delta, q_0, Z, \{q_1\})\)
+  - \(\delta(q_0, \varepsilon, Z) = \{(q_0, SZ), (q_1, \varepsilon)\}\)
   + \(\delta(q_0, 0, S) = \{(q_0, SA)\}\)，\(\delta(q_0, 1, S) = \{(q_0, SB)\}\)，\(\delta(q_0, 2, S) = \{(q_0, \varepsilon)\}\)
   + \(\delta(q_0, 0, A) = \{(q_0, \varepsilon)\}\)，\(\delta(q_0, 1, B) = \{(q_0, \varepsilon)\}\)，\(\delta(q_0, \varepsilon, Z_0) = \{(q_0, \varepsilon)\}\)
 
