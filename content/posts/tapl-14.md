@@ -81,7 +81,9 @@ Suppose \\(t\\) is a closed, well-typed normal form. Then either \\(t\\) is a va
 
 {{< figure src="/img/in-post/post-tapl/14-3-exceptions-carrying-values.png" caption="<span class=\"figure-number\">Figure 3: </span>Exceptions carrying values" >}}
 
-发生异常时可以携带一些信息，包括异常类型等。此时用 \\(\operatorname{\mathtt{raise}} \operatorname{\mathtt{t}}\\) 来代替普通的 `error` 引发异常，其中 `raise` 可以当作一个 constructor，其中 \\(t : T\_{exn}\\) 是携带的信息，而 \\(\operatorname{\mathtt{raise}} \operatorname{\mathtt{t}}\\) 则类似于 `error`，类型为 \\(T\\)，便于嵌入表达式的任何位置。
+发生异常时可以携带一些信息，包括异常类型等。这里用 \\(\operatorname{\mathtt{raise}} \operatorname{\mathtt{t}}\\) 来代替普通的 `error` 引发异常，其中 `raise` 可以当作一个 constructor，\\(t : T\_{exn}\\) 是其携带的信息，\\(\operatorname{\mathtt{raise}} \operatorname{\mathtt{t}} : T\\) 的类型类似于 `error`，便于嵌入表达式的任何位置。
+
+引发异常后可以用 \\(\operatorname{\mathtt{try}}\ \operatorname{\mathtt{with}}\\)（`E-TryRaise`）语句来处理异常。`E-RaiseRaise` 用于处理嵌套的异常。`E-TryV` 则表明没有发生异常。
 
 所携带的信息 \\(T\_{exn}\\) 可以有很多情况：
 
