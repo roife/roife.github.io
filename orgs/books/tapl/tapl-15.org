@@ -232,12 +232,12 @@ Induction on typing derivations.
 
 ** Progress
 
-#+begin_Lemma
+#+begin_lemma
 *(Canonical Forms)*
 
 1. If \(v\) is a closed value of type \(T_1 \rightarrow T_2\), then \(v\) has the form \(\lambda x : S_1. t_2\) with \(T_1 <: S_1\)
 2. If \(v\) is a closed value of type \(\{l_i : T_i^{i\in1 \dots n}\}\), then \(v\) has the form \(\{k_a = v_a^{a \in 1 \dots m}\}\) with \(\{l_i^{i \in 1 \dots n}\}\subseteq \{k_a^{a \in 1 \dots m}\}\).
-#+end_Lemma
+#+end_lemma
 #+begin_proof
 Induction on typing derivations, using inversion lemma for =T-Sub=.
 #+end_proof
@@ -250,9 +250,24 @@ Induction on typing derivations.
 
 - =T-Var=：不可能，因为 \(t\) 是封闭的
 - =T-Abs=：已经是 value
-- =T-App=：如果能用 =E-App1= 或 =E-App2=，则能继续求值；否则 \(t_1\) 和 \(t_2\) 都是 values，根据 canonical forms lemma，\(v_1 = \lambda x : S_1. t_2\) 且 \(T_1 <: S_1\)，又 \(v_2 : T_1\)，因此可以使用 =E-AppAbs=
+- =T-App=：
+
+  \begin{aligned}
+  & (t : T_{12}) = t_{1} t_{2} \\
+  & \vdash t_{1} : T_{11} \rightarrow T_{12} \\
+  & \vdash t_{2} : T_{11}
+  \end{aligned} 
+  
+  如果能用 =E-App1= 或 =E-App2=，则能继续求值；否则 \(t_1\) 和 \(t_2\) 都是 values，根据 canonical forms lemma，\(v_1 = \lambda x : S_{11}. t_2\) 且 \(T_{11} <: S_{11}\)，又 \(v_2 : T_{11}\)，因此可以使用 =E-AppAbs=
 - =T-Rcd=：如果继续求值，则用 =E-Rcd=；否则 \(t\) 已经是一个 value
-- =T-Proj=：\(t = t_1.l_j\) 且 \(\vdash t_1 : \{l_i : T_i ^{i \in 1 \dots n}\}\)。如果 \(t\) 不是 value，则用 =E-Proj=；否则根据 Canonical form lemma，有 \(\{k_a = v_a^{a \in 1 \dots m}\}\) 且 \(\{l_i^{i \in 1 \dots n}\}\subseteq \{k_a^{a \in 1 \dots m}\}\)，因此 \(l_j \in \{k_a^{a \in 1 \dots m}\}\)，因此可以使用 =E-ProjRcd=
+- =T-Proj=：
+
+  \begin{aligned}
+  & t = t_1.l_j \\
+  & \vdash t_1 : \{l_i : T_i ^{i \in 1 \dots n}\}
+  \end{aligned}
+
+  如果 \(t\) 不是 value，则用 =E-Proj=；否则根据 Canonical form lemma，有 \(\{k_a = v_a^{a \in 1 \dots m}\}\) 且 \(\{l_i^{i \in 1 \dots n}\}\subseteq \{k_a^{a \in 1 \dots m}\}\)，因此 \(l_j \in \{k_a^{a \in 1 \dots m}\}\)，因此可以使用 =E-ProjRcd=
 - =T-Sub=：根据归纳假设，成立
 #+end_proof
 

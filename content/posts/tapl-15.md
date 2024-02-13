@@ -276,7 +276,7 @@ Induction on typing derivations.
 
 ### Progress {#progress}
 
-<div class="Lemma">
+<div class="lemma">
 
 **(Canonical Forms)**
 
@@ -303,9 +303,24 @@ Induction on typing derivations.
 
 -   `T-Var`：不可能，因为 \\(t\\) 是封闭的
 -   `T-Abs`：已经是 value
--   `T-App`：如果能用 `E-App1` 或 `E-App2`，则能继续求值；否则 \\(t\_1\\) 和 \\(t\_2\\) 都是 values，根据 canonical forms lemma，\\(v\_1 = \lambda x : S\_1. t\_2\\) 且 \\(T\_1 <: S\_1\\)，又 \\(v\_2 : T\_1\\)，因此可以使用 `E-AppAbs`
+-   `T-App`：
+
+    \begin{aligned}
+    & (t : T\_{12}) = t\_{1} t\_{2} \\\\
+    & \vdash t\_{1} : T\_{11} \rightarrow T\_{12} \\\\
+    & \vdash t\_{2} : T\_{11}
+    \end{aligned}
+
+    如果能用 `E-App1` 或 `E-App2`，则能继续求值；否则 \\(t\_1\\) 和 \\(t\_2\\) 都是 values，根据 canonical forms lemma，\\(v\_1 = \lambda x : S\_{11}. t\_2\\) 且 \\(T\_{11} <: S\_{11}\\)，又 \\(v\_2 : T\_{11}\\)，因此可以使用 `E-AppAbs`
 -   `T-Rcd`：如果继续求值，则用 `E-Rcd`；否则 \\(t\\) 已经是一个 value
--   `T-Proj`：\\(t = t\_1.l\_j\\) 且 \\(\vdash t\_1 : \\{l\_i : T\_i ^{i \in 1 \dots n}\\}\\)。如果 \\(t\\) 不是 value，则用 `E-Proj`；否则根据 Canonical form lemma，有 \\(\\{k\_a = v\_a^{a \in 1 \dots m}\\}\\) 且 \\(\\{l\_i^{i \in 1 \dots n}\\}\subseteq \\{k\_a^{a \in 1 \dots m}\\}\\)，因此 \\(l\_j \in \\{k\_a^{a \in 1 \dots m}\\}\\)，因此可以使用 `E-ProjRcd`
+-   `T-Proj`：
+
+    \begin{aligned}
+    & t = t\_1.l\_j \\\\
+    & \vdash t\_1 : \\{l\_i : T\_i ^{i \in 1 \dots n}\\}
+    \end{aligned}
+
+    如果 \\(t\\) 不是 value，则用 `E-Proj`；否则根据 Canonical form lemma，有 \\(\\{k\_a = v\_a^{a \in 1 \dots m}\\}\\) 且 \\(\\{l\_i^{i \in 1 \dots n}\\}\subseteq \\{k\_a^{a \in 1 \dots m}\\}\\)，因此 \\(l\_j \in \\{k\_a^{a \in 1 \dots m}\\}\\)，因此可以使用 `E-ProjRcd`
 -   `T-Sub`：根据归纳假设，成立
 
 </div>
