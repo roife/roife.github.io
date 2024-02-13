@@ -81,11 +81,9 @@ Suppose \\(t\\) is a closed, well-typed normal form. Then either \\(t\\) is a va
 
 {{< figure src="/img/in-post/post-tapl/14-3-exceptions-carrying-values.png" caption="<span class=\"figure-number\">Figure 3: </span>Exceptions carrying values" >}}
 
-发生异常时可以携带一些信息，包括异常类型等。此时用 \\(\operatorname{\mathtt{t}}\\) 来代替普通的 `error` 引发异常，其中 `raise` 可以当作一个 constructor。
+发生异常时可以携带一些信息，包括异常类型等。此时用 \\(\operatorname{\mathtt{raise}} \operatorname{\mathtt{t}}\\) 来代替普通的 `error` 引发异常，其中 `raise` 可以当作一个 constructor，其中 \\(t : T\_{exn}\\) 是携带的信息，而 \\(\operatorname{\mathtt{raise}} \operatorname{\mathtt{t}}\\) 则类似于 `error`，类型为 \\(T\\)，便于嵌入表达式的任何位置。
 
-上面的规则中 `T-Exn` 规则使得异常能在被静态的类型检查器所检查，而异常本身的触发是动态的。
-
-注意上面的规则都要求携带的信息必须是一个 value，其类型为 \\(T\_{exn}\\)。\\(T\_{exn}\\) 可以有很多情况：
+所携带的信息 \\(T\_{exn}\\) 可以有很多情况：
 
 1.  `Nat`，即作为 `errno` 错误号，但是需要查表得到错误信息
 2.  `String`，即错误相关的信息，但是需要进行 parse

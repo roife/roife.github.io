@@ -158,7 +158,9 @@ Subtyping 也称为 subtype polymorphism。之前介绍的特性之间基本都�
      + 对第二个条件使用归纳规则，有 \(U : U_1 \rightarrow U_2 \text{ where } T_1 <: U_1 \wedge U_2 <: T_2\)
      + 此时再对第一个条件使用归纳规则，有 \(S : S_1 \rightarrow S_2 \text{ where } U_1 <: S_1 \wedge S_2 <: U_2\)
      + 使用 =S-Trans= 有 \(S <: T_1 \rightarrow T_2\)，且 \(T_1 <: S_1 \wedge S_2 <: T_2\)
-   - =S-Arrow=：显然成立
+   - =S-Arrow=：immediately
+
+因为证明的长度是有穷的，而第一步不可能用 =S-Trans=，因此这个证明成立。
 #+end_proof
 
 ** Preservation
