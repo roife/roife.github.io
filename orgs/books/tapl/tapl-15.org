@@ -399,6 +399,8 @@ Lists 类似 records、variants 和函数的结果类型，都是共变函子（
 } \tag{S-List}
 \]
 
+这里提到的 Lists 是 immutable 的，因此可以安全地进行共变。反之如果是 mutable 的，就应该设计成 invariant。
+
 ** Reference
 
 *** Invariant
@@ -429,11 +431,11 @@ Reference type 的 subtyping 规则之所以这么受限，是因为它们有两
   \quad
   T_1 <: S_1
 } {
-  \operatorname{\mathtt{Arraye}}\ S_1 <: \operatorname{\mathtt{Array}}\ T_1
+  \operatorname{\mathtt{Array}}\ S_1 <: \operatorname{\mathtt{Array}}\ T_1
 } \tag{S-Array}
 \]
 
-在 Java 中，数组是协变的：\([S_1] <: [T_1]\)。这是为了在缺少 parametric polymorphism 的情况下实现一些基本的操作。但是现在这个特性已经被认为是错误的，因为它会导致每次对数组进行操作时都要进行动态类型检查，并导致程序的运行效率降低。
+在 Java 中，数组是协变的：\([S_1] <: [T_1]\)。这是为了在缺少 parametric polymorphism 的情况下实现一些基本的操作。但是现在这个特性已经被认为是错误的，因为它会导致每次对数组进行写操作时都要进行动态类型检查，并导致程序的运行效率降低。
 
 *** A more refined rules (sources and sinks)
 

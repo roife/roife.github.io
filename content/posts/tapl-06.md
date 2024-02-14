@@ -70,7 +70,9 @@ Note that the rightmost variable in the sequence is given the index \\(0\\); thi
 
 对于 context \\(\Gamma = x \rightarrow 4; y \rightarrow 3; z \rightarrow 2; a \rightarrow 1; b \rightarrow 0\\)，
 
-\\(\lambda w. y\ w\\) 可以表示成 \\(\lambda . 4\ 0\\)。其中在 \\(w\\) 这层的 naming context 为 \\(x : 5, y : 4, z : 3, a : 2, b : 1, w : 0\\)。其中 \\(x, y, z, a, b\\) 均为自由变量。
+\\(\lambda w. y\ w\\) 可以表示成 \\(\lambda . 4\ 0\\)。在 \\(w\\) 这层的 naming context 为 \\(x : 5, y : 4, z : 3, a : 2, b : 1, w : 0\\)。其中 \\(x, y, z, a, b\\) 均为自由变量。
+
+如果现在处于从外到内第 \\(i\ (i \ge 0)\\) 层的 abstraction，且自由变量 \\(x\\) 对应的编号为 \\(j\ (j \ge 0)\\)，则 \\(x\\) 对应的编号为 \\(j + i + 1\\)。
 
 </div>
 
@@ -126,12 +128,14 @@ The substitution of a term \\(s\\) for variable number \\(j\\) in a term \\(t\\)
       k & \text{otherwise}
   \end{cases}\\\\
 &[j \mapsto s\]\(\lambda. t\_1) &&= \lambda. [j+1 \mapsto \uparrow^1 (s)] (t) \\\\
-&[j \mapsto s\]\(\lambda t\_1\ t\_2) &&= ([j \mapsto s]t\_1\ [j \mapsto s]t\_2)
+&[j \mapsto s\]\(t\_1\ t\_2) &&= ([j \mapsto s]t\_1\ [j \mapsto s]t\_2)
 \end{aligned}
 
 </div>
 
 <div class="sample">
+
+令 \\(\Gamma = \\{b:0, a:1\\}\\)
 
 \begin{aligned}
     [b \mapsto a\ (\lambda z. a)]\ (b\ (\lambda x. b)) &= [0 \mapsto 1\ (\lambda. 2)]\ (0\ (\lambda. 1)) \\\\
@@ -151,6 +155,8 @@ The substitution of a term \\(s\\) for variable number \\(j\\) in a term \\(t\\)
 \\[
 (\lambda. 1\ 0\ 2)\ (\lambda. 0) \rightarrow 0\ (\lambda. 0)\ 1 \qquad \text{not $1\ (\lambda.0)\ 2$}
 \\]
+
+对于 \\(\lambda. t\\)，进行 evaluation 后，\\(t\\) 中的自由变量的编号需要减一。因此，需要一个函数 \\(\uparrow^{-1}\\) 来进行逆操作。然而替换进去的 \\(v\\) 并没有消耗掉任何 bound variables，因此不需要重新编号，可以提前进行 \\(\uparrow^{1}\\) 来抵消掉 \\(\uparrow^{-1}\\)。
 
 对应的需要改变 beta-conversion 的规则：
 

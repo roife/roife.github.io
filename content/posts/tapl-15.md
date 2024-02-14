@@ -490,7 +490,7 @@ Reference type 的 subtyping 规则之所以这么受限，是因为它们有两
   \quad
   T\_1 <: S\_1
 } {
-  \operatorname{\mathtt{Arraye}}\ S\_1 <: \operatorname{\mathtt{Array}}\ T\_1
+  \operatorname{\mathtt{Array}}\ S\_1 <: \operatorname{\mathtt{Array}}\ T\_1
 } \tag{S-Array}
 \\]
 
