@@ -99,10 +99,10 @@ B_1 B_2 \dots B_{n-1} C_n &\rightarrow B_1 B_2 \dots B_{n-1} B_n \dots B_{m}
 #+begin_definition
 *(线性文法)*
 
-- *线性文法*（liner grammar）：设 \(G = (V, T, P, S)\)，如果 \(\forall \alpha \rightarrow \beta \in P\) 都具有以下形式：
+- *线性文法*（linear grammar）：设 \(G = (V, T, P, S)\)，如果 \(\forall \alpha \rightarrow \beta \in P\) 都具有以下形式：
   - \(A \rightarrow w\) 或 \(A \rightarrow wB\)（\(A, B \in V, w \in T^**\)），则 \(G\) 为线性文法
-- *左线性文法*（left liner grammar）：\(\alpha \rightarrow \beta\) 为 \(A \rightarrow w\) 或 \(A \rightarrow Bw\)
-- *右线性文法*（right liner grammar）：\(\alpha \rightarrow \beta\) 为 \(A \rightarrow w\) 或 \(A \rightarrow wB\)
+- *左线性文法*（left linear grammar）：\(\alpha \rightarrow \beta\) 为 \(A \rightarrow w\) 或 \(A \rightarrow Bw\)
+- *右线性文法*（right linear grammar）：\(\alpha \rightarrow \beta\) 为 \(A \rightarrow w\) 或 \(A \rightarrow wB\)
 #+end_definition
 
 右线性文法即为 RG。由于左线性文法和右线性文法等价，所以左线性文法也是 RG。但是如果一个语言的规则混合了左右线性文法，则不是 RG。

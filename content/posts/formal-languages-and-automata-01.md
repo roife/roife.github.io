@@ -133,10 +133,10 @@ B\_1 B\_2 \dots B\_{n-1} C\_n &\rightarrow B\_1 B\_2 \dots B\_{n-1} B\_n \dots B
 
 **(线性文法)**
 
--   **线性文法**（liner grammar）：设 \\(G = (V, T, P, S)\\)，如果 \\(\forall \alpha \rightarrow \beta \in P\\) 都具有以下形式：
+-   **线性文法**（linear grammar）：设 \\(G = (V, T, P, S)\\)，如果 \\(\forall \alpha \rightarrow \beta \in P\\) 都具有以下形式：
     -   \\(A \rightarrow w\\) 或 \\(A \rightarrow wB\\)（\\(A, B \in V, w \in T^\*\*\\)），则 \\(G\\) 为线性文法
--   **左线性文法**（left liner grammar）：\\(\alpha \rightarrow \beta\\) 为 \\(A \rightarrow w\\) 或 \\(A \rightarrow Bw\\)
--   **右线性文法**（right liner grammar）：\\(\alpha \rightarrow \beta\\) 为 \\(A \rightarrow w\\) 或 \\(A \rightarrow wB\\)
+-   **左线性文法**（left linear grammar）：\\(\alpha \rightarrow \beta\\) 为 \\(A \rightarrow w\\) 或 \\(A \rightarrow Bw\\)
+-   **右线性文法**（right linear grammar）：\\(\alpha \rightarrow \beta\\) 为 \\(A \rightarrow w\\) 或 \\(A \rightarrow wB\\)
 
 </div>
 
