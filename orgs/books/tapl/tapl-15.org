@@ -134,6 +134,9 @@ Subtyping 也称为 subtype polymorphism。之前介绍的特性之间基本都�
 #+caption: STLC with subtyping
 [[/img/in-post/post-tapl/15-1-stlc-with-subtyping.png]]
 
+#+caption: Records
+[[/img/in-post/post-tapl/11-7-records.png]]
+
 #+caption: Records and subtyping
 [[/img/in-post/post-tapl/15-3-records-and-subtyping.png]]
 

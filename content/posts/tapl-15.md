@@ -153,7 +153,9 @@ Subtyping 也称为 subtype polymorphism。之前介绍的特性之间基本都�
 
 {{< figure src="/img/in-post/post-tapl/15-1-stlc-with-subtyping.png" caption="<span class=\"figure-number\">Figure 1: </span>STLC with subtyping" >}}
 
-{{< figure src="/img/in-post/post-tapl/15-3-records-and-subtyping.png" caption="<span class=\"figure-number\">Figure 2: </span>Records and subtyping" >}}
+{{< figure src="/img/in-post/post-tapl/11-7-records.png" caption="<span class=\"figure-number\">Figure 2: </span>Records" >}}
+
+{{< figure src="/img/in-post/post-tapl/15-3-records-and-subtyping.png" caption="<span class=\"figure-number\">Figure 3: </span>Records and subtyping" >}}
 
 在目前的类型系统里面，不存在一个是所有类型 subtype 的类型。
 
@@ -335,7 +337,7 @@ Induction on typing derivations.
 
 下面讨论 bottom type（minimal type），将其加入现有的类型系统并不会破坏类型系统的性质。
 
-{{< figure src="/img/in-post/post-tapl/15-4-bottom-type.png" caption="<span class=\"figure-number\">Figure 3: </span>Bottom type" >}}
+{{< figure src="/img/in-post/post-tapl/15-4-bottom-type.png" caption="<span class=\"figure-number\">Figure 4: </span>Bottom type" >}}
 
 如果 bottom type 存在，那么其值应当是空的。否则设 \\(\vdash v : \operatorname{\mathtt{Bot}} <: \operatorname{\mathtt{Top}} \rightarrow \operatorname{\mathtt{Top}}\\)，那么根据 canonical forms，\\(v\\) 一定具有类似 \\(\lambda x : S\_1. t\_2\\) 的形式。同理，从 record type 的角度还可以得到 \\(\vdash v :\operatorname{\mathtt{Bot}} <: \\{\\}\\)，则 \\(v\\) 是一个 record。矛盾。因此 \\(v\\) 不存在。
 
@@ -440,7 +442,7 @@ Down-casts 也在 Java 的反射中起到了重要作用。通过反射，程序
 
 Variants 可以看作和 records 是对偶的，因此其规则也和 record types 对应。区别在于在 record types 中 fields 较少的类型“更大”，而 variants 中 fields 更多的类型“更大”。
 
-{{< figure src="/img/in-post/post-tapl/15-5-variants-and-subtyping.png" caption="<span class=\"figure-number\">Figure 4: </span>Variants and subtyping" >}}
+{{< figure src="/img/in-post/post-tapl/15-5-variants-and-subtyping.png" caption="<span class=\"figure-number\">Figure 5: </span>Variants and subtyping" >}}
 
 加入了 subtyping for variants 后，使用 variants 时可以变得更方便：不需要每次都写使用 \\(\langle l=t \rangle \ \operatorname{\mathtt{as}}\ \langle l\_i : T\_i^{i \in 1 \dots n} \rangle\\)，只需要写 \\(\langle l = t \rangle\\) 然后利用 `S-VariantWidth` 即可。
 
@@ -456,6 +458,8 @@ Lists 类似 records、variants 和函数的结果类型，都是共变函子（
   \operatorname{\mathtt{List}}\ S\_1 <: \operatorname{\mathtt{List}}\ T\_1
 } \tag{S-List}
 \\]
+
+这里提到的 Lists 是 immutable 的，因此可以安全地进行共变。反之如果是 mutable 的，就应该设计成 invariant。
 
 
 ### Reference {#reference}
@@ -494,7 +498,7 @@ Reference type 的 subtyping 规则之所以这么受限，是因为它们有两
 } \tag{S-Array}
 \\]
 
-在 Java 中，数组是协变的：\\([S\_1] <: [T\_1]\\)。这是为了在缺少 parametric polymorphism 的情况下实现一些基本的操作。但是现在这个特性已经被认为是错误的，因为它会导致每次对数组进行操作时都要进行动态类型检查，并导致程序的运行效率降低。
+在 Java 中，数组是协变的：\\([S\_1] <: [T\_1]\\)。这是为了在缺少 parametric polymorphism 的情况下实现一些基本的操作。但是现在这个特性已经被认为是错误的，因为它会导致每次对数组进行写操作时都要进行动态类型检查，并导致程序的运行效率降低。
 
 
 #### A more refined rules (sources and sinks) {#a-more-refined-rules--sources-and-sinks}

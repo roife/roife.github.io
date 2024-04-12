@@ -71,6 +71,25 @@ t \Coloneqq & & (\text{terms}) \\\\
 \\]
 
 
+#### Static-scoping and Dynamic-scoping {#static-scoping-and-dynamic-scoping}
+
+在编程语言中，scope 一般分为 static-scoping 和 dynamic-scoping：
+
+-   在 static-scoping 中，一个变量的作用域是由它在源代码中的位置决定的。因此编译器或解释器可以仅通过分析代码结构（而不是实际执行代码）来确定变量的作用域。
+-   与之相对的是 dynamic-scoping，变量的作用域由程序的运行时调用顺序决定。
+
+下面是一个例子：
+
+```ocaml
+let x = 10 in
+  let f = (lambda y. x + y) in
+    let x = 20 in
+      f 5
+```
+
+在 static-scoping 中，这个表达式的值是 15，因为 `f` 的作用域是整个 let 表达式，所以 `f` 中的 `x` 是第一个 `x`，而不是第二个；而在 dynamic-scoping 中，这个表达式的值是 25，因为 `f` 中的 `x` 是第二个 `x`。
+
+
 ### Operational Semantics {#operational-semantics}
 
 在 pure lambda calculus 中不包含任何数字、运算符等，唯一的运算只有 application。
@@ -712,11 +731,11 @@ Untyped lambda-calculus 的 evaluation 有两类规则：
 -  normal-order strategy
 
     \\[
-    \dfrac{na\_1 \rightarrow na\_1'}{na\_1\ t\_2 \rightarrow na\_1'\ t\_2} \tag{E-App1}
+    \dfrac{\operatorname{\mathrm{na}}\_1 \rightarrow \operatorname{\mathrm{na}}\_1'}{\operatorname{\mathrm{na}}\_1\ t\_2 \rightarrow \operatorname{\mathrm{na}}\_1'\ t\_2} \tag{E-App1}
     \\]
 
     \\[
-    \dfrac{t\_2 \rightarrow t\_2'}{nanf\_1\ t\_2 \rightarrow nanf\_1\ t\_2'} \tag{E-App2}
+    \dfrac{t\_2 \rightarrow t\_2'}{\operatorname{\mathrm{nanf}}\_1\ t\_2 \rightarrow \operatorname{\mathrm{nanf}}\_1\ t\_2'} \tag{E-App2}
     \\]
 
     \\[
@@ -730,16 +749,43 @@ Untyped lambda-calculus 的 evaluation 有两类规则：
     其中用到的三种 term 定义如下：
 
     \begin{aligned}
-    nf \Coloneqq && (\text{normal forms}) \\\\
-        & \lambda x.nf \\\\
-        & nanf \\\\
-    nanf \Coloneqq && (\text{non-abstraction normal forms}) \\\\
+    \operatorname{\mathrm{nf}} \Coloneqq && (\text{normal forms}) \\\\
+        & \lambda x.\operatorname{\mathrm{nf}} \\\\
+        & \operatorname{\mathrm{nanf}} \\\\
+    \operatorname{\mathrm{nanf}} \Coloneqq && (\text{non-abstraction normal forms}) \\\\
         & x \\\\
-        & nanf\ nf \\\\
-    na \Coloneqq && (\text{non-abstraction}) \\\\
+        & \operatorname{\mathrm{nanf}}\ \operatorname{\mathrm{nf}} \\\\
+    \operatorname{\mathrm{na}} \Coloneqq && (\text{non-abstraction}) \\\\
         & x \\\\
         & t\_1\ t\_2 \\\\
     \end{aligned}
+
+<!--list-separator-->
+
+-  dynamic-scoping
+
+    Dynamic-scoping 需要在运行期进行替换，因此需要在 contexts（\\(\Gamma\\)）中记录变量对应的值：
+
+    \begin{aligned}
+    \operatorname{\mathrm{v}} \Coloneqq && (\text{values}) \\\\
+        & \lambda x. e
+    \end{aligned}
+
+    \begin{aligned}
+    \Gamma \Coloneqq && (\text{contexts}) \\\\
+        & \emptyset \\\\
+        & \Gamma, x = t
+    \end{aligned}
+
+    \\[\dfrac{x = t \in \Gamma}{\Gamma \vdash x \rightarrow t} \tag{D-Var}\\]
+
+    \\[\dfrac{e\_{\operatorname{\mathrm{body}}} \rightarrow e\_{\operatorname{\mathrm{body}}}'}{e\_{\operatorname{\mathrm{body}}}\ e\_{\operatorname{\mathrm{arg}}} \rightarrow e\_{\operatorname{\mathrm{body}}}'\ e\_{\operatorname{\mathrm{arg}}}} \tag{D-App-Lam}\\]
+
+    \\[\dfrac{\Gamma, x = e\_{\operatorname{\mathrm{arg}}} \vdash e\_{\operatorname{\mathrm{body}}} \rightarrow e\_{\operatorname{\mathrm{body}}}'}{\Gamma \vdash (\lambda x. e\_{\operatorname{\mathrm{body}}})\ e\_{\operatorname{\mathrm{arg}}} \rightarrow (\lambda x. e\_{\operatorname{\mathrm{body}}}')\ e\_{\operatorname{\mathrm{arg}}}} \tag{D-App-Body}\\]
+
+    \\[\dfrac{}{\Gamma \vdash (\lambda x. v\_{\operatorname{\mathrm{body}}})\ e\_{\operatorname{\mathrm{arg}}} \rightarrow v\_{\operatorname{\mathrm{body}}}} \tag{D-App-Done}\\]
+
+    这里的关键在于 `D-App-Body`，它在运行时会将参数加入到 runtime contexts 中，然后对 body 进行 reduce；完成后使用 `D-App-Done` 去掉参数。
 
 <!--list-separator-->
 

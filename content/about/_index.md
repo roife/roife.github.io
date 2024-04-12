@@ -11,11 +11,9 @@ header_img: "/img/about-bg.jpg"
 我是 roife，本科就读于北航 6 系，目前在南大 [PASCAL Lab](https://pascal-lab.net) 读研。我对这些东西很感兴趣：
 
 - 计算机科学
-  + Compilers / Program Analysis
-  + PL / FP / Type System
-  + Computer Architecture / FPGA / EDA
+  + PL
+  + Compiler / Program Analysis
   + Emacs
-- 数学 Algebra / Mathematical Logic
 - 摄影 ℤ
 - Furry
 - HAM
