@@ -125,6 +125,10 @@ url = "https://chlience.cn/"
 name = "kirraobj"
 url = "https://kirraobj.ink/"
 
+[[params.friends]]
+name = "inuEbisu"
+url = "https://inuebisu.cn"
+
 [params.utterances]
 enable = true
 repo = "roife/roife.github.io"
