@@ -499,10 +499,10 @@ Variants \\(\langle l\_i : T\_i^{i \in 1 \dots n} \rangle\\) 和 ML 里面的 **
 但是二者之间有很多区别：
 
 1.  一个 trivial 的区别就是在 OCaml 中，类型必须以小写字母开头，datatypes 的 constructors 必须以大写字母开头。当然这本书里面不会这么区别，不过按照 OCaml 的写法上面的 Datatype 应该要写成
-    \\[\operatorname{\mathtt{type}} t = L\_i \operatorname{\mathtt{of}} T\_i^{i \in 1 \dots n}\\]
+    \\[\operatorname{\mathtt{type}}\ t = L\_i \operatorname{\mathtt{of}} T\_i^{i \in 1 \dots n}\\]
 2.  OCaml 中的 datatypes 不需要额外的类型标注，因为 datatypes 必须先声明再使用，并且在作用域内其 labels 的名称是**唯一**的，因此只需要 label 就可以推断出类型（Variants 则必须要标注）；
 3.  OCaml 中如果 datatype 的 associated type 是 unit type，那么就可以省略不写，如
-    \\[\operatorname{\mathtt{type}} \operatorname{\mathtt{Bool}} = \operatorname{\mathtt{true}} \\| \operatorname{\mathtt{false}};\\]
+    \\[\operatorname{\mathtt{type}}\ \operatorname{\mathtt{Bool}} = \operatorname{\mathtt{true}} \\| \operatorname{\mathtt{false}};\\]
 4.  OCaml 中的 datatypes 不仅包含了 variants 的特性，还有 recursive types 的特性（如 `List` 就是递归定义的）。并且 datatypes 还可以接受 parameters，当作 type operator 用。
 
 

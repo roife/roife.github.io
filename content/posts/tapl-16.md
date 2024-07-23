@@ -176,7 +176,7 @@ Algorithmic subtyping relation 和原先的 subtyping relation 是等价的：
 
 **(Termination)**
 
-If \\(\mapsto S <: T\\) is derivable, then \\(\operatorname{\mathrm{subtype}}(S, T)\\) will return **true**.
+If \\(\mapsto S <: T\\) is derivable, then \\(\operatorname{\mathtt{subtype}}(S, T)\\) will return **true**.
 
 If not, then subtype(S, T) will return **false**.
 
@@ -518,7 +518,7 @@ If \\(\Gamma \vdash t : T\\), then \\(\Gamma \mapsto t : S\\) for some \\(S <: T
 
 在一个控制流分支中，多个分支可能返回不同的类型。
 
-\\[ \operatorname{if}\ \operatorname{true}\ \operatorname{then}\ \\{x=\operatorname{true},y=\operatorname{false}\\}\ \operatorname{else}\ \\{x=\operatorname{false},z=\operatorname{true}\\} \\]
+\\[ \operatorname{\mathtt{if}}\ \operatorname{\mathtt{true}}\ \operatorname{\mathtt{then}}\ \\{x=\operatorname{\mathtt{true}},y=\operatorname{\mathtt{false}}\\}\ \operatorname{\mathtt{else}}\ \\{x=\operatorname{\mathtt{false}},z=\operatorname{\mathtt{true}}\\} \\]
 
 在没有 subtyping 的时候这个表达式不能通过类型检查，但是在 declarative subtyping 下这个表达式的返回值可以是 \\(\\{x=\operatorname{bool}\\}\\) 或者 \\(\\{\\}\\)，而在 algorithmic subtyping 下应当取这些类型的 minimal type，也就是**最小公共父类型（least common supertype）**。此时称得到的类型是这几个 branches 的 **join**。
 
@@ -538,20 +538,20 @@ A type \\(M\\) is called **meet** of a pair of types \\(S\\) and \\(T\\), writte
 
 </div>
 
-对于一个 subtyping 关系，如果对于每个类型 \\(S\\) 和 \\(T\\) 都有 joins，则这个 subtyping 关系有 joins。类似地，如果对于每个类型 \\(S\\) 和 \\(T\\) 都有 meets，则这个 subtyping 关系有 meets。由于这里讨论的 subtyping 只有 \\(\operatorname{\mathrm{Top}}\\) 而没有 \\(\operatorname{\mathrm{Bot}}\\)，因此只存在 joins 而没有 meets。
+对于一个 subtyping 关系，如果对于每个类型 \\(S\\) 和 \\(T\\) 都有 joins，则这个 subtyping 关系有 joins。类似地，如果对于每个类型 \\(S\\) 和 \\(T\\) 都有 meets，则这个 subtyping 关系有 meets。由于这里讨论的 subtyping 只有 \\(\operatorname{\mathtt{Top}}\\) 而没有 \\(\operatorname{\mathtt{Bot}}\\)，因此只存在 joins 而没有 meets。
 
 Joins 和 meets 的性质有一个弱化版本：如果一对类型 \\(S\\) 和 \\(S\\) 存在某个类型 \\(L\\) 使得 \\(L <: S\\) 且 \\(L <: T\\)，那么这对类型 \\(S\\) 和 \\(T\\) 有**下界（bounded below）**。对于每一对**有下界**的类型 \\(S\\) 和 \\(T\\)，如果存在某个 \\(M\\) 是 \\(S\\) 和 \\(T\\) 的下界，则该 subtyping 关系被认为具有**有界下界（bounded below meets）**。
 
-Joins 和 meets 不是唯一的，例如 \\(\\{x: \operatorname{\mathrm{Top}}, y: \operatorname{\mathrm{Top}}\\}\\) 和 \\(\\{y: \operatorname{\mathrm{Top}}, x: \operatorname{\mathrm{Top}}\\}\\) 可以同时是某个类型的 joins。但是某对类型的 joins 和 meets 假设有多个，那么它们之间一定互为 subtyping 关系。
+Joins 和 meets 不是唯一的，例如 \\(\\{x: \operatorname{\mathtt{Top}}, y: \operatorname{\mathtt{Top}}\\}\\) 和 \\(\\{y: \operatorname{\mathtt{Top}}, x: \operatorname{\mathtt{Top}}\\}\\) 可以同时是某个类型的 joins。但是某对类型的 joins 和 meets 假设有多个，那么它们之间一定互为 subtyping 关系。
 
-利用 joins 和 meets 可以定义出 \\(\operatorname{\mathrm{if}}\\) 的 typing rule:
+利用 joins 和 meets 可以定义出 \\(\operatorname{\mathtt{if}}\\) 的 typing rule:
 
 \\[
-\dfrac{\Gamma \vdash t\_1 : T\_1 \quad T\_1 = \operatorname{\mathrm{Bool}} \qquad \Gamma \vdash t\_2 : T\_2 \quad \Gamma \vdash t\_3 : T\_3 \quad T\_2 \vee T\_3 = T
-        }{\Gamma \vdash \operatorname{if}\ t\_1\ \operatorname{then}\ t\_2\ \operatorname{else}\ t\_3 : T} \tag{TA-If}
+\dfrac{\Gamma \vdash t\_1 : T\_1 \quad T\_1 = \operatorname{\mathtt{Bool}} \qquad \Gamma \vdash t\_2 : T\_2 \quad \Gamma \vdash t\_3 : T\_3 \quad T\_2 \vee T\_3 = T
+        }{\Gamma \vdash \operatorname{\mathtt{if}}\ t\_1\ \operatorname{\mathtt{then}}\ t\_2\ \operatorname{\mathtt{else}}\ t\_3 : T} \tag{TA-If}
 \\]
 
-但是 joins 和 meets 也有可能让类型推导变得更奇怪：例如表达式 \\(\operatorname{if}\ \operatorname{true}\ \operatorname{then}\ \operatorname{true}\ \operatorname{else}\ \\{\\}\\) 的类型为 \\(\operatorname{\mathrm{Top}}\\)，这通常不是程序员想要的。通常情况下应当排除掉 joins 为 \\(\operatorname{\mathrm{Top}}\\) 的情况或者直接发出警告。
+但是 joins 和 meets 也有可能让类型推导变得更奇怪：例如表达式 \\(\operatorname{if}\ \operatorname{true}\ \operatorname{then}\ \operatorname{true}\ \operatorname{else}\ \\{\\}\\) 的类型为 \\(\operatorname{\mathtt{Top}}\\)，这通常不是程序员想要的。通常情况下应当排除掉 joins 为 \\(\operatorname{\mathtt{Top}}\\) 的情况或者直接发出警告。
 
 
 ### Existence of joins and bounded meets {#existence-of-joins-and-bounded-meets}
@@ -569,33 +569,30 @@ Joins 和 meets 不是唯一的，例如 \\(\\{x: \operatorname{\mathrm{Top}}, y
 
 \\[
 S \vee T = \begin{cases}
-\operatorname{\mathrm{Bool}} & \text{if $S = T = \operatorname{\mathrm{Bool}}$} \\\\
-M\_1 \to J\_2 & \text{if $S = S\_1 \to S\_2$ and $T = T\_1 \to T\_2$} \\\\
-& \quad \text{where $S\_1 \land T\_1 = M\_1$ and $S\_2 \lor T\_2 = J\_2$} \\\\
-\\{j\_l : J\_l^{l \in 1 \dots q} \\} & \text{if $S = \\{k\_j : S\_j^{j \in 1 \dots m}\\}$ and $T = \\{l\_i : T\_i^{i \in 1 \dots n}\\}$} \\\\
-& \quad \text{where $\\{j\_l^{l \in 1 \dots q}\\} = \\{k\_j^{j \in 1 \dots m}\\} \cap \\{l\_i \\}\_{i \in 1 \dots n}$} \\\\
-& \quad \text{and $S\_j \lor T\_i = J\_l$ for each $j = k\_j = l\_i$} \\\\
-\operatorname{\mathrm{Top}} & \text{otherwise}
+\operatorname{\mathtt{Bool}} & \text{if $S = T = \operatorname{\mathtt{Bool}}$} \\\\
+M\_1 \to J\_2 & \text{if $S = S\_1 \to S\_2,\ T = T\_1 \to T\_2$} \\\\
+& \quad \text{where $S\_1 \land T\_1 = M\_1;\ S\_2 \lor T\_2 = J\_2$} \\\\
+\\{j\_l : J\_l^{l \in 1 \dots q} \\} & \text{if $S = \\{k\_j : S\_j^{j \in 1 \dots m}\\},\ T = \\{l\_i : T\_i^{i \in 1 \dots n}\\}$} \\\\
+& \quad \text{where $\\{j\_l^{l \in 1 \dots q}\\} = \\{k\_j^{j \in 1 \dots m}\\} \cap \\{l\_i^{i \in 1 \dots n}\\};\ ∀ jₗ = k\_j = l\_i. S\_j \lor T\_i = J\_l$} \\\\
+\operatorname{\mathtt{Top}} & \text{otherwise}
 \end{cases}
 \\]
 
 \\[
 S \wedge T = \begin{cases}
-    S & \text{if $T = \operatorname{\mathrm{Top}}$} \\\\
-    T & \text{if $S = \operatorname{\mathrm{Top}}$} \\\\
+    S & \text{if $T = \operatorname{\mathtt{Top}}$} \\\\
+    T & \text{if $S = \operatorname{\mathtt{Top}}$} \\\\
     \operatorname{\mathrm{Bool}} & \text{if $S = T = \operatorname{\mathrm{Bool}}$} \\\\
-    J\_1 \to M\_2 & \text{if $S = S\_1 \to S\_2$ and $T = T\_1 \to T\_2$} \\\\
-    & \quad \text{where $S\_1 \lor T\_1 = J\_1$ and $S\_2 \land T\_2 = M\_2$} \\\\
-    \\{ m\_l : M\_l \\}\_{l \in 1..q} & \text{if $S = \\{ k\_j : S\_j \\}\_{j \in 1..m}$ and $T = \\{ l\_i : T\_i \\}\_{i \in 1..n}$} \\\\
-    & \quad \text{where $\\{ m\_l \\}\_{l \in 1..q} = \\{ k\_j \\}\_{j \in 1..m} \cup \\{ l\_i \\}\_{i \in 1..n}$} \\\\
-    & \quad \text{and $S\_j \land T\_i = M\_l$ for each $m\_l = k\_j = l\_i$} \\\\
-    & \quad \text{and $M\_l = S\_j$ if $m\_l = k\_j$ occurs only in $S$} \\\\
-    & \quad \text{and $M\_l = T\_i$ if $m\_l = l\_i$ occurs only in $T$} \\\\
+    J\_1 \to M\_2 & \text{if $S = S\_1 \to S\_2,\ T = T\_1 \to T\_2$} \\\\
+    & \quad \text{where $S\_1 \lor T\_1 = J\_1;\ S\_2 \land T\_2 = M\_2$} \\\\
+    \\{ m\_l : M\_l \\}\_{l \in 1..q} & \text{if $S = \\{ k\_j : S\_j^{j \in 1..m} \\},\ T = \\{ l\_i : T\_i^{i \in 1..n}\\}$} \\\\
+    & \quad \text{where $\\{ m\_l^{l \in 1..q} \\} = \\{ k\_j^{j \in 1..m} \\} \cup \\{ l\_i^{i \in 1..n} \\};\ ∀ m\_l = k\_j = l\_i. S\_j \land T\_i = M\_l$;} \\\\
+    & \quad \text{$M\_l = Sⱼ\ (m\_l = k\_j \in S - T)$; $M\_l = T\_i\ (m\_l = l\_i \in T - S)$} \\\\
     \operatorname{\mathrm{fail}} & \text{otherwise}
 \end{cases}
 \\]
 
-这两个算法会相互递归调用（例如计算 \\(S \vee T\\) 的第二个分支上，即函数类型上时，需要计算 \\(S \wedge T\\)）。此处计算 \\(S \wedge T\\) 可能会出现 `fail` 的情况，表明两个类型没有 meets。此时会直接跳到 \\(\operatorname{\mathrm{Top}}\\) 的情况。
+这两个算法会相互递归调用（例如计算 \\(S \vee T\\) 的第二个分支上，即函数类型上时，需要计算 \\(S \wedge T\\)）。此处计算 \\(S \wedge T\\) 可能会出现 `fail` 的情况，表明两个类型没有 meets。此时会直接跳到 \\(\operatorname{\mathtt{Top}}\\) 的情况。
 
 在上面的算法中每一个步骤 \\(S\\) 和 \\(T\\) 的 size 都会减小，所以算法一定能够终止，因此 \\(\vee\\) 和 \\(\wedge\\) 都是 total functions。
 
@@ -611,7 +608,7 @@ If \\(L <: S\\) and \\(L <: T\\), then \\(S \wedge T = M\\) for some \\(M\\).
 
 首先根据 inversion lemma，如果存在 \\(L\\) 满足条件，那么 \\(S\\) 和 \\(T\\) 的形状必定相同。下面根据 size 进行归纳：
 
--   如果 \\(S = \operatorname{\mathrm{Top}}\\) 或 \\(T = \operatorname{\mathrm{Top}}\\)，那么 \\(S \wedge T\\) 的结果一定是 \\(T\\) 或 \\(S\\)
+-   如果 \\(S = \operatorname{\mathtt{Top}}\\) 或 \\(T = \operatorname{\mathtt{Top}}\\)，那么 \\(S \wedge T\\) 的结果一定是 \\(T\\) 或 \\(S\\)
 -   如果 \\(S = \operatorname{\mathrm{Bool}}\\) 且 \\(T = \operatorname{\mathrm{Bool}}\\)，那么 \\(S \wedge T = \operatorname{\mathrm{Bool}}\\)
 -   如果 \\(S = S\_1 \to S\_2\\) 且 \\(T = T\_1 \to T\_2\\)。由于 \\(\vee\\) 是 total 的，那么必定存在 \\(J₁\\) 使得 \\(S\_1 \vee T\_1 = J\_1\\)。根据 inversion lemma，\\(L\\) 的形式必定为 \\(L₁ \rightarrow L₂\\)，并且 \\(L₂ <: S₂\\) 和 \\(L₂ <: T₂\\)。根据归纳假设，\\(S₂ \wedge T₂\\) 不会 `fail`，设 \\(S₂ \wedge T₂ = M₂\\)。那么 \\(S \wedge T = J₁ \to M₂\\)
 -   如果 \\(S = \\{k\_j : S\_j^{j \in 1 \dots m}\\}\\) 且 \\(T = \\{l\_i : T\_i^{i \in 1 \dots n}\\}\\)。根据 inversion lemma，\\(L\\) 必须是一个 record，其标签包括在 S 和 T 中出现的所有标签；对于 S 和 T 中的每个公共标签，根据 inversion lemma \\(L\\) 中的相应字段是 \\(S\\) 和 \\(T\\) 中字段的共同子类型
@@ -655,21 +652,21 @@ S \vee T = \begin{cases}
 \end{cases}
 \\]
 
-另一种解决方案是细化 `Ref`，使其接受两个参数：\\(\operatorname{\mathrm{Ref}}(S, T)\\) **存储**类型 \\(S\\) 并**读取**类型 \\(T\\)。新的 `Ref` 在其第一个参数上是逆变的，在其第二个参数上是协变的。此时 \\(\operatorname{\mathrm{Sink}}\ S \overset{\text{def}}{=} \operatorname{\mathrm{Ref}}\ S\ \operatorname{\mathrm{Top}}\\) ，而 \\(\operatorname{\mathrm{Source}}\ T \overset{\text{def}}{=} \operatorname{\mathrm{Ref}}\ \operatorname{\mathrm{Bot}}\ T\\)。
+另一种解决方案是细化 `Ref`，使其接受两个参数：\\(\operatorname{\mathrm{Ref}}(S, T)\\) **存储**类型 \\(S\\) 并**读取**类型 \\(T\\)。新的 `Ref` 在其第一个参数上是逆变的，在其第二个参数上是协变的。此时 \\(\operatorname{\mathrm{Sink}}\ S \overset{\text{def}}{=} \operatorname{\mathrm{Ref}}\ S\ \operatorname{\mathtt{Top}}\\) ，而 \\(\operatorname{\mathrm{Source}}\ T \overset{\text{def}}{=} \operatorname{\mathrm{Ref}}\ \operatorname{\mathtt{Bot}}\ T\\)。
 
 
 ## Add `Bot` {#add-bot}
 
-如果加入 minimal type \\(\operatorname{\mathrm{Bot}}\\)，需要对上面的规则进行扩展：
+如果加入 minimal type \\(\operatorname{\mathtt{Bot}}\\)，需要对上面的规则进行扩展：
 
-\\[\mapsto \operatorname{\mathrm{Bot}} <: T \tag{SA-Bot}\\]
+\\[\mapsto \operatorname{\mathtt{Bot}} <: T \tag{SA-Bot}\\]
 
-\\[\dfrac{\Gamma \vdash t\_1 : \operatorname{\mathrm{Bot}} \qquad \Gamma \vdash t\_2 : T\_2}{\Gamma \vdash t\_1\ t\_2 : \operatorname{\mathrm{Bot}}} \tag{TA-AppBot}\\]
+\\[\dfrac{\Gamma \vdash t\_1 : \operatorname{\mathtt{Bot}} \qquad \Gamma \vdash t\_2 : T\_2}{\Gamma \vdash t\_1\ t\_2 : \operatorname{\mathtt{Bot}}} \tag{TA-AppBot}\\]
 
-\\[\dfrac{\Gamma \vdash t\_1 : \operatorname{\mathrm{Bot}}}{\Gamma \vdash t\_1.l\_i : \operatorname{\mathrm{Bot}}} \tag{TA-ProjBot}\\]
+\\[\dfrac{\Gamma \vdash t\_1 : \operatorname{\mathtt{Bot}}}{\Gamma \vdash t\_1.l\_i : \operatorname{\mathtt{Bot}}} \tag{TA-ProjBot}\\]
 
 考虑 `Bot` 出现在 `if` 的条件中的情况，那么需要加入规则：
 
-\\[\dfrac{\Gamma \vdash t\_1 : \operatorname{\mathrm{Bot}} \qquad \Gamma \vdash t\_2 : T\_2 \qquad \Gamma \vdash t\_3 : T\_3}{\Gamma \vdash \operatorname{if}\ t\_1\ \operatorname{then}\ t\_2\ \operatorname{else}\ t\_3 : T} \tag{TA-IfBot}\\]
+\\[\dfrac{\Gamma \vdash t\_1 : \operatorname{\mathtt{Bot}} \qquad \Gamma \vdash t\_2 : T\_2 \qquad \Gamma \vdash t\_3 : T\_3}{\Gamma \vdash \operatorname{\mathtt{if}}\ t\_1\ \operatorname{\mathtt{then}}\ t\_2\ \operatorname{\mathtt{else}}\ t\_3 : T} \tag{TA-IfBot}\\]
 
-注意这里不应该让表达式返回 \\(\operatorname{\mathrm{Bot}}\\)，
+注意这里不应该让表达式返回 \\(\operatorname{\mathtt{Bot}}\\)，
