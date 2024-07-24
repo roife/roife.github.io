@@ -491,15 +491,15 @@ Y\ f = f\ (Y\ f);
   \mathtt{sumlist'} = \lambda l. l\ \mathtt{plus}\ c_0;
   \]
 
-*** 求解 =fix= 举例：=factiorial=
+*** 求解 =fix= 举例：=factorial=
 \begin{aligned}
     & \mathtt{factorial}\ \mathtt{c}_3 \\
   = {}& \mathtt{fix}\ g\ \mathtt{c}_3 \\
-  \rightarrow {}& (\lambda x. g\ (\lambda y. x\ x\ y))\ (\lambda x. g\ (\lambda y. x\ x\ y))\ \mathtt{c}_3\ \\
+  \rightarrow {}& \underline{(\lambda x. g\ (\lambda y. x\ x\ y))\ (\lambda x. g\ (\lambda y. x\ x\ y))}\ \mathtt{c}_3\ \\
   \rightarrow {}& g\ (\lambda x. g\ (\lambda y. x\ x\ y))\ (\lambda x. g\ (\lambda y. x\ x\ y))\ \mathtt{c}_3\ \\
-  \rightarrow {}& g\ \mathtt{fct}\ \mathtt{c}_3 \\
+  = {}& g\ \mathtt{fct}\ \mathtt{c}_3 \\
   & \text{where} \quad \mathtt{fct} = \lambda y. (\lambda x. g\ (\lambda y. x\ x\ y))\ (\lambda x. g\ (\lambda y. x\ x\ y))\ y \\
-  \rightarrow^* & (\lambda n. \mathtt{if}\ (\mathtt{realeq}\ n\ \mathtt{c}_0)\ \mathtt{then}\ \mathtt{c}_1\ \mathtt{else}\ \mathtt{times}\ \mathtt{c}_3\ (\mathtt{fct}\ (\mathtt{prd}\ \mathtt{c}_3)))\ \mathtt{c}_3 \\
+  \rightarrow^* & (\lambda n. \mathtt{if}\ (\mathtt{realeq}\ n\ \mathtt{c}_0)\ \mathtt{then}\ \mathtt{c}_1\ \mathtt{else}\ \mathtt{times}\ \mathtt{c}_3\ (\mathtt{fct}\ (\mathtt{prd}\ \mathtt{c}_3)))\ \mathtt{c}_3 \quad \text{(By def of $g$)}\\
   \rightarrow {}& \mathtt{if}\ (\mathtt{realeq}\ \mathtt{c}_3\ \mathtt{c}_0)\ \mathtt{then}\ \mathtt{c}_1\ \mathtt{else}\ \mathtt{times}\ \mathtt{c}_3\ (\mathtt{fct}\ (\mathtt{prd}\ \mathtt{c}_3)) \\
   \rightarrow^*& \mathtt{times}\ \mathtt{c}_3\ (\mathtt{fct}\ (\mathtt{prd}\ \mathtt{c}_3)) \\
   \rightarrow^*& \mathtt{times}\ \mathtt{c}_3\ (\mathtt{fct}\ \mathtt{c}_2') \\
