@@ -388,3 +388,29 @@ o&.\operatorname{\mathtt{inc}}\ \operatorname{\mathtt{unit}} \\
 但是这里的问题是 =Ref= 是不变的，在构建子类对象的时候，无法将 =self: Ref SubClass= 传递给 =self: Ref SuperClass=。解决方案是将 =Ref= 替换为 =Source=，因为父类只需要读取子类的方法，而不需要修改，并且 =Source= 是协变的。
 
 经过这样的修改，method table 变成每个对象创建时调用一次，而不是每次使用 =self= 时调用一次。
+
+#+begin_question
+如何检测 object identity：即检测两个变量指向的是否是同一个对象？
+#+end_question
+#+begin_answer
+为所有对象都加上一个 =id= 字段，然后为对两个变量的 =id= 字段赋予不同的值，检测两个变量的 =id= 字段是否相等即可。
+
+\[\operatorname{\mathtt{IdCounterRep}} = {x: \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}}, id: \operatorname{\mathtt{Ref}}\ (\operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}})};\]
+
+\begin{align*}
+\operatorname{\mathtt{IdCounter}}: &\operatorname{\mathtt{IdCounterRep}} \rightarrow \operatorname{\mathtt{IdCounter}} = \\
+\lambda r: &\operatorname{\mathtt{IdCounterRep}}. \\
+\{ &\operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.x),\\
+& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ r.x:= \operatorname{\mathtt{succ}}\ !(r.x),\\
+& \operatorname{\mathtt{id}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.id) \ \}
+\end{align*}
+
+\begin{align*}
+\operatorname{\mathtt{sameObject}} & = \\
+\lambda a: &\{id: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}}\}. \\
+\lambda b: &\{id: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}}\}. \\
+(&(b.\operatorname{\mathtt{id}}\ \operatorname{\mathtt{unit}}) := 1;\\
+&(a.\operatorname{\mathtt{id}}\ \operatorname{\mathtt{unit}}) := 0;\\
+&\operatorname{\mathtt{iszero}}\ (!(b.\operatorname{\mathtt{id}}\ \operatorname{\mathtt{unit}})))
+\end{align*}
+#+end_answer
