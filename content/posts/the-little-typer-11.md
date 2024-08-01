@@ -18,7 +18,7 @@ draft = false
   step)
 ```
 
-相比于 `ind-List=，=ind-Vec` 的每个参数都多了一个 Nat `k` 表示数量。
+相比于 `ind-List`，`ind-Vec` 的每个参数都多了一个 Nat `k` 表示数量。
 
 `mot` 的类型为：
 
@@ -28,11 +28,11 @@ draft = false
     U))
 ```
 
-可以发现 `mot` 的参数中没有 `E` 而有 `k=。因为对于一个 =Vec=，=E` 是确定不变的，而 `k` 会改变（例如 `step` 调用 motive 推导类型时，每次的 `n` 都会改变）。确定不变的称为 parameters，而有可能会改变的称为 indices。这里没出现的 parameter 用 curry-ing 的方法传入。
+可以发现 `mot` 的参数中没有 `E` 而有 `k`。因为对于一个 `Vec`，`E` 是确定不变的，而 `k` 会改变（例如 `step` 调用 motive 推导类型时，每次的 `n` 都会改变）。确定不变的称为 parameters，而有可能会改变的称为 indices。这里没出现的 parameter 用 curry-ing 的方法提前传入。
 
 > A family of types whose argument is an index is sometimes called “an indexed family.
 
-`base` 的类型为 `(mot zero vecnil)=，=step` 的类型为：
+`base` 的类型为 `(mot zero vecnil)`，`step` 的类型为：
 
 ```lisp
 (Π ((k Nat)
@@ -73,7 +73,7 @@ draft = false
 >
 > is a `(mot n target)`
 
-`ind-Vec` 中的 motive 接受两个参数。注意这和前面的 motive 不一样，前面的 motive 虽然也是接受两个参数，但是其中一个会通过 curry-ing 提前传入，所以实际上只有一个参数。
+`ind-Vec` 中的 motive 接受两个参数；前面的 motive 虽然也是接受两个参数，但是其中一个会通过 curry-ing 提前传入，所以实际上只有一个参数。
 
 > **The First Commandment of `ind-Vec`**
 >
@@ -114,7 +114,7 @@ draft = false
 
 ## `vec-append` {#vec-append}
 
--   =(vec-append E l j v1 v2)=：合并两个 Vec
+-   `(vec-append E l j v1 v2)`：合并两个 Vec
 
 <!--listend-->
 
@@ -152,7 +152,7 @@ draft = false
       (Vec E (+ j k)))))
 `````````
 
-这里 motive 先传入 `end` 的长度 `j` 再传入剩余列表长度 `k=，是因为前者在 =claim` 里面要用到，由于 `j` 每次是不变的，所以可以直接通过 curry-ing 传入。否则就要写成下面的形式来交换参数：
+这里 motive 先传入 `end` 的长度 `j` 再传入剩余列表长度 `k`，是因为 `j` 每次是不变的，所以可以直接通过 curry-ing 传入。否则就要写成下面的形式来交换参数：
 
 `````````lisp
 (claim mot-vec-append
@@ -165,10 +165,9 @@ draft = false
 (define vec-append
   (λ (E l j es end)
     (ind-Vec l es
-      (λ (k)
-        (mot-vec-append E k j))
-        end
-        step-vec-append )))
+      (λ (k) (mot-vec-append E k j))
+      end
+      step-vec-append )))
 `````````
 
 
@@ -195,7 +194,7 @@ draft = false
 
 用一个 specific 的类型相当于将证明用类型来实现，所以称为 instrinsic proof。反之，用一个额外的证明则称为 extrinsic proof。
 
-例如对于 `list→vec` 的一个证明是将 List 变为 Vec，然后变回 List 仍然是同样的列表。因此，这需要定义 =vec→list=。
+例如对于 `list→vec` 的一个证明是将 List 变为 Vec，然后变回 List 仍然是同样的列表。因此，这需要定义 `vec→list`。
 
 
 ### `vec→list` {#vec-list}
@@ -272,20 +271,11 @@ draft = false
     (→ (mot-list→vec→list= E es)
        (mot-list→vec→list= E (:: e es)))))
 
-(claim ::-fun
-  (Π ((E U))
-    (→ E (List E) (List E))))
-
-(define ::-fun
-  (λ (E)
-    (λ (e es)
-      (:: e es))))
-
 (define step-list→vec→list=
   (λ (E e es)
     (λ (list→vec→list=_es)
       (cong list→vec→list=_es
-        (::-fun E e)))))
+        (lambda (es) (:: e es))))))
 
 (define list→vec→list=
   (λ (E es)
