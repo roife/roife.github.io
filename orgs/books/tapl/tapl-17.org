@@ -1,6 +1,6 @@
 #+title: [TaPL] 17 Subtyping in ML
 #+date: 2024-07-22
-#+hugo_tags: 类型系统 程序语言理论 程序语义 STLC subtyping
+#+hugo_tags: 类型系统 程序语言理论 程序语义 subtyping
 #+hugo_series: "Types and Programming Languages"
 
 Subtyping 的实现基于 STLC。由于前面给出了 algorithmic subtyping 的实现，因此这里直接对着写就行。

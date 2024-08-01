@@ -3,7 +3,7 @@ title = "[TaPL] 17 Subtyping in ML"
 author = ["roife"]
 date = 2024-07-22
 series = ["Types and Programming Languages"]
-tags = ["类型系统", "程序语言理论", "程序语义", "STLC", "subtyping"]
+tags = ["类型系统", "程序语言理论", "程序语义", "subtyping"]
 draft = false
 +++
 

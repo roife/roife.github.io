@@ -3,7 +3,7 @@ title = "[TaPL] 18 Imperative Objects"
 author = ["roife"]
 date = 2024-07-23
 series = ["Types and Programming Languages"]
-tags = ["类型系统", "程序语言理论", "程序语义", "STLC", "subtyping"]
+tags = ["类型系统", "程序语言理论", "程序语义", "subtyping"]
 draft = false
 +++
 
@@ -232,7 +232,7 @@ Real-world PL 的类包括复杂的功能，包括 `self`、`super`、visibility
 
 为类添加 `self` 可以让类的方法调用自己的其他方法。但是目前我们把方法保存在 records 中，如果一个方法能访问到对象的其他方法，那么这就构成了一个递归。
 
-例如这里添加一个 `SetCounter` 类，让 `=inc` 调用 `self.set` 来实现递增：
+例如这里添加一个 `SetCounter` 类，让 `inc` 调用 `self.set` 来实现递增：
 
 \\[
 \operatorname{\mathtt{SetCounter}} = \\{ \operatorname{\mathtt{get}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Nat}},\ \operatorname{\mathtt{set}}: \operatorname{\mathtt{Nat}} \rightarrow \operatorname{\mathtt{Unit}},\ \operatorname{\mathtt{inc}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Unit}} \\}
@@ -270,7 +270,9 @@ o&.\operatorname{\mathtt{inc}}\ \operatorname{\mathtt{unit}} \\\\
 = &\ o.\operatorname{\mathtt{set}}\ (\operatorname{\mathtt{succ}}\ o.\operatorname{\mathtt{get}}\ \operatorname{\mathtt{unit}}) \\\\
 \end{align\*}
 
-可以看到最后对 `self` 的调用都转换成了对其他方法的调用。
+可以看到最后对 `self` 的调用都转换成了对当前对象的其他方法的调用。
+
+因此一个包含递归方法的对象是一个返回 records 的方法的不动点，设函数 \\( P = \lambda \operatorname{\mathtt{self}}. \\{m₁ = e₂, \dots, mₙ = eₙ\\} \\)，则它构建的对象为 \\( \operatorname{\mathtt{fix}}\ P \\)。
 
 
 ## Open recursion through Self {#open-recursion-through-self}
