@@ -23,6 +23,8 @@ Subtyping 也称为 subtype polymorphism。之前介绍的特性之间基本都�
 \(S\) is a subtype of \(T\), written \(S <: T\), to mean that any term of type \(S\) can safely be used in a context where a term of type \(T\) is expected.
 #+end_definition
 
+看待 principle of safe substitution 的另一个有趣的视角是将其看作一种受限的 *implicit coercion*。
+
 \(S <: T\) 读作 “S is a subtype of T” 或 “T is a supertype of S”。
 
 对应的类型规则被称为 *the rule of subsumption*：

@@ -86,11 +86,12 @@ self.equalPoint(rhs) {
 
 本章将以一个支持递增和返回当前值的对象为例：
 
-\begin{align*}
-&& c = \operatorname{\mathtt{let}}\ x =\ &\operatorname{\mathtt{ref}}\ 1 \ \operatorname{\mathtt{in}}\\
-&&\{& \operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !x,\\
-&&& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ x:= \operatorname{\mathtt{succ}}(!x)\ \}
-\end{align*}
+#+begin_src
+c = let x = ref 1 in
+       { get = λ_:Unit. !x,
+         inc = λ_:Unit. x:=succ(!x) };
+-- c : { get: Unit -> Nat, inc: Unit -> Unit }
+#+end_src
 
 这个对象有两个方法：\(\operatorname{\mathtt{get}}\) 和 \(\operatorname{\mathtt{inc}}\)，分别用于获取当前值和递增当前值。方法通过 abstractions 来进行多次延迟求值。
 
@@ -104,12 +105,13 @@ self.equalPoint(rhs) {
 
 对象可以通过 *object generator*来生成。*Object generator* 是一个函数，接受一些参数，返回一个对象。
 
-\begin{align*}
-\operatorname{\mathtt{newCounter}} = &&\lambda \_:\operatorname{\mathtt{Unit}}. \\
-&& \operatorname{\mathtt{let}}\ x =\ &\operatorname{\mathtt{ref}}\ 1 \ \operatorname{\mathtt{in}}\\
-&& \{\ &\operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !x,\\
-&&& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ x:= \operatorname{\mathtt{succ}}(!x) \ \}
-\end{align*}
+#+begin_src
+newCounter =
+  λ_:Unit. let x = ref 1 in
+              { get = λ_:Unit. !x,
+                inc = λ_:Unit. x:=succ(!x) };
+-- newCounter : Unit -> Counter
+#+end_src
 
 * Subtyping
 
@@ -117,9 +119,9 @@ OOP 受到欢迎的原因之一是它允许一段代码处理许多不同形状�
 
 例如定义 =ResetCounter=：
 
-\[
-\operatorname{\mathtt{ResetCounter}} = \{ \operatorname{\mathtt{get}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Nat}},\ \operatorname{\mathtt{inc}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Unit}},\ \operatorname{\mathtt{reset}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Unit}} \}
-\]
+#+begin_src
+ResetCounter = { get: Unit → Nat, inc: Unit → Unit, reset: Unit → Unit };
+#+end_src
 
 那么有 \(\operatorname{\mathtt{ResetCounter}} <: \operatorname{\mathtt{Counter}}\)。因此所有能够处理 =Counter= 的函数都能处理 =ResetCounter=。
 
@@ -127,11 +129,11 @@ OOP 受到欢迎的原因之一是它允许一段代码处理许多不同形状�
 
 一个对象可能会有多个实例变量，因此最好将他们打包在一起操作：
 
-\begin{align*}
-&& c = \operatorname{\mathtt{let}}\ r =\ &\{x =\operatorname{\mathtt{ref}}\ 1\} \ \operatorname{\mathtt{in}}\\
-&&\{& \operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.x),\\
-&&& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ r.x:= \operatorname{\mathtt{succ}}(!(r.x))\ \}
-\end{align*}
+#+begin_src
+c = let r = {x=ref 1} in
+      { get = λ_:Unit. !(r.x),
+        inc = λ_:Unit. r.x:=succ(!(r.x)) };
+#+end_src
 
 由实例变量自成的 record 称为对象的 *representation type*：
 
@@ -149,35 +151,38 @@ Real-world PL 的类包括复杂的功能，包括 =self=、=super=、visibility
 
 为了能够对类进行扩展，那么类中的方法访问到的实例变量也应当能被重用。为了做到这点，方法在访问实例变量时应当使用抽象的表示，而不是对具体实例变量的使用。因此应该将 =newCounter= 拆分成两部分：一部分定义 method bodies，方法能够通过 representation 访问字段组成的的 record；另一部分生成一个 record，并将其作为 representation 传递给 method bodies 并生成 =counter=。
 
-\begin{align*}
-\operatorname{\mathtt{CounterClass}}: &\operatorname{\mathtt{CounterRep}} \rightarrow \operatorname{\mathtt{Counter}} = \\
-\lambda r: &\operatorname{\mathtt{CounterRep}}. \\
-\{ &\operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.x),\\
-& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ r.x:= \operatorname{\mathtt{succ}}\ !(r.x) \ \}
-\end{align*}
+#+begin_src
+counterClass =
+  λr:CounterRep.
+    { get = λ_:Unit. !(r.x),
+      inc = λ_:Unit. r.x:=succ(!(r.x)) };
+-- counterClass : CounterRep → Counter
+#+end_src
 
-\begin{align*}
-\operatorname{\mathtt{newCounter}}: &\operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Counter}} = \\
-\lambda \_:\operatorname{\mathtt{Unit}}. \\
-\operatorname{\mathtt{let}}\ r =\ &\{x =\operatorname{\mathtt{ref}}\ 1\} \ \operatorname{\mathtt{in}}\ \operatorname{\mathtt{newCounter}}\ r
-\end{align*}
+#+begin_src
+newCounter =
+  λ_:Unit. let r = {x=ref 1} in
+             counterClass r;
+-- newCounter : Unit → Counter
+#+end_src
 
 这样就可以对类进行扩展，通过 =Counter= 定义 =resetCounter=：
 
-\begin{align*}
-\operatorname{\mathtt{ResetCounterClass}}: &\operatorname{\mathtt{CounterRep}} \rightarrow \operatorname{\mathtt{ResetCounter}} = \\
-\lambda r: \operatorname{\mathtt{CounterRep}}. \\
-\operatorname{\mathtt{let}}\ \operatorname{\mathtt{super}} =\ &\operatorname{\mathtt{CounterClass}}\ r \ \operatorname{\mathtt{in}}\\
-\{ &\operatorname{\mathtt{get}} = \operatorname{\mathtt{super.get}},\\
-& \operatorname{\mathtt{inc}} = \operatorname{\mathtt{super.inc}},\\
-& \operatorname{\mathtt{reset}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ r.x:= 1 \ \}
-\end{align*}
+#+begin_src
+resetCounterClass =
+  λr:CounterRep.
+    let super = counterClass r in
+      { get   = super.get,
+        inc   = super.inc,
+        reset = λ_:Unit. r.x:=1 };
+-- resetCounterClass : CounterRep → ResetCounter
+#+end_src
 
-\begin{align*}
-\operatorname{\mathtt{newResetCounter}}: &\operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{ResetCounter}} = \\
-\lambda \_:\operatorname{\mathtt{Unit}}. \\
-\operatorname{\mathtt{let}}\ r =\ &\{x =\operatorname{\mathtt{ref}}\ 1\} \ \operatorname{\mathtt{in}}\ \operatorname{\mathtt{newResetCounter}}\ r
-\end{align*}
+#+begin_src
+newResetCounter =
+  λ_:Unit. let r = {x=ref 1} in resetCounterClass r;
+-- newResetCounter : Unit → ResetCounter
+#+end_src
 
 =ResetCounterClass= 首先使用 =counterClass= 父对象并绑定到 =super=。然后，它通过从 =super= 复制 =get= 和 =inc=，并为 =reset= 字段提供新函数来构建新对象。由于 =super= 是基于 =r= 构建的，所以这三个方法共享相同的实例变量。
 
@@ -189,24 +194,27 @@ Real-world PL 的类包括复杂的功能，包括 =self=、=super=、visibility
 
 假设这里有一个 =BackupCounter= 类，需要记录一个历史值，后续 =reset= 时会将当前值设置为历史值：
 
-\begin{align*}
-\operatorname{\mathtt{BackupCounter}} = \{ &\operatorname{\mathtt{get}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Nat}},\ \operatorname{\mathtt{inc}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Unit}},\ \\
-& \operatorname{\mathtt{reset}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Unit}},\ \operatorname{\mathtt{backup}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Unit}} \}
-\end{align*}
+#+begin_src
+BackupCounter = { get: Unit → Nat, inc: Unit → Unit,
+                  reset: Unit → Unit, backup: Unit → Unit };
+#+end_src
 
-\[\operatorname{\mathtt{BackupCounterRep}} = \{ x: \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}},\ b: \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}} \}\]
+#+begin_src
+BackupCounterRep = { x: Ref Nat, b: Ref Nat };
+#+end_src
 
 类似地让 =BackupCounterClass= 继承自 =ResetCounterClass=：
 
-\begin{align*}
-\operatorname{\mathtt{BackupCounterClass}}: \operatorname{\mathtt{BackupCounterRep}} &\rightarrow \operatorname{\mathtt{BackupCounter}} = \\
-\lambda r: \operatorname{\mathtt{BackupCounterRep}}. \\
-\operatorname{\mathtt{let}}\ \operatorname{\mathtt{super}} ={} &\operatorname{\mathtt{ResetCounterClass}}\ r \ \operatorname{\mathtt{in}}\\
-\{ &\operatorname{\mathtt{get}} = \operatorname{\mathtt{super.get}},\\
-& \operatorname{\mathtt{inc}} = \operatorname{\mathtt{super.inc}},\\
-& \operatorname{\mathtt{reset}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ r.x:= !(r.b),\\
-& \operatorname{\mathtt{backup}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ r.b:= !(r.x) \ \}
-\end{align*}
+#+begin_src
+backupCounterClass =
+  λr:BackupCounterRep.
+    let super = resetCounterClass r in
+      { get    = super.get,
+        inc    = super.inc,
+        reset = λ_:Unit. r.x:=!(r.b),
+        backup = λ_:Unit. r.b:=!(r.x) };
+-- backupCounterClass : BackupCounterRep → BackupCounter
+#+end_src
 
 这里需要注意两点：
 - 子对象继承并覆写了父对象的方法 =reset=
@@ -220,31 +228,35 @@ Real-world PL 的类包括复杂的功能，包括 =self=、=super=、visibility
 
 例如这里添加一个 =SetCounter= 类，让 =inc= 调用 =self.set= 来实现递增：
 
-\[
-\operatorname{\mathtt{SetCounter}} = \{ \operatorname{\mathtt{get}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Nat}},\ \operatorname{\mathtt{set}}: \operatorname{\mathtt{Nat}} \rightarrow \operatorname{\mathtt{Unit}},\ \operatorname{\mathtt{inc}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Unit}} \}
-\]
+#+begin_src
+SetCounter = { get: Unit → Nat, set: Nat → Unit, inc: Unit → Unit };
+#+end_src
 
-\begin{align*}
-\operatorname{\mathtt{SetCounterClass}}: &\operatorname{\mathtt{CounterRep}} \rightarrow \operatorname{\mathtt{SetCounter}} = \\
-\lambda r: \operatorname{\mathtt{CounterRep}}. \\
-\operatorname{\mathtt{fix}}\\
-(\lambda &\operatorname{\mathtt{self}}: \operatorname{\mathtt{SetCounter}}.\\
-\{ &\operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.x),\\
-& \operatorname{\mathtt{set}} = \lambda i:\operatorname{\mathtt{Nat}}.\ r.x:=i,\\
-& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ \operatorname{\mathtt{self.set}}\ (\operatorname{\mathtt{succ}}\ (\operatorname{\mathtt{self.get}}\ \operatorname{\mathtt{unit}}))\ \})
-\end{align*}
+#+begin_src
+setCounterClass =
+  λr:CounterRep.
+    fix (
+      λself: SetCounter.
+         { get = λ_:Unit. !(r.x),
+           set = λi:Nat. r.x:=i,
+           inc = λ_:Unit. self.set (succ (self.get unit))});
+- setCounterClass : CounterRep → SetCounter
+#+end_src
 
-\begin{align*}
-\operatorname{\mathtt{newCounterClass}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{SetCounter}} = \\ 
-\lambda \_:\operatorname{\mathtt{Unit}}. \operatorname{\mathtt{let}}\ r =\ &\{x =\operatorname{\mathtt{ref}}\ 1\} \ \operatorname{\mathtt{in}}\ \operatorname{\mathtt{SetCounterClass}}\ r
-\end{align*}
+#+begin_src
+newSetCounter =
+  λ_:Unit.
+    let r = {x=ref 1} in
+      setCounterClass r;
+-- newSetCounter : Unit → SetCounter
+#+end_src
 
 这个类没有父类，因此不需要 =super=。
 
 下面以 =SetCounter= 为例，展示 =self= 的 reduction 过程：
 
 \begin{align*}
-o&: \operatorname{\mathtt{setCouter}} = \operatorname{\mathtt{newSetCouterClass}} \\
+o&: \operatorname{\mathtt{setCouter}} = \operatorname{\mathtt{newSetCouter}}\ \operatorname{\mathtt{unit}} \\
 & = \operatorname{\mathtt{fix}}\ (\lambda \operatorname{\mathtt{self}}.\ \{\operatorname{\mathtt{get}};\ \operatorname{\mathtt{set}};\ \operatorname{\mathtt{inc}}\}) \\
 & \rightarrow (\lambda \operatorname{\mathtt{self}}.\ \{\operatorname{\mathtt{get}};\ \operatorname{\mathtt{set}};\ \operatorname{\mathtt{inc}}\})\ (\operatorname{\mathtt{fix}}\ (\lambda \operatorname{\mathtt{self}}.\ \{\operatorname{\mathtt{get}};\ \operatorname{\mathtt{set}};\ \operatorname{\mathtt{inc}}\})) \\
 & \rightarrow \{\operatorname{\mathtt{get}};\ \operatorname{\mathtt{set}};\ \operatorname{\mathtt{inc}} = \lambda\ \_.\ S.\operatorname{\mathtt{set}}\ (\operatorname{\mathtt{succ}}\ S.\operatorname{\mathtt{get}}\ \operatorname{\mathtt{unit}}))\} \\
@@ -266,39 +278,46 @@ o&.\operatorname{\mathtt{inc}}\ \operatorname{\mathtt{unit}} \\
 
 为了实现这个行为，首先我们要将 =fix= 移动到创建对象的地方：
 
-\begin{align*}
-\operatorname{\mathtt{setCounterClass}}: &\operatorname{\mathtt{CounterRep}} \rightarrow \operatorname{\mathtt{SetCounter}} \rightarrow \operatorname{\mathtt{SetCounter}} = \\
-\lambda r: \operatorname{\mathtt{CounterRep}}. \\
-\lambda \operatorname{\mathtt{self}}: &\operatorname{\mathtt{SetCounter}}. \\
-\{ &\operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.x),\\
-& \operatorname{\mathtt{set}} = \lambda i:\operatorname{\mathtt{Nat}}.\ r.x:=i,\\
-& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ \operatorname{\mathtt{self.set}}\ (\operatorname{\mathtt{succ}}\ (\operatorname{\mathtt{self.get}}\ \operatorname{\mathtt{unit}}))\ \}
-\end{align*}
+#+begin_src
+setCounterClass =
+  λr:CounterRep.
+    λself: SetCounter.
+      { get = λ_:Unit. !(r.x),
+        set = λi:Nat. r.x:=i,
+        inc = λ_:Unit. self.set (succ(self.get unit)) };
+-- setCounterClass : CounterRep → SetCounter → SetCounter
+#+end_src
 
-\begin{align*}
-\operatorname{\mathtt{newSetCounter}}: &\operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{SetCounter}} = \\
-\lambda \_:\operatorname{\mathtt{Unit}}. \\
-\operatorname{\mathtt{let}}\ r =\ &\{x =\operatorname{\mathtt{ref}}\ 1\} \ \operatorname{\mathtt{in}}\ \operatorname{\mathtt{fix}}\ (\operatorname{\mathtt{setCounterClass}}\ r)
-\end{align*}
+#+begin_src
+newSetCounter =
+  λ_:Unit.
+    let r = {x=ref 1} in
+      fix (setCounterClass r);
+-- newSetCounter : Unit → SetCounter
+#+end_src
 
 移动之后 =setCounterClass= 的签名发生改变：不仅传入了当前的实例变量，还传入了一个 =self=-object。二者都会在对象实例化的时候被提供。这里 =self= 的定义不再是“当前类”，而是“当前对象实例化的类”（有可能是当前类的子类）。
 
 这里以 =instrCounter= 为例，它能够在 =set= 时记录当前的次数：
 
-\[\operatorname{\mathtt{instrCounter}} = \{\operatorname{\mathtt{get}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Nat}},\ \operatorname{\mathtt{set}}: \operatorname{\mathtt{Nat}} \rightarrow \operatorname{\mathtt{Unit}},\ \operatorname{\mathtt{inc}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Unit}},\ \operatorname{\mathtt{accesses}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Nat}}\}\]
+#+begin_src
+InstrCounter = { get: Unit → Nat, set: Nat → Unit,
+                 inc: Unit → Unit, accesses: Unit → Nat };
+#+end_src
 
  \[\operatorname{\mathtt{instrCounterRep}} = \{ x: \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}},\ a: \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}} \}\]
 
-\begin{align*}
-\operatorname{\mathtt{instrCounterClass}}: \operatorname{\mathtt{instrCounterRep}}& \rightarrow \operatorname{\mathtt{instrCounter}} = \\
-\lambda r: \operatorname{\mathtt{instrCounterRep}}. \\
-\lambda \operatorname{\mathtt{self}}: &\operatorname{\mathtt{instrCounter}}. \\
-\operatorname{\mathtt{let}}\ &\operatorname{\mathtt{super}} =\ \operatorname{\mathtt{setCounterClass}}\ r\ \operatorname{\mathtt{self}} \ \operatorname{\mathtt{in}}\\
-\{ &\operatorname{\mathtt{get}} = \operatorname{\mathtt{super.get}},\\
-& \operatorname{\mathtt{set}} = \lambda i:\operatorname{\mathtt{Nat}}.\ (r.a:=\operatorname{\mathtt{succ}}\ !(r.a);\ \operatorname{\mathtt{super.set}}\ i),\\
-& \operatorname{\mathtt{inc}} = \operatorname{\mathtt{super.inc}},\\
-& \operatorname{\mathtt{accesses}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.a) \ \}
-\end{align*}
+#+begin_src
+instrCounterClass =
+  λr:InstrCounterRep.
+    λself: InstrCounter.
+      let super = setCounterClass r self in
+        { get = super.get,
+          set = λi:Nat. (r.a:=succ(!(r.a)); super.set i),
+          inc = super.inc,
+          accesses = λ_:Unit. !(r.a) };
+-- instrCounterClass : InstrCounterRep → InstrCounter → InstrCounter
+#+end_src
 
 此处 =instrCounter= 重载了 =set= 方法，但是 =inc= 仍使用父类的方法。当调用 =super.inc= 时，父类的 =inc= 会调用 =self.set=，这里的 =self= 来自于子类，因此会分发到子类的 =set= 方法。
 
@@ -337,21 +356,24 @@ o&.\operatorname{\mathtt{inc}}\ \operatorname{\mathtt{unit}} \\
 
 这里先采用第一种方案，做法是使用 \(\lambda\ \_: \operatorname{\mathtt{Unit}}. t\) 来包裹 =self=：
 
-\begin{align*}
-\operatorname{\mathtt{setCounterClass}}: &\operatorname{\mathtt{CounterRep}} \rightarrow (\operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{SetCounter}}) \rightarrow \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{SetCounter}} = \\
-\lambda r: \operatorname{\mathtt{CounterRep}}. \\
-\lambda \operatorname{\mathtt{self}}: &\operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{SetCounter}}. \\
-\lambda \_&:\operatorname{\mathtt{Unit}}. \\
-\{ &\operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.x),\\
-& \operatorname{\mathtt{set}} = \lambda i:\operatorname{\mathtt{Nat}}.\ r.x:=i,\\
-& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ (\operatorname{\mathtt{self}}\ \operatorname{\mathtt{unit}}).\operatorname{\mathtt{set}}\ (\operatorname{\mathtt{succ}}\ ((\operatorname{\mathtt{self}}\ \operatorname{\mathtt{unit}}).\operatorname{\mathtt{get}}\ \operatorname{\mathtt{unit}}))\ \}
-\end{align*}
+#+begin_src
+setCounterClass =
+  λr: CounterState. 
+    λself: Unit → SetCounter.
+      λ_: Unit.
+        { get = λ_: Unit. !(r.x),
+          set = λi: Nat.  r.x := i,
+          int = λ_: Unit. (self unit).set (succ ((self unit).get unit)) };
+-- setCounterClass : CounterRep → (Unit → SetCounter) → Unit → SetCounter
+#+end_src
 
-\begin{align*}
-\operatorname{\mathtt{newSetCounter}}: &\operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{SetCounter}} = \\
-\lambda \_:\operatorname{\mathtt{Unit}}. \\
-\operatorname{\mathtt{let}}\ r =\ &\{x =\operatorname{\mathtt{ref}}\ 1\} \ \operatorname{\mathtt{in}}\ \operatorname{\mathtt{fix}}\ (\operatorname{\mathtt{setCounterClass}}\ r)\ \operatorname{\mathtt{unit}}
-\end{align*}
+#+begin_src
+newSetCounter =
+  λ_:Unit.
+    let r = {x=ref 1} in
+      fix (setCounterClass r) unit;
+-- newSetCounter : Unit → SetCounter
+#+end_src
 
 缺点就是这里使用 =self= 都要多写一次 \(\operatorname{\mathtt{self}}\ \operatorname{\mathtt{unit}}\)，并且使用所有函数（例如 \(get\)）都要传入一个 \(\operatorname{\mathtt{unit}}\) 触发执行。
 
@@ -361,31 +383,33 @@ o&.\operatorname{\mathtt{inc}}\ \operatorname{\mathtt{unit}} \\
 
 上面的实现中每次使用 =self= 都要计算一次 =(self unit)=，计算开销很大。为了避免这个问题，可以直接将 objects 的 methods 包装在 =Ref= 中：
 
-\begin{align*}
-\operatorname{\mathtt{setCounterClass}}: &\operatorname{\mathtt{CounterRep}} \rightarrow \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{SetCounter}} \rightarrow \operatorname{\mathtt{SetCounter}} = \\
-\lambda r: \operatorname{\mathtt{CounterRep}}. \\
-\lambda \operatorname{\mathtt{self}}: &\operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{SetCounter}}. \\
-\{ &\operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.x),\\
-& \operatorname{\mathtt{set}} = \lambda i:\operatorname{\mathtt{Nat}}.\ r.x:=i,\\
-& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ (!\operatorname{\mathtt{self}}).\operatorname{\mathtt{set}}\ (\operatorname{\mathtt{succ}}\ ((! \operatorname{\mathtt{self}}).\operatorname{\mathtt{get}}\ \operatorname{\mathtt{unit}}))\ \}
-\end{align*}
+#+begin_src
+setCounterClass =
+  λr:CounterRep. λself: Ref SetCounter.
+    { get = λ_:Unit. !(r.x),
+      set = λi:Nat. r.x:=i,
+      inc = λ_:Unit. (!self).set (succ ((!self).get unit))};
+-- setCounterClass : CounterRep → (Ref SetCounter) → SetCounter
+#+end_src
 
 使用时先为类方法分配一个 dummy 方法集合，然后在 dummy 集合上构造真实的方法覆盖掉（back-patch），最后返回真实的方法集合：
 
-\begin{align*}
-\operatorname{\mathtt{dummySetCounter}} &: \operatorname{\mathtt{SetCounter}}= \\
-\{ &\operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ 0,\\
-& \operatorname{\mathtt{set}} = \lambda i:\operatorname{\mathtt{Nat}}.\ \operatorname{\mathtt{unit}},\\
-& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ \operatorname{\mathtt{unit}} \ \}
-\end{align*}
+#+begin_src
+dummySetCounter =
+  { get = λ_:Unit. 0,
+    set = λi:Nat. unit,
+    inc = λ_:Unit. unit };
+-- dummySetCounter : SetCounter
+#+end_src
 
-\begin{align*}
-\operatorname{\mathtt{newSetCounter}}: &\operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{SetCounter}} = \\
-\lambda \_:&\operatorname{\mathtt{Unit}}. \\
-& \quad\operatorname{\mathtt{let}}\ r =\ \{x =\operatorname{\mathtt{ref}}\ 1\} \ \operatorname{\mathtt{in}}\\
-& \quad \operatorname{\mathtt{let}}\ cAux =\ \operatorname{\mathtt{ref}}\ \operatorname{\mathtt{dummySetCounter}} \ \operatorname{\mathtt{in}} \\
-& \quad (cAux:=\operatorname{\mathtt{setCounterClass}}\ r\ cAux;\ !cAux)
-\end{align*}
+#+begin_src
+newSetCounter =
+  λ_:Unit.
+    let r = {x=ref 1} in
+      let cAux = ref dummySetCounter in
+        (cAux := (setCounterClass r cAux); !cAux);
+-- newSetCounter : Unit → SetCounter
+#+end_src
 
 但是这里的问题是 =Ref= 是不变的，在构建子类对象的时候，无法将 =self: Ref SubClass= 传递给 =self: Ref SuperClass=。解决方案是将 =Ref= 替换为 =Source=，因为父类只需要读取子类的方法，而不需要修改，并且 =Source= 是协变的。
 
@@ -397,22 +421,22 @@ o&.\operatorname{\mathtt{inc}}\ \operatorname{\mathtt{unit}} \\
 #+begin_answer
 为所有对象都加上一个 =id= 字段，然后为对两个变量的 =id= 字段赋予不同的值，检测两个变量的 =id= 字段是否相等即可。
 
-\[\operatorname{\mathtt{IdCounterRep}} = {x: \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}}, id: \operatorname{\mathtt{Ref}}\ (\operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}})};\]
+#+begin_src
+IdCounterRep = {x: Ref Nat, id: Ref (Ref Nat)};
 
-\begin{align*}
-\operatorname{\mathtt{IdCounter}}: &\operatorname{\mathtt{IdCounterRep}} \rightarrow \operatorname{\mathtt{IdCounter}} = \\
-\lambda r: &\operatorname{\mathtt{IdCounterRep}}. \\
-\{ &\operatorname{\mathtt{get}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.x),\\
-& \operatorname{\mathtt{inc}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ r.x:= \operatorname{\mathtt{succ}}\ !(r.x),\\
-& \operatorname{\mathtt{id}} = \lambda \_:\operatorname{\mathtt{Unit}}.\ !(r.id) \ \}
-\end{align*}
+IdCounter = { get: Unit → Nat, inc: Unit → Unit, id: Unit → (Ref Nat) };
 
-\begin{align*}
-\operatorname{\mathtt{sameObject}} & = \\
-\lambda a: &\{id: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}}\}. \\
-\lambda b: &\{id: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}}\}. \\
-(&(b.\operatorname{\mathtt{id}}\ \operatorname{\mathtt{unit}}) := 1;\\
-&(a.\operatorname{\mathtt{id}}\ \operatorname{\mathtt{unit}}) := 0;\\
-&\operatorname{\mathtt{iszero}}\ (!(b.\operatorname{\mathtt{id}}\ \operatorname{\mathtt{unit}})))
-\end{align*}
+idCounterClass =
+  λr:IdCounterRep.
+    { get = λ_:Unit. !(r.x),
+      inc = λ_:Unit. r.x:=succ(!(r.x)),
+      id = λ_:Unit. !(r.id) };
+
+sameObject =
+  λa:{id: Unit → (Ref Nat) }.
+    λb:{ id: Unit → (Ref Nat) }.
+      ((b.id unit) := 1;
+       (a.id unit) := 0;
+       iszero (!(b.id unit)));
+#+end_src
 #+end_answer
