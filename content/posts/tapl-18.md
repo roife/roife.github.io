@@ -97,7 +97,7 @@ self.equalPoint(rhs) {
 ```nil
 c = let x = ref 1 in
        { get = λ_:Unit. !x,
-         inc = λ_:Unit. x:=succ(!x) };
+         inc = λ_:Unit. x := succ(!x) };
 -- c : { get: Unit -> Nat, inc: Unit -> Unit }
 ```
 
@@ -117,7 +117,7 @@ c = let x = ref 1 in
 newCounter =
   λ_:Unit. let x = ref 1 in
               { get = λ_:Unit. !x,
-                inc = λ_:Unit. x:=succ(!x) };
+                inc = λ_:Unit. x := succ(!x) };
 -- newCounter : Unit -> Counter
 ```
 
@@ -142,7 +142,7 @@ ResetCounter = { get: Unit → Nat, inc: Unit → Unit, reset: Unit → Unit };
 ```nil
 c = let r = {x=ref 1} in
       { get = λ_:Unit. !(r.x),
-        inc = λ_:Unit. r.x:=succ(!(r.x)) };
+        inc = λ_:Unit. r.x := succ(!(r.x)) };
 ```
 
 由实例变量自成的 record 称为对象的 **representation type**：
@@ -166,7 +166,7 @@ Real-world PL 的类包括复杂的功能，包括 `self`、`super`、visibility
 counterClass =
   λr:CounterRep.
     { get = λ_:Unit. !(r.x),
-      inc = λ_:Unit. r.x:=succ(!(r.x)) };
+      inc = λ_:Unit. r.x := succ(!(r.x)) };
 -- counterClass : CounterRep → Counter
 ```
 
@@ -185,7 +185,7 @@ resetCounterClass =
     let super = counterClass r in
       { get   = super.get,
         inc   = super.inc,
-        reset = λ_:Unit. r.x:=1 };
+        reset = λ_:Unit. r.x := 1 };
 -- resetCounterClass : CounterRep → ResetCounter
 ```
 
@@ -223,8 +223,8 @@ backupCounterClass =
     let super = resetCounterClass r in
       { get    = super.get,
         inc    = super.inc,
-        reset = λ_:Unit. r.x:=!(r.b),
-        backup = λ_:Unit. r.b:=!(r.x) };
+        reset = λ_:Unit. r.x := !(r.b),
+        backup = λ_:Unit. r.b := !(r.x) };
 -- backupCounterClass : BackupCounterRep → BackupCounter
 ```
 
@@ -252,7 +252,7 @@ setCounterClass =
     fix (
       λself: SetCounter.
          { get = λ_:Unit. !(r.x),
-           set = λi:Nat. r.x:=i,
+           set = λi:Nat. r.x := i,
            inc = λ_:Unit. self.set (succ (self.get unit))});
 - setCounterClass : CounterRep → SetCounter
 ```
@@ -298,7 +298,7 @@ setCounterClass =
   λr:CounterRep.
     λself: SetCounter.
       { get = λ_:Unit. !(r.x),
-        set = λi:Nat. r.x:=i,
+        set = λi:Nat. r.x := i,
         inc = λ_:Unit. self.set (succ(self.get unit)) };
 -- setCounterClass : CounterRep → SetCounter → SetCounter
 ```
@@ -328,7 +328,7 @@ instrCounterClass =
     λself: InstrCounter.
       let super = setCounterClass r self in
         { get = super.get,
-          set = λi:Nat. (r.a:=succ(!(r.a)); super.set i),
+          set = λi:Nat. (r.a := succ(!(r.a)); super.set i),
           inc = super.inc,
           accesses = λ_:Unit. !(r.a) };
 -- instrCounterClass : InstrCounterRep → InstrCounter → InstrCounter
@@ -405,7 +405,7 @@ newSetCounter =
 setCounterClass =
   λr:CounterRep. λself: Ref SetCounter.
     { get = λ_:Unit. !(r.x),
-      set = λi:Nat. r.x:=i,
+      set = λi:Nat. r.x := i,
       inc = λ_:Unit. (!self).set (succ ((!self).get unit))};
 -- setCounterClass : CounterRep → (Ref SetCounter) → SetCounter
 ```
@@ -451,7 +451,7 @@ IdCounter = { get: Unit → Nat, inc: Unit → Unit, id: Unit → (Ref Nat) };
 idCounterClass =
   λr:IdCounterRep.
     { get = λ_:Unit. !(r.x),
-      inc = λ_:Unit. r.x:=succ(!(r.x)),
+      inc = λ_:Unit. r.x := succ(!(r.x)),
       id = λ_:Unit. !(r.id) };
 
 sameObject =

@@ -346,12 +346,10 @@ Sums 是一种二元的 Variants 类型。一个 Sums 类型可以包含两种�
 \end{alignat*}
 
 ** Sums and Uniqueness of Types
-大多数在 pure \(\lambda_\rightarrow\) 中的定理在 Sums 中都成立，除了 /Uniqueness of Types/ theorem。因为假设 \(a : A\)，则 \(\forall B. \operatorname{\mathtt{inl}} a : A + B\)。
-
-Uniqueness theorem 不成立导致类型检查变得更麻烦了，因为没办法和之前一样“自底向上地使用规则检查”。此时有两种解决方案：
+大多数在 pure \(\lambda_\rightarrow\) 中的定理在 Sums 中都成立，除了 /Uniqueness of Types/ theorem。因为假设 \(a : A\)，则 \(\forall B. \operatorname{\mathtt{inl}} a : A + B\) 可能表示无数的类型。Uniqueness theorem 不成立导致类型检查变得更麻烦了，因为没办法和之前一样“自底向上地使用规则检查”。此时有两种解决方案：
 
 - 从后面的程序里面推测 \(T\) 的类型（type reconstruction）
-- 允许 \(T\) 表示所有的类型（subtyping）
+- 允许 \(T\) 表示所有可能的类型（subtyping）
 - 要求手动提供类型（此处暂时采用的方案）
 
 这里使用第三种方案，添加了一些扩展要求指明类型（有点像 ascription，但是这些是语法要求不能删去的）：
