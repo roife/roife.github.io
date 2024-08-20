@@ -30,6 +30,8 @@ Subtyping 也称为 subtype polymorphism。之前介绍的特性之间基本都�
 
 </div>
 
+看待 principle of safe substitution 的另一个有趣的视角是将其看作一种受限的 **implicit coercion**。
+
 \\(S <: T\\) 读作 “S is a subtype of T” 或 “T is a supertype of S”。
 
 对应的类型规则被称为 **the rule of subsumption**：
@@ -569,7 +571,7 @@ Base types 之间也可以有 subtyping 的关系，例如常见的 \\(\operator
 
 ## Coercion Semantics for Subtyping {#coercion-semantics-for-subtyping}
 
-Subtyping 有两种理解方式，一种是前面的 subset semantics，认为父类型所表达的范围包含了子类型。但是这种理解方式在实现时存在一些问题。下面将介绍另一种理解方式：coercion semantics。
+Subtyping 有两种理解方式，一种是前面的 subset semantics，认为父类型所表达的范围包含了子类型。但是这种理解方式在实现时存在一些问题。下面将介绍另一种理解方式：coercion semantics。它认为 subtyping 关系可以看作是 coercion，即隐式类型转换。
 
 
 ### Problems with the Subset Semantics {#problems-with-the-subset-semantics}

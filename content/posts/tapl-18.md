@@ -41,7 +41,7 @@ Single dispatching 强调了方法的首参数比其他参数更加**重要**，
 
 #### Double Dispatching {#double-dispatching}
 
-在只允许 **single-dispatching** 的语言中，解决非对称性的一个方案是 double dispatching。Double-dispatching 将一个方法分成了两个方法：一个用于启动 double-dispatching，另一个用于执行不同类型上对应的操作（在 Java 中遇到这种情况也会用 `instanceof` 来实现对不同的 `rhs` 执行不同操作，相当于人为分发代码，本质上和 double-dispatching 没有区别）。
+在只允许 single-dispatching 的语言中，解决非对称性的一个方案是 **double dispatching**。Double-dispatching 将一个方法分成了两个方法：一个用于启动 double-dispatching，另一个用于执行不同类型上对应的操作（在 Java 中遇到这种情况也会用 `instanceof` 来实现对不同的 `rhs` 执行不同操作，相当于人为分发代码，本质上和 double-dispatching 没有区别）。
 
 例如对于一对二维点的比较操作：
 
@@ -90,26 +90,27 @@ self.equalPoint(rhs) {
 
 ## Objects {#objects}
 
-通常情况下可以把对象（**object**）看成一种数据结构，封装了一组内部状态。状态组织成多个可变字段（fields），在方法间共享，但是对程序的其余部分不可见。
+通常情况下可以把对象（**object**）看成一种数据结构，封装了一组内部状态，外部可以通过方法进行访问。状态组织成多个可变字段（fields），在方法间共享，但是对程序的其余部分不可见。
 
-本章将以一个支持递增和返回当前值的对象为例：
+本章将以一个支持递增和返回当前值的对象为例。这个对象有两个方法：\\(\operatorname{\mathtt{get}}\\) 和 \\(\operatorname{\mathtt{inc}}\\)，分别用于获取当前值和递增当前值，并通过 abstractions 来实现延迟求值：
 
 ```nil
 c = let x = ref 1 in
        { get = λ_:Unit. !x,
          inc = λ_:Unit. x := succ(!x) };
 -- c : { get: Unit -> Nat, inc: Unit -> Unit }
+
+c.inc unit; c.inc unit; c.get unit;
+-- 3: Nat
 ```
-
-这个对象有两个方法：\\(\operatorname{\mathtt{get}}\\) 和 \\(\operatorname{\mathtt{inc}}\\)，分别用于获取当前值和递增当前值。方法通过 abstractions 来进行多次延迟求值。
-
-此外由于存在封装，因此状态只能在词法作用域中被访问。
-
-方法调用的过程类似于 \\(c.\operatorname{\mathtt{inc}}\ \operatorname{\mathtt{unit}}; c.\operatorname{\mathtt{inc}}\ \operatorname{\mathtt{unit}}; c.\operatorname{\mathtt{get}}\ \operatorname{\mathtt{unit}}\\)，返回结果为 3。
 
 可以利用别名来简化这个类型：
 
 \\[\operatorname{\mathtt{Counter}} = \\{ \operatorname{\mathtt{get}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Nat}}, \operatorname{\mathtt{inc}}: \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Unit}} \\}\\]
+
+此外由于存在封装，因此这里的状态（\\( x \\)）不会对外暴露，只能在词法作用域中被访问。
+
+<div class="note">
 
 对象可以通过 **object generator**来生成。**Object generator** 是一个函数，接受一些参数，返回一个对象。
 
@@ -120,6 +121,8 @@ newCounter =
                 inc = λ_:Unit. x := succ(!x) };
 -- newCounter : Unit -> Counter
 ```
+
+</div>
 
 
 ## Subtyping {#subtyping}
@@ -135,12 +138,12 @@ ResetCounter = { get: Unit → Nat, inc: Unit → Unit, reset: Unit → Unit };
 那么有 \\(\operatorname{\mathtt{ResetCounter}} <: \operatorname{\mathtt{Counter}}\\)。因此所有能够处理 `Counter` 的函数都能处理 `ResetCounter`。
 
 
-## Representation Type {#representation-type}
+## Instance Variables {#instance-variables}
 
-一个对象可能会有多个实例变量，因此最好将他们打包在一起操作：
+一个对象可能会有多个实例变量，因此最好将他们打包成一个 record type 一起操作：
 
 ```nil
-c = let r = {x=ref 1} in
+c = let r = {x = ref 1} in
       { get = λ_:Unit. !(r.x),
         inc = λ_:Unit. r.x := succ(!(r.x)) };
 ```
@@ -152,7 +155,7 @@ c = let r = {x=ref 1} in
 \\]
 
 
-## Classes and Adding Methods {#classes-and-adding-methods}
+## Classes {#classes}
 
 上面的 `ResetCounter` 和 `Counter` 的定义几乎相同，只是多了一个 `reset`。为了减少重复，最好用一个东西描述通用功能，然后允许对其进行扩展。这个机制称为类（**classes**）。
 
@@ -160,7 +163,10 @@ Real-world PL 的类包括复杂的功能，包括 `self`、`super`、visibility
 
 类的最原始的形式是持有一组方法的数据结构，这些方法可以被实例化（**instantiated**）并产生一个新的对象，或者被扩展（**extended**）并产生一个新的类。
 
-为了能够对类进行扩展，那么类中的方法访问到的实例变量也应当能被重用。为了做到这点，方法在访问实例变量时应当使用抽象的表示，而不是对具体实例变量的使用。因此应该将 `newCounter` 拆分成两部分：一部分定义 method bodies，方法能够通过 representation 访问字段组成的的 record；另一部分生成一个 record，并将其作为 representation 传递给 method bodies 并生成 `counter`。
+
+### Adding Methods {#adding-methods}
+
+为了能扩展 classes 的 fields 和 methods，应该将 `newCounter` 拆分成两部分：一部分定义 method bodies，方法能够通过 representation 访问字段组成的的 record；另一部分生成一个 record 作为 fields，并将其传递给 method bodies 并生成 `counter`。
 
 ```nil
 counterClass =
@@ -200,7 +206,7 @@ newResetCounter =
 这里需要强调的是 classes 是 values 而不是 types，因为它们是函数。而在 Java 等语言中，classes 既是 types 也可以作为数据结构。
 
 
-## Adding Instance Variables {#adding-instance-variables}
+### Adding Instance Variables {#adding-instance-variables}
 
 通常情况下，扩展类是不仅会添加方法，还会添加实例变量。
 
@@ -236,7 +242,7 @@ backupCounterClass =
 由于在定义新类时绑定了 `super`，因此在覆写方法时可以使用 `super.inc` 来调用父类的方法。
 
 
-## Classes with Self {#classes-with-self}
+## Self {#self}
 
 为类添加 `self` 可以让类的方法调用自己的其他方法。但是目前我们把方法保存在 records 中，如果一个方法能访问到对象的其他方法，那么这就构成了一个递归。
 
@@ -287,7 +293,7 @@ o&.\operatorname{\mathtt{inc}}\ \operatorname{\mathtt{unit}} \\\\
 因此一个包含递归方法的对象是一个返回 records 的方法的不动点，设函数 \\( P = \lambda \operatorname{\mathtt{self}}. \\{m₁ = e₂, \dots, mₙ = eₙ\\} \\)，则它构建的对象为 \\( \operatorname{\mathtt{fix}}\ P \\)。
 
 
-## Open recursion through Self {#open-recursion-through-self}
+## Open recursion {#open-recursion}
 
 大多数面向对象语言支持 open recursion，即父类中的方法可以通过 `self` 调用自己的子类的方法。例如子类覆写了父类的某个方法 `f`，那么父类中的方法调用 `self.f` 时会自动分发到子类的 `f`。
 

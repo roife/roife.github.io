@@ -507,7 +507,7 @@ Base types 之间也可以有 subtyping 的关系，例如常见的 \(\operatorn
 
 * Coercion Semantics for Subtyping
 
-Subtyping 有两种理解方式，一种是前面的 subset semantics，认为父类型所表达的范围包含了子类型。但是这种理解方式在实现时存在一些问题。下面将介绍另一种理解方式：coercion semantics。
+Subtyping 有两种理解方式，一种是前面的 subset semantics，认为父类型所表达的范围包含了子类型。但是这种理解方式在实现时存在一些问题。下面将介绍另一种理解方式：coercion semantics。它认为 subtyping 关系可以看作是 coercion，即隐式类型转换。
 
 ** Problems with the Subset Semantics
 

@@ -134,8 +134,7 @@ Ascription 可以用来当作 typing assertions 或者 verifications，如果不
 -   控制类型打印：如果定义了缩写，那么 typechecker 打印类型的时候会尽量使用缩写，但是有时候 typechecker 不能识别出缩写（或者因为其他原因不用缩写），可以用 ascription 声明类型，如 \\((\lambda f : \operatorname{\mathtt{Unit}} \rightarrow \operatorname{\mathtt{Unit}}. f)\ \operatorname{\mathtt{as}}\ \operatorname{\mathtt{UU}} \rightarrow \operatorname{\mathtt{UU}};\\)
 -   在 subtyping 声明类型
 
-
-### Ascription as derived forms {#ascription-as-derived-forms}
+<div class="note">
 
 Ascription 也是一种 derived form：
 
@@ -144,6 +143,8 @@ t \operatorname{\mathtt{as}} T \overset{\text{def}}{=} (\lambda x : T. x)\ t
 \\]
 
 这里使用 call-by-value 的特性来实现 evaluation 的效果。
+
+</div>
 
 
 ### AscribeEager {#ascribeeager}
@@ -240,7 +241,10 @@ t \operatorname{\mathtt{as}} T \overset{\text{def}}{=} (\lambda x : \operatornam
 </div>
 
 
-## Pairs {#pairs}
+## Product types {#product-types}
+
+
+### Pairs {#pairs}
 
 {{< figure src="/img/in-post/post-tapl/11-5-pairs.png" caption="<span class=\"figure-number\">Figure 5: </span>Pairs" >}}
 
@@ -253,7 +257,7 @@ t \operatorname{\mathtt{as}} T \overset{\text{def}}{=} (\lambda x : \operatornam
 Pairs 的规则使得其强制从左到右进行求值（`E-Pair2`），同时只有求值后才能提取其中的元素（`E-PairBeta`）。同时，由于一个 pair value 中的两个元素必须都是 value，这使得在必须传递 value 的时候（比如 call by value）保证 pair 的两个元素都一定已经被求值了。
 
 
-## Tuples {#tuples}
+### Tuples {#tuples}
 
 {{< figure src="/img/in-post/post-tapl/11-6-tuples.png" caption="<span class=\"figure-number\">Figure 6: </span>Tuples" >}}
 
@@ -264,7 +268,7 @@ Tuple 比较特殊的一条规则是 `E-Tuple`，可以看成是 `E-Pair` 的拓
 注意 tuples 也是强制从左到右求值的。
 
 
-## Records {#records}
+### Records {#records}
 
 {{< figure src="/img/in-post/post-tapl/11-7-records.png" caption="<span class=\"figure-number\">Figure 7: </span>Records" >}}
 
@@ -303,8 +307,7 @@ Pattern Matching 可以看作是一个泛化的 `let`-binding 规则。其依赖
 
 Pattern typing rules 中的 `P-Var` 首先定义了变量和其 pattern 具有相同的类型；`P-Rcd` 定义了 record 类型可以产生一串的 context，这些 context 包含了为 pattern 中变量提供的 bindings；后面的 `T-Let` 定义了如果一个 pattern 可以成功匹配时会返回一个 context \\(\Delta\\)，那么在类型推导时可以将这个 context 加入 \\(\Gamma\\) 来推导类型。
 
-
-### 改进 {#改进}
+---
 
 可以继续改进 record pattern typing rule，使得当 record pattern 中 fields 的数量小于 record value 中 fields 的数量时（此时只匹配 pattern 中存在的情况）仍然能继续匹配：
 
@@ -342,7 +345,10 @@ If \\(\Gamma \vdash t:T\\) and \\(\vdash p : T \Rightarrow \Delta\\), then \\(\o
 </div>
 
 
-## Sums {#sums}
+## Sum types {#sum-types}
+
+
+### Sums {#sums}
 
 {{< figure src="/img/in-post/post-tapl/11-9-sums.png" caption="<span class=\"figure-number\">Figure 10: </span>Sums without unique typing" >}}
 
@@ -369,8 +375,7 @@ Sums 是一种二元的 Variants 类型。一个 Sums 类型可以包含两种�
 
 值得注意的是在 `T-Case` 规则中要求 `case` 的结果的类型是唯一的。另外这里虽然没指出 \\(x\_i\\) 的 scope 是 \\(t\_i\\)，但是这一点可以从条件中得到。
 
-
-### `if` as `case` {#if-as-case}
+<div class="note">
 
 `if` 可以看作是特殊的 `case`：
 
@@ -382,8 +387,10 @@ Sums 是一种二元的 Variants 类型。一个 Sums 类型可以包含两种�
   &&& \qquad \text{where $x\_1$ and $x\_2$ are fresh}
 \end{alignat\*}
 
+</div>
 
-### Sums and Uniqueness of Types {#sums-and-uniqueness-of-types}
+
+#### Sums and Uniqueness of Types {#sums-and-uniqueness-of-types}
 
 大多数在 pure \\(\lambda\_\rightarrow\\) 中的定理在 Sums 中都成立，除了 _Uniqueness of Types_ theorem。因为假设 \\(a : A\\)，则 \\(\forall B. \operatorname{\mathtt{inl}} a : A + B\\) 可能表示无数的类型。Uniqueness theorem 不成立导致类型检查变得更麻烦了，因为没办法和之前一样“自底向上地使用规则检查”。此时有两种解决方案：
 
@@ -396,7 +403,7 @@ Sums 是一种二元的 Variants 类型。一个 Sums 类型可以包含两种�
 {{< figure src="/img/in-post/post-tapl/11-10-sums-with-unique-typing.png" caption="<span class=\"figure-number\">Figure 11: </span>Sums with unique typing" >}}
 
 
-## Variants {#variants}
+### Variants {#variants}
 
 {{< figure src="/img/in-post/post-tapl/11-11-variants.png" caption="<span class=\"figure-number\">Figure 12: </span>11-11 Variants" >}}
 
@@ -412,7 +419,7 @@ Variants 是二元 Sums 类型的泛化，和 Records 一样有 labels。Sums �
 需要注意的是 Variants 和 Records 一样，标签的顺序不同则类型也不同。
 
 
-### Options {#options}
+#### Options {#options}
 
 **Options** 是很常见的一种 Variants：
 
@@ -438,7 +445,7 @@ Variants 是二元 Sums 类型的泛化，和 Records 一样有 labels。Sums �
 C/C++/Java 中允许指针（其实是一种 Reference Type）的值为 `null`，这实际上也是一种 Options 类型，其实际类型为 \\(\operatorname{\mathtt{Ref}}(\operatorname{\mathtt{Option}}(T))\\)。
 
 
-### Enumerations {#enumerations}
+#### Enumerations {#enumerations}
 
 **Enumerations**（Enumerated Type）是一种退化了的 Variants 类型，其 fields 值均为 `Unit`。例如：
 
@@ -456,7 +463,7 @@ C/C++/Java 中允许指针（其实是一种 Reference Type）的值为 `null`�
 \end{alignat\*}
 
 
-### Single-Field Variants {#single-field-variants}
+#### Single-Field Variants {#single-field-variants}
 
 Variants 的另一种退化形式是 Single-Field Variants（例如 `newtype`），即只有一个 label 的情况：
 
@@ -483,7 +490,7 @@ V = \langle l : T\rangle;
 \end{alignat\*}
 
 
-### Variants vs Datatypes {#variants-vs-datatypes}
+#### Variants vs Datatypes {#variants-vs-datatypes}
 
 Variants \\(\langle l\_i : T\_i^{i \in 1 \dots n} \rangle\\) 和 ML 里面的 **Datatypes** 有点像：
 
@@ -504,14 +511,14 @@ Variants \\(\langle l\_i : T\_i^{i \in 1 \dots n} \rangle\\) 和 ML 里面的 **
 4.  OCaml 中的 datatypes 不仅包含了 variants 的特性，还有 recursive types 的特性（如 `List` 就是递归定义的）。并且 datatypes 还可以接受 parameters，当作 type operator 用。
 
 
-### Variants as Disjoint Unions {#variants-as-disjoint-unions}
+#### Variants as Disjoint Unions {#variants-as-disjoint-unions}
 
 Sums 和 Variants 有时被称为 **Disjoint Unions**。一方面这两种类型是其他类型的“union”；另一方面这两种类型都有 tag，用不同的 tag 标注的数据互不相同，所以类型之间是不相交的（disjoint）。
 
 现在 **Union Type** 一般指 untagged union（或者 non-disjoint union）。
 
 
-### Type Dynamic {#type-dynamic}
+#### Type Dynamic {#type-dynamic}
 
 很多静态分析都要处理动态数据（例如从数据库中读取或者跨网络传输），因此会提供用于运行时判定类型的工具。
 
@@ -528,7 +535,7 @@ Dynamic Type 可以看作是一种 infinite disjoint union，其 tags 就是类�
 
 在无类型 λ 演算中可以用 `fix` combinator 实现递归函数，但是在 STLC 中却不行，因为 `fix` 的类型无法在 STLC 中表达。并且无法终止的运算都无法在 simple types 描述类型。所以这里添加 typing ruls 并用 `letrec` 来模仿无类型 λ 演算中 `fix` combinator 的行为。
 
-这种只含有数字和 `fix` 的 STLC 具有很多微妙的语义现象（例如 full abstraction），这样的系统被称为 PCF。
+这种只含有数字和 `fix` 的 STLC 具有很多微妙的语义现象（例如 full abstraction），这样的系统被称为 **PCF**。
 
 `fix` 一般用来构建函数，但是并没有限定函数，例如可以传入下面的 records，这样就能构造出互相调用的函数：
 
@@ -557,29 +564,9 @@ Dynamic Type 可以看作是一种 infinite disjoint union，其 tags 就是类�
 
 这里 \\(\operatorname{\mathtt{diverge}}\_T\\) 的计算永远不会终止，因为每次计算都会返回相同的 term，但是其类型仍然是 \\(T\\)。此时称 \\(\operatorname{\mathtt{diverge}}\_T\ \operatorname{\mathtt{unit}}\\) 是 \\(T\\) 的一个 undefined element。
 
+<div class="note">
 
-### letrec {#letrec}
-
-在写程序时，一般会用 `letrec`：
-
-\begin{alignat\*}{3}
-& \operatorname{\mathtt{letrec}}\ \operatorname{\mathtt{iseven}} : \operatorname{\mathtt{Nat}} \rightarrow \operatorname{\mathtt{Bool}} = \\\\
-& \quad \lambda x : \operatorname{\mathtt{Nat}}. \\\\
-& \qquad \operatorname{\mathtt{if}}\ \operatorname{\mathtt{iszero}}\ x\ \operatorname{\mathtt{then}}\ \operatorname{\mathtt{true}} \\\\
-& \qquad \operatorname{\mathtt{else}}\ \operatorname{\mathtt{if}}\ \operatorname{\mathtt{iszero}}\ (\operatorname{\mathtt{pred}}\ x)\ \operatorname{\mathtt{then}}\ \operatorname{\mathtt{false}} \\\\
-& \qquad \operatorname{\mathtt{else}}\ \operatorname{\mathtt{iseven}}\ (\operatorname{\mathtt{pred}}\ (\operatorname{\mathtt{pred}}\ x)) \\\\
-& \operatorname{\mathtt{in}} \\\\
-& \quad \operatorname{\mathtt{iseven}}\ 7;
-\end{alignat\*}
-
-`letrec` 也是一个 derived form：
-
-\\[
-\operatorname{\mathtt{letrec}}\ x : T\_1 = t\_1 \operatorname{\mathtt{in}} t\_2 \overset{\operatorname{\mathtt{def}}}{=} \operatorname{\mathtt{let}} x = \operatorname{\mathtt{fix}} (\lambda x : T\_1 . t\_1) \operatorname{\mathtt{in}} t\_2
-\\]
-
-
-### `equal`, `plus`, `times`, and `factorial` with `fix` {#equal-plus-times-and-factorial-with-fix}
+下面是用 `fix` 实现 `equal`, `plus`, `times`, and `factorial` 的一些例子：
 
 \begin{alignat\*}{2}
   & \operatorname{\mathtt{equal}} = \\\\
@@ -617,6 +604,29 @@ Dynamic Type 可以看作是一种 infinite disjoint union，其 tags 就是类�
   & \qquad \qquad \qquad \qquad \operatorname{\mathtt{if}}\ \operatorname{\mathtt{iszero}}\ n\ \operatorname{\mathtt{then}}\ 1 \\\\
   & \qquad \qquad \qquad \qquad \operatorname{\mathtt{else}}\ \operatorname{\mathtt{times}}\ (f\ (\operatorname{\mathtt{pred}}\ n)\ n));
 \end{alignat\*}
+
+</div>
+
+
+### letrec {#letrec}
+
+在写程序时，一般会用 `letrec`：
+
+\begin{alignat\*}{3}
+& \operatorname{\mathtt{letrec}}\ \operatorname{\mathtt{iseven}} : \operatorname{\mathtt{Nat}} \rightarrow \operatorname{\mathtt{Bool}} = \\\\
+& \quad \lambda x : \operatorname{\mathtt{Nat}}. \\\\
+& \qquad \operatorname{\mathtt{if}}\ \operatorname{\mathtt{iszero}}\ x\ \operatorname{\mathtt{then}}\ \operatorname{\mathtt{true}} \\\\
+& \qquad \operatorname{\mathtt{else}}\ \operatorname{\mathtt{if}}\ \operatorname{\mathtt{iszero}}\ (\operatorname{\mathtt{pred}}\ x)\ \operatorname{\mathtt{then}}\ \operatorname{\mathtt{false}} \\\\
+& \qquad \operatorname{\mathtt{else}}\ \operatorname{\mathtt{iseven}}\ (\operatorname{\mathtt{pred}}\ (\operatorname{\mathtt{pred}}\ x)) \\\\
+& \operatorname{\mathtt{in}} \\\\
+& \quad \operatorname{\mathtt{iseven}}\ 7;
+\end{alignat\*}
+
+`letrec` 也是一个 derived form：
+
+\\[
+\operatorname{\mathtt{letrec}}\ x : T\_1 = t\_1 \operatorname{\mathtt{in}} t\_2 \overset{\operatorname{\mathtt{def}}}{=} \operatorname{\mathtt{let}} x = \operatorname{\mathtt{fix}} (\lambda x : T\_1 . t\_1) \operatorname{\mathtt{in}} t\_2
+\\]
 
 
 ## List {#list}

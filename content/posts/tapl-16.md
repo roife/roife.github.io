@@ -117,6 +117,8 @@ If \\(S <: T\\) is derivable from the subtyping rules including `S-RcdDepth`, `S
 
 </div>
 
+证明 `S-Trans` 是不必要的这个过程称为 transitivity elimination，是 cut elimination 的一个特例。
+
 <div class="definition">
 
 **(algorithmic subtyping relation)**

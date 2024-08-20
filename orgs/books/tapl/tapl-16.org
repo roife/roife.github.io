@@ -104,6 +104,8 @@ If \(S <: T\) is derivable from the subtyping rules including =S-RcdDepth=, =S-R
 - =S-Arrow= + =S-Rcd= 和 =S-Rcd= / =S-Arrow=：不可能
 #+end_proof
 
+证明 =S-Trans= 是不必要的这个过程称为 transitivity elimination，是 cut elimination 的一个特例。
+
 #+begin_definition
 *(algorithmic subtyping relation)*
 
