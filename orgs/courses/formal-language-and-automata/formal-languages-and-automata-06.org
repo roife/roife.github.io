@@ -239,7 +239,7 @@ Parihk 定理的证明分为两个部分。
     & \xRightarrow[d_k]{*} u x_1 \dots x_k A y_k \dots y_1 v \xRightarrow[d_{k+1}]{*} u x_1 \dots x_k w y_k \dots y_1 v
     \end{aligned}
 
-    根据定义有 \(A \in U\)，因此 \(U \backslash \{A\} \) 中共有 \(k - 1\) 个元素。而在上面的推导 \(d_1, d_2, \dots, d_k\) 一共有 \(k\) 次，因此有一个变量在这里至少被推出了两次，不妨设是 \(d_i, d_j\)。因此可以将 \(A \xRightarrow[d_i]{*} x_i A y_i\) 从中删掉，得到 \(w'\)，且仍然可以保证满足 \(L_U\) 的定义。
+    根据定义有 \(A \in U\)，因此 \(U ∖ \{A\} \) 中共有 \(k - 1\) 个元素。而在上面的推导 \(d_1, d_2, \dots, d_k\) 一共有 \(k\) 次，因此有一个变量在这里至少被推出了两次，不妨设是 \(d_i, d_j\)。因此可以将 \(A \xRightarrow[d_i]{*} x_i A y_i\) 从中删掉，得到 \(w'\)，且仍然可以保证满足 \(L_U\) 的定义。
 
     \[p(w) = p(uzv) + \sum_{i=1}^k p(x_i y_i) = p(w') + p(x_i y_i)\]
 

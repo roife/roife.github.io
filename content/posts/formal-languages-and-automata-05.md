@@ -180,7 +180,7 @@ Queue automaton 又称 pullup automaton（PUA）。相比 PDA，QA 能够
 -   \\(Q, S\\) 的定义同 PDA
 -   \\(\Sigma \subset \Gamma\\) 是有限的输入字母表
 -   \\(\Gamma\\) 是有限的队列字母表
--   \\(\\$ \in \Gamma \backslash \Sigma\\) 是队列的起始标记
+-   \\(\\$ \in \Gamma ∖ \Sigma\\) 是队列的起始标记
 -   \\(\delta : Q \times \Gamma \rightarrow Q \times \Gamma^{\*}\\) 是状态转移函数
     -   队列的状态可以用 \\((p, \alpha)\\) 表示，前者是当前的状态，后者是当前的队列
     -   \\(\delta(p, A\alpha) = (q, \alpha \gamma)\\) 表示在状态 \\(p\\) 下；队列为 \\(A\alpha\\)，头部为 \\(A\\)；然后取出字符 \\(A\\)，转移到状态 \\(q\\)，并在队尾压入 \\(\gamma\\)
