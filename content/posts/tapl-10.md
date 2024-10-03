@@ -34,7 +34,7 @@ let rec getbinding fi ctx i =
 
 let getTypeFromContext fi ctx i =
   match getbinding fi ctx i with
-      VarBind(tyT) → tyT
+      VarBind(tyT) -> tyT
     |_ -> error fi
       ("getTypeFromContext: Wrong kind of binding for variable "
        ^ (index2name fi ctx i))
@@ -84,12 +84,12 @@ let rec typeof ctx t =
        let ctx’ = addbinding ctx x (VarBind(tyT1)) in
        let tyT2 = typeof ctx’ t2 in
        TyArr(tyT1, tyT2)
-    | TmApp(fi,t1,t2) →
+    | TmApp(fi,t1,t2) ->
          let tyT1 = typeof ctx t1 in
            let tyT2 = typeof ctx t2 in
              (match tyT1 with
-               TyArr(tyT11, tyT12) →
+               TyArr(tyT11, tyT12) ->
                  if (=) tyT2 tyT11 then tyT12
                  else error fi "parameter type mismatch"
-               | _ → error fi "arrow type expected")
+               | _ -> error fi "arrow type expected")
 ```

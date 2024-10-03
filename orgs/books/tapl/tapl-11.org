@@ -70,7 +70,7 @@ Sequencing 有两种形式化的定义：
 
 记 \(\lambda^E\) 为带 Unit type、=E-Seq=、=E-SeqNext= 与 =T-Seq= 的语言；记 \(\lambda^I\) 为只带 Unit type 的 STLC。
 
-令 \(e : \lambda^E → \lambda^I\) 是一个将表达式中的 \(t_1 ; t_2\) 转换为  \((\lambda x : \operatorname{\mathtt{Unit}}. t_2)\ t_1\) 的函数，其中 \(x\) 是一个自由变量。
+令 \(e : \lambda^E -> \lambda^I\) 是一个将表达式中的 \(t_1 ; t_2\) 转换为  \((\lambda x : \operatorname{\mathtt{Unit}}. t_2)\ t_1\) 的函数，其中 \(x\) 是一个自由变量。
 
 对于 \(t \in \lambda^E\)，有
 

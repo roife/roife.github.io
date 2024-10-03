@@ -111,7 +111,7 @@ Knaster-Tarski 定理的一个推论是，对于 \\( F \\) 必定存在 \\( \mu 
 
 <div class="corollary">
 
-[of Knaster-Tarski Theorem]
+**Kleene fixed-point theorem**, [of Knaster-Tarski Theorem]
 
 1.  \\( \mu F = \bigcup \\{F^{n}(\emptyset) \mid n \ge 0\\} = F(\emptyset) \cup F(F(\emptyset)) \cup F(F(F(\emptyset))) \dots \\)
 2.  \\( \nu F = \bigcap \\{F^{n}(\mathcal{U}) \mid n \ge 0\\} = F(\mathcal{U}) \cap F(F(\mathcal{U})) \cap F(F(F(\mathcal{U}))) \dots\\)
@@ -446,7 +446,7 @@ For \\( \operatorname{\mathtt{lfp}}\_F(X) \\),
 
 <div class="definition">
 
-Given a finite-state generating function \\( F \in \mathcal{P}(\mathcal{U}) → \mathcal{P}(\mathcal{U}) \\), the partial function \\( \operatorname{\mathtt{height}}\_F \in \mathcal{U} \rightharpoonup \mathbb{N} \\) is the least partial function satisfying:
+Given a finite-state generating function \\( F \in \mathcal{P}(\mathcal{U}) \to \mathcal{P}(\mathcal{U}) \\), the partial function \\( \operatorname{\mathtt{height}}\_F \in \mathcal{U} \rightharpoonup \mathbb{N} \\) is the least partial function satisfying:
 
 \\[\operatorname{\mathtt{height}}\_F(x) = \begin{cases}
 0, & \text{if $\operatorname{\mathtt{support}}(x) = \emptyset$ or $\operatorname{\mathtt{support}}(x) \uparrow$} \\\\
@@ -499,7 +499,7 @@ Define the function \\( \operatorname{\mathtt{gfp}}^a\_F \\) (or just \\( \opera
 \begin{aligned}
 \operatorname{\mathtt{gfp}}^a(A, X) = &\operatorname{\mathtt{if}}\ \operatorname{\mathtt{support}}(X) \uparrow\ \operatorname{\mathtt{then}}\ \operatorname{\mathtt{false}}\\\\
 & \operatorname{\mathtt{else}}\ \operatorname{\mathtt{if}}\ X = ∅\ \operatorname{\mathtt{then}}\ \operatorname{\mathtt{true}} \\\\
-& \operatorname{\mathtt{else}}\ \operatorname{\mathtt{gfp}}^a(A \cup X, \operatorname{\mathtt{support}}(X) \backslash (A \cup X))
+& \operatorname{\mathtt{else}}\ \operatorname{\mathtt{gfp}}^a(A \cup X, \operatorname{\mathtt{support}}(X) \setminus (A \cup X))
 \end{aligned}
 
 In order to check \\( x \in \nu F \\), compute \\( \operatorname{\mathtt{gfp}}^a(\emptyset, \\{x\\}) \\).
@@ -622,11 +622,11 @@ For \\( \operatorname{\mathtt{gfp}}^t\_F(\emptyset, x) \\),
 
 **(tree type)**
 
-A **tree type** is a partial function \\( T \in \\{1, 2\\}^\star \rightharpoonup \\{→, ×, \operatorname{\mathtt{Top}}\\} \\) satisfying the following constraints:
+A **tree type** is a partial function \\( T \in \\{1, 2\\}^\star \rightharpoonup \\{\to, ×, \operatorname{\mathtt{Top}}\\} \\) satisfying the following constraints:
 
 -   \\( T(•) \\) is defined;
 -   if \\( T(\pi, \sigma) \\) is defined, then \\( T(\pi) \\) is defined;
--   if \\( T(\pi) = → \\) or \\( T(\pi) = × \\), then \\( T(\pi, 1) \\) and \\( T(\pi, 2) \\) are defined;
+-   if \\( T(\pi) = \to \\) or \\( T(\pi) = × \\), then \\( T(\pi, 1) \\) and \\( T(\pi, 2) \\) are defined;
 -   if \\( T(\pi) = \operatorname{\mathtt{Top}} \\), then \\( T(\pi, 1) \\) and \\( T(\pi, 2) \\) are undefined.
 
 </div>
@@ -639,7 +639,7 @@ A **tree type** is a partial function \\( T \in \\{1, 2\\}^\star \rightharpoonup
 
 -   当树满足 \\( T(\cdot) = \operatorname{\mathtt{Top}} \\) 时将其记作 \\( \operatorname{\mathtt{Top}} \\)
 -   当树表示 \\( T(\cdot) = \times \\) 且 \\( T(\cdot)(i, \pi) = Tᵢ(\pi) \\) 时将其记作 \\( T₁ \times T₂ \\)
--   当树表示 \\( T(\cdot) = → \\) 且 \\( T(\cdot)(i, \pi) = Tᵢ(\pi) \\) 时将其记作 \\( T₁ → T₂ \\)
+-   当树表示 \\( T(\cdot) = \to \\) 且 \\( T(\cdot)(i, \pi) = Tᵢ(\pi) \\) 时将其记作 \\( T₁ \to T₂ \\)
 
 下面时两个例子：
 
@@ -667,7 +667,7 @@ Exists a universe \\( \mathcal{U} \\) and a generating function \\( F \in \mathc
 
 <div class="proof">
 
-定义一个树为一个部分函数 \\( T \in \\{1, 2\\}^\star \rightharpoonup \\{→, ×, \operatorname{\mathtt{Top}}\\} \\)，满足以下约束条件：
+定义一个树为一个部分函数 \\( T \in \\{1, 2\\}^\star \rightharpoonup \\{\to, ×, \operatorname{\mathtt{Top}}\\} \\)，满足以下约束条件：
 
 -   \\( T(•) \\) 已定义；
 -   如果 \\( T(\pi, \sigma) \\) 已定义，则 \\( T(\pi) \\) 已定义。
@@ -729,7 +729,7 @@ S\_f( R) &= \\{ (T, \operatorname{\mathtt{Top}}) \mid T \in \mathcal{T}\_f \\} \
 
 \\[ \frac{S₁ <: T₁ \quad S₂ <: T₂}{S₁ \times S₂ <: T₁ \times T₂} \\]
 
-\\[ \frac{T₁ <: S₁ \quad S₂ <: T₂}{S₁ → S₂ <: T₁ → T₂} \\]
+\\[ \frac{T₁ <: S₁ \quad S₂ <: T₂}{S₁ \to S₂ <: T₁ \to T₂} \\]
 
 <div class="definition">
 

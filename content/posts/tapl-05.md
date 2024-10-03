@@ -143,9 +143,7 @@ Application 的步骤为将左侧的 abstraction 中的约束变量替换成右�
         \rightarrow {}& \lambda z.\ \underline{\mathtt{id}\ z} \\\\
     \end{aligned}
 
-    Call-by-name 被很多语言都实现了，比如 Algol60 和 Haskell。
-
-    Haskell 的更加特殊，使用了一个优化过的形式 **call by need**：即当使用的时候才进行 reduce 和 substitute。这样的 reduce 方法使得运行时环境要记录下这个 term 出现的位置（方便实时替换），因此这种 reduction relation 是基于 syntax graph 的，而非 AST。
+    Call-by-name 被很多语言都实现了，比如 Algol60 和 Haskell。其中 Haskell 的更加特殊，使用了一个优化过的形式 **call by need**：在第一次求值后会记录下结果，后面进行复用，这是因为 Haskell 的 pure 的。
 
 -   **Call by value** strategy (Applicative-order)：最常用的 redex 策略。reduce 外层，且一个 redex 会被 reduce 仅当它的参数已经是一个 value。value 即一个不能被 reduce 的形式，包括 lambda abstractions，numbers，booleans 等。
 
