@@ -356,7 +356,7 @@ If \\( \operatorname{\mathtt{erase}}ᵥ(t) = u \\), then either:
 
 最流行的是 ML-style **let-polymorphism**，有时也称为 prenex polymorphism。在 prenex-polymorphism 中，类型变量只能是 monotypes（即类型变量不能包含量词 \\( \forall \\)），并且 polytypes（或称之为 type schemes）不能出现在箭头的左侧（函数参数中）。
 
-System F 另一个分支是 **rank-2 polymorphism**。将类型表示成一棵树（分叉点在 \\( \to \\) 上，注意它是右结合的），如果从树根到一个 \\( \forall \\) 的路径上不会经过大于一次的箭头左侧，则称这个类型是 rank-2 的。例如 \\((\forall X.X \to X) \to \operatorname{\mathtt{Nat}}\\)、\\(\operatorname{\mathtt{Nat}}\to \operatorname{\mathtt{Nat}}\\) 和 \\(\operatorname{\mathtt{Nat}}\to (\forall X.X\to X)\to \operatorname{\mathtt{Nat}}\to \operatorname{\mathtt{Nat}}\\) 都满足条件，但是 \\((\forall X.X\to X)\to \operatorname{\mathtt{Nat}}\\)\\(\to \operatorname{\mathtt{Nat}}\\) 不满足条件。这个系统比 prenex polymorphism 要强大一些，并且能够接受更多的 lambda terms。
+System F 另一个分支是 **rank-2 polymorphism**。将类型表示成一棵树（分叉点在 \\( \to \\) 上，注意它是右结合的），如果从树根到一个 \\( \forall \\) 的路径上不会经过大于一次的箭头左侧，则称这个类型是 rank-2 的。例如 \\((\forall X.X \to X) \to \operatorname{\mathtt{Nat}}\\)、\\(\operatorname{\mathtt{Nat}}\to \operatorname{\mathtt{Nat}}\\) 和 \\(\operatorname{\mathtt{Nat}}\to (\forall X.X\to X)\to \operatorname{\mathtt{Nat}} \to \operatorname{\mathtt{Nat}}\\) 都满足条件，但是 \\(((\forall X.X\to X)\to \operatorname{\mathtt{Nat}}) \to \operatorname{\mathtt{Nat}}\\) 不满足条件。这个系统比 prenex polymorphism 要强大一些，并且能够接受更多的 lambda terms。
 
 rank-2 polymorphism 被证明其 type reconstruction 算法复杂度与 prenex polymorphism 相同，并且 rank-3 或更高阶系统上的 type reconstruction 仍然是 undecidable 的。_rank-2_ 的限制并不局限于量词，可以被推广到其他 type constructors。例如 intersection types 也可以定义类似的限制。System F 上的 rank-2 分支与 first-order intersection type system 密切相关，事实上可以证明它们能接受的 lambda terms 范围是相同的。
 

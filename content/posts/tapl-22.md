@@ -357,6 +357,8 @@ let rec recon ctx nextuvar t = match t with
 
 这个算法不仅可以用于类型系统的 unification，可以用于任何一阶逻辑的 unification 问题。
 
+从算法中可以发现，我们需要在 unification 前保证生成的 constraints 两边都是相同的形式，否则将 fail。
+
 算法中出现的 \\( X \notin FV(T) \\) 与 \\( X \notin FV(S) \\) 称为 **occurs check**，用于避免出现循环替换（例如 \\( X \mapsto X \to X \\)），因为这样的表达式只有在 recursive types 中才有意义。
 
 <div class="definition">
@@ -466,12 +468,12 @@ It is decidable whether \\( (\Gamma , t) \\) has a solution under STLC.
 \frac{X \notin \chi \qquad \Gamma, x:X \vdash t₁ : T \vert\_\chi C}{\Gamma \vdash \lambda x.t₁ : X \to T \vert\_{X \cup \chi} C} \tag{CT-AbsInf}
 \\]
 
-这两种做法有一些微妙的区别：如果将 lambda abstraction 复制多份使用，那么第一种方法会导致每个 lambda abstraction 的类型都相同，而 \\( CT-AbsInf \\) 允许每份拷贝有不同的类型，这将引出下面的 let-polymorphism。
+这两种做法有一些微妙的区别：如果将 lambda abstraction 复制多份使用，那么第一种方法会导致每个 lambda abstraction 的类型都相同，而 `CT-AbsInf` 允许每份拷贝有不同的类型，这将引出下面的 let-polymorphism。
 
 
 ## Let Polymorphism {#let-polymorphism}
 
-**多态性（Polymorphism）** 是一种程序机制，其使得一部分代码在不同的上下文中不同的类型下使用，从而达到复用的目的。前面展示的类型重建算法提供了一种实现多态的方法，它使得在 let-bound 中绑定的隐式标注的 lambda-abstractions 在不同的类型下被重用，称为 **let-polymorphism**（也可以叫做 **ML-style** 或者 **Damas-Milner polymorphism**）。
+**多态性（Polymorphism）** 是一种程序机制，其使得一部分代码在不同的上下文中不同的类型下使用，从而达到复用的目的。前面展示的类型重建算法提供了一种实现多态的方法，它使得在 let-bound 中绑定的隐式标注的 lambda-abstractions 在不同的类型下被重用，称为 **let-polymorphism**（也可以叫做 **ML-style** 或者 **Damas-Milner polymorphism**）。包含 let-polymorphism 的 STLC 也称为 **hindley-milner type system**，Algorithm W 是 HM 系统中最致命的类型推导算法。
 
 下面是 let-polymorphism 的一个例子：
 
@@ -515,7 +517,8 @@ let double = λ f: X -> X. λa: X. f(f(a)) in
 let double = λ f. λa. f(f(a));
 ```
 
----
+
+### Unused Bindings {#unused-bindings}
 
 这种方案有一个问题：如果绑定的变量没有在方法体內使用，那绑定的表达式将不会被检查：
 
@@ -541,7 +544,8 @@ let x = <utter garbage> in 5
 } \tag{CT-LetPoly'}
 \\]
 
----
+
+### Type schemes {#type-schemes}
 
 上面的方案的另一个问题是：在 body 中多次使用绑定的变量时，每次出现都需要重新计算绑定 \\( t₁ \\) 的类型。在原来的方案中，只需要检查两件事：\\( t₁ \\) 的类型，以及将 \\( t₁ \\) 加上 context 后 \\( t₂ \\) 的类型。但是更改后的方案将 \\( t₂ \\) 中所有的 \\( x \\) 替换为 \\( t₁ \\)，如果出现 let 绑定时多重嵌套，那么这个检查的复杂度将会是指数级的：
 
@@ -560,23 +564,29 @@ let a = <complex code> in
 1.  使用 constraint typing 算法计算出 \\( t₁ \\) 对应的类型变量 \\( S₁ \\) 和约束集合 \\( C₁ \\)；
 2.  使用 unification 算法找到 \\( C₁ \\) 的 principal solution \\( \sigma \\)，并得到 principal type \\( \sigma \Gamma \vdash \sigma S = T₁ \\)；
 3.  将 \\( T₁ \\) 中的所有类型变量**泛化**（generalize）。如果剩下的类型变量是 \\( X₁, X₂, \dots Xₙ \\)，那么将其写作 \\( \forall X₁ \dots Xₙ. T₁ \\) 作为 **principal type scheme**；
-    -   这里需要注意不要泛化同时在 \\( T₁ \\) 和上下文中出现的变量，因为他们实际上对应了一个类型约束。例如 \\( \lambda f: X \to X. \lambda x: X. \operatorname{\mathtt{let}}\ g = f\ \operatorname{\mathtt{in}}\ g(x) \\)。
+    -   这里需要注意不要泛化在 context 中出现的变量，因为他们实际上对应了一个类型约束。例如 \\( \lambda f: X \to X. \lambda x: X. \operatorname{\mathtt{let}}\ g = f\ \operatorname{\mathtt{in}}\ g(x) \\)，这里不应该泛化 \\( X \\)；
 4.  在上下文中记录 type scheme \\( x : \forall X₁ \dots Xₙ. T₁ \\)，并且开始检查 body \\( t₂ \\)。此时上下文会给每个自由变量关联一个 type scheme 而非单纯 type。
 5.  每次在 body 中遇到 \\( x \\) 时，先查找其 type scheme \\( \forall X₁ \dots Xₙ. T₁ \\)，然后生成新的类型变量 \\( Y₁ \dots Yₙ \\) 并用它们实例化 type scheme，从而得到 \\( [X₁ \mapsto Y₁, \dots, Xₙ \mapsto Yₙ] T₁ \\) 作为 \\( x \\) 的类型。
 
-这个算法一般是线性的，但是其最坏复杂度仍然是指数级的：
+这就是 **Algorithm W**。Algorithm W 一般是线性的，但是其最坏复杂度仍然是指数级的：
 
 ```ocaml
 let f0 = fun x → (x, x) in
   let f1 = fun y → f0(f0 y) in
-    let f2 = fun y → f1(f1 y) in
-      let f3 = fun y → f2(f2 y) in
-        let f4 = fun y → f3(f3 y) in
-          let f5 = fun y → f4(f4 y) in
-            f5 (fun z → z)
+    let f2 = fun z → f1(f1 z) in
+      f2 (fun a → a)
 ```
 
----
+观察这个例子，其中：
+
+-   \\( f₀ : \forall X. (X, X) \\)
+-   \\( f₁ : \forall Y. ((Y, Y), (Y, Y)) \\)
+-   \\( f₂ : \forall Z. (((Z, Z), (Z, Z)), ((Z, Z), (Z, Z))) \\)
+
+不难发现之所以算法在这里是指数级，是因为这个结果的长度就是指数级。
+
+
+### Side-effects {#side-effects}
 
 最后需要注意的一点是，需要小心设计 let-polymorphism 与副作用之间的交互。例如下面这个例子：
 
@@ -604,6 +614,24 @@ let r = ref (λx. x) in
 
 这为每一处调用都创建了不同的 `ref`，显然是安全的，但是这种语义不再是 call-by-value 的。
 
-另一种做法是调整类型规则，对其加限制，称为**值限制（value restriction）**：let-bound 只有在其右侧是一个 syntactic value（包括 constants、variables、lambda abstractions 和 application of constructors 等，不包括 `Ref`）时才是多态的（即才能被泛化）。上面的程序由于不满足这个条件，因此不会被泛化，所以会报错。
+另一种做法是调整类型规则，对其加限制，称为**值限制（value restriction）**：let-bound 只有在其右侧是一个 syntactic value（包括 constants、variables、lambda abstractions 和 application of constructors 等，但不包括 `Ref`）时才是多态的（即才能被泛化）。上面的程序由于不满足这个条件，因此不会被泛化，所以会报错。
 
-Value restriction 避免了安全性问题，但是同时也牺牲了表达能力。但是实际上这个限制在实践中几乎没有影响，分析发现几乎所有绑定的变量都是 syntactic value，而基于 weak type variables 的 let-typing 只有在极少数情况下才会出现，因此主流的支持 let-polymorphism 的 ML-style 语言都采用了 value restriction。
+Value restriction 避免了安全性问题，但是同时也牺牲了表达能力。具体什么是允许的，什么是不允许的需要一个个分类讨论，让语言更加复杂。但是实际上这个限制在实践中几乎没有影响，分析发现几乎所有绑定的变量都是 syntactic value，而基于 weak type variables 的 let-typing 只有在极少数情况下才会出现，因此主流的支持 let-polymorphism 的 ML-style 语言都采用了 value restriction。
+
+
+### Let-polymorphism 的问题 {#let-polymorphism-的问题}
+
+上面说明了 let-polymorphism 在处理 side-effects 时遇到了 generalization 的问题，并引入 value restriction 作为解决方案。事实上，let-polymorphism 真正的问题在于 generalization 时放置 \\( \forall \\) 的位置。
+
+以上面的程序为例：
+
+```ocaml
+let r = ref (λx. x) in
+  (r := (λx:Nat. succ x); (!r)true);
+```
+
+这里 \\( r \\) 的类型为 \\( \forall A. \operatorname{\mathtt{ref}} (A \to A) \\) 而不是 \\( \operatorname{\mathtt{ref}} (\forall A. A \to A) \\)，这是因为在 generalization 时会直接将 \\( \forall \\) 放置在右手最外侧。因此引入 value restriction 的根源便在于 generalization 的位置。
+
+那么能不能将其放在 \\( \operatorname{\mathtt{ref}} \\) 中呢？如果能做到，那么在赋值 `(λx: Nat. succ x)` 时就会出现错误（因为无法将 `Int -> Int` 赋值给 `r`）。
+
+事实上在下一章 System F 中可以看到如果允许这么做，那么这个类型系统将是 rank-N polymorphism 的，其上的类型推导是 undecidable 的。因此这是 let-polymorphism 放弃表达力而换取可判定性的结果。
