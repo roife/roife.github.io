@@ -5,6 +5,8 @@
 
 前面介绍的类型系统中的每个地方（特别是 lambda abstraction 中）都要求明确标注类型参数。本章探讨一种 type reconstruction 的技术，使得在部分或全部类型未标注的情况下计算出一个 principal type。Type reconstruction 涉及到 record types 和 subtyping 的时候会变得有些微妙，因此为了简化问题，这里只考虑 STLC。
 
+本章介绍的 type reconstruction 允许用户部分标注类型，然后由 type checker 一边检查类型，一边推断未标注的类型。另一个场景是用户没有标注任何类型，完全由编译器推导，其对应的算法称为 Algorithm W，可以看作本章的一个特例。
+
 * Type Variables and Substitution
 
 #+begin_definition
@@ -59,7 +61,7 @@ If \( \sigma \) is any type substitution and \( \Gamma \vdash t : T \), then \( 
 
 对于一个包含类型变量的类型，我们可以有两种不同的视角：
 
-- forall：类型检查时应该将类型变量保持抽象，即保证将它替换成任意类型都保证这个表达式是 well-typed 的。这引入了 parametric polymorphism 的概念。
+- forall：类型检查时应该将类型变量保持抽象，将它替换成任意类型都保证这个表达式是 well-typed 的。这引入了 parametric polymorphism 的概念。
 - exists：存在类型变量的表达式可以不是 well-typed 的，但是类型重建算法应当找到一个实例化的类型使它 well-typed。
 
 类型重建的目标就是后者，即找到能够使得整个程序通过类型检查的最一般的类型。
@@ -383,7 +385,7 @@ It is decidable whether \( (\Gamma , t) \) has a solution under STLC.
 
 \[\dfrac{\Gamma \vdash t : T \mid_\chi C}{\Gamma \vdash t.l : X \mid_{\chi \cup \{X\}} C \cup \{T = \{lᵢ : X\}\}}\]
 
-但是这样写只考虑了单 field 的 records 的情况。一个更优雅的方案是 row variable，其作用于 field label 对应的 row，而不是 type：
+但是这样写只考虑了单 field 的 records 的情况。一个更优雅的方案是 row variable，其作用于 field label 对应的 /row/，而不是 type：
 
 \[
 \dfrac{\Gamma \vdash t₀ : T \mid_\chi C}{\Gamma \vdash t₀.lᵢ : X \mid_{\chi \cup \{X, \sigma, \rho\}} C \cup \{T = \{\rho\}, \rho = l_i : X \oplus \sigma\}} \tag{CT-Pro}
@@ -403,7 +405,7 @@ It is decidable whether \( (\Gamma , t) \) has a solution under STLC.
 
 * Let Polymorphism
 
-*多态性（Polymorphism）*是一种程序机制，其使得一部分代码在不同的上下文中不同的类型下使用，从而达到复用的目的。前面展示的类型重建算法提供了一种实现多态的方法，它使得在 let-bound 中绑定的隐式标注的 lambda-abstractions 在不同的类型下被重用，称为 *let-polymorphism*（也可以叫做 *ML-style* 或者 *Damas-Milner* polymorphism）。
+*多态性（Polymorphism）* 是一种程序机制，其使得一部分代码在不同的上下文中不同的类型下使用，从而达到复用的目的。前面展示的类型重建算法提供了一种实现多态的方法，它使得在 let-bound 中绑定的隐式标注的 lambda-abstractions 在不同的类型下被重用，称为 *let-polymorphism*（也可以叫做 *ML-style* 或者 *Damas-Milner polymorphism*）。
 
 下面是 let-polymorphism 的一个例子：
 
@@ -475,9 +477,19 @@ let x = <utter garbage> in 5
 
 -------------
 
-上面的方法虽然解决了绑定变量类型检查的问题，但是引入了另一个性能问题：在 body 中多次使用绑定的变量时，每次出现都需要重新计算绑定 \( t₁ \) 的类型。
+上面的方案的另一个问题是：在 body 中多次使用绑定的变量时，每次出现都需要重新计算绑定 \( t₁ \) 的类型。在原来的方案中，只需要检查两件事：\( t₁ \) 的类型，以及将 \( t₁ \) 加上 context 后 \( t₂ \) 的类型。但是更改后的方案将 \( t₂ \) 中所有的 \( x \) 替换为 \( t₁ \)，如果出现 let 绑定时多重嵌套，那么这个检查的复杂度将会是指数级的：
 
-如果出现 let 绑定时多重嵌套，那么这个检查的复杂度将会是指数级的。为了避免这个问题，支持 let-polymorphism 的语言采用了另一种做法。对于 \( \operatorname{\mathtt{let}}\ x=t₁\ \operatorname{\mathtt{in}}\ t₂ \)，其求解过程如下：
+#+begin_src ocaml
+let a = <complex code> in
+  let b = a + a in
+    let c = b + b in
+      let d = c + c in
+        ...
+#+end_src
+
+例如此处最后会展开成指数个 =<complex code>= 的类型推导。
+
+为了避免这个问题，支持 let-polymorphism 的语言采用了另一种做法。对于 \( \operatorname{\mathtt{let}}\ x=t₁\ \operatorname{\mathtt{in}}\ t₂ \)，其求解过程如下：
 
 1. 使用 constraint typing 算法计算出 \( t₁ \) 对应的类型变量 \( S₁ \) 和约束集合 \( C₁ \)；
 2. 使用 unification 算法找到 \( C₁ \) 的 principal solution \( \sigma \)，并得到 principal type \( \sigma \Gamma \vdash \sigma S = T₁ \)；

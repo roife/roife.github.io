@@ -186,18 +186,12 @@ f v w & = (f\ v) w \\\\
 
 λ 演算中的 boolean 也可以用 λ 表达式表示。其中 `true` 和 `false` 分别是一个接受两个参数的函数，`true` 返回第一个参数，`false` 返回第二个参数。这种表示可以看作是 testing the truth of a boolean value。
 
-
-#### `true` &amp; `false` {#true-and-false}
-
 \begin{aligned}
   \mathtt{tru} &= \lambda t. \lambda f. t; \\\\
   \mathtt{fls} &= \lambda t. \lambda f. f;
 \end{aligned}
 
-
-#### `if` {#if}
-
-定义一个类似 `if` 的 combinator `test`。在 `test b v w` 中，当 `b` 为 `true` 时返回 `v`，反之返回 `w`。
+下面定义一个类似 `if` 的 combinator `test`。在 `test b v w` 中，当 `b` 为 `true` 时返回 `v`，反之返回 `w`。
 
 \\[
 \mathtt{test} = \lambda l. \lambda m. \lambda n. l\ m\ n;
@@ -214,8 +208,7 @@ f v w & = (f\ v) w \\\\
     \rightarrow {}& v
 \end{aligned}
 
-
-#### `and` &amp; `or` &amp; `not` {#and-and-or-and-not}
+类似的，还可以定义 booleans 相关的逻辑运算：
 
 -   `and`：如果第一个数是 `tru`，则看第二个数；否则直接返回 `fls`
 
@@ -421,6 +414,43 @@ f v w & = (f\ v) w \\\\
     \end{alignat\*}
 
 
+### Lists {#lists}
+
+List 可以用类似 church numerals 的方式编码到 lambda calculus 中，其对应的运算为 `fold-right`（或称为 `reduce`），可以看成一棵右斜树。
+
+例如 `[a, b]` 可以被编码为 \\(\lambda c.\lambda n.c\ a\ (c\ b\ n)\\)。
+
+类似的可以定义下面的辅助函数：
+
+\\[\operatorname{\mathtt{nil}} = \lambda c.\lambda n.n = \operatorname{\mathtt{fls}};\\]
+
+\\[\operatorname{\mathtt{cons}} = \lambda h.\lambda t.\lambda c.\lambda n.c\ h\ (t\ c\ n);\\]
+
+\\[\operatorname{\mathtt{head}} = \lambda l.l\ \operatorname{\mathtt{tru}}\ \operatorname{\mathtt{nil}};\\]
+
+\\[\operatorname{\mathtt{isnil}} = \lambda l.l\ (\lambda h.\lambda t.\operatorname{\mathtt{fls}})\ \operatorname{\mathtt{tru}};\\]
+
+这里比较复杂的是 `tail` 函数，它既要能够返回余下的列表，又要保持参数 \\( c \\) 不被替换：
+
+\begin{aligned}
+\operatorname{\mathtt{tail}} = \lambda l. \operatorname{\mathtt{fst}} &\\\\
+(l\ &(\lambda h. \lambda t. \operatorname{\mathtt{pair}}\ (\operatorname{\mathtt{snd}}\ t)\ (\operatorname{\mathtt{cons}}\ h\ (\operatorname{\mathtt{snd}}\ t)) \\\\
+& (\operatorname{\mathtt{pair}}\ \operatorname{\mathtt{nil}}\ \operatorname{\mathtt{nil}}));
+\end{aligned}
+
+考虑 \\( l = \lambda c. \lambda n. c\ a₁\ (c\ a₂\ (\dots (c\ aₙ\ n)))\\) 则
+
+\begin{aligned}
+& \operatorname{\mathtt{ans}} = \operatorname{\mathtt{fst}}\ t\_1 = [a₂\ a₃ \dots aₙ] = (\operatorname{\mathtt{cons}}\ a₂\ a₂ \dots aₙ) \\\\
+& t\_1 = (\operatorname{\mathtt{pair}}\ (\operatorname{\mathtt{snd}}\ t₂)\ [a₁ \ (\operatorname{\mathtt{snd}}\ t₂)]) = (\operatorname{\mathtt{pair}}\ [a₂\ a₃ \dots aₙ]\ [a₁\ a₂ \dots aₙ]) \\\\
+& t₂ = (\operatorname{\mathtt{pair}}\ (\operatorname{\mathtt{snd}}\ t₃)\ [a₂ \ (\operatorname{\mathtt{snd}}\ t₃)]) = (\operatorname{\mathtt{pair}}\ [a₃\ a₄ \dots aₙ]\ [a₂\ a₃ \dots aₙ]) \\\\
+& \dots \\\\
+& t\_{n-1} = (\operatorname{\mathtt{pair}}\ (\operatorname{\mathtt{snd}}\ tₙ)\ [a\_{n-1} \ (\operatorname{\mathtt{snd}}\ tₙ)]) = (\operatorname{\mathtt{pair}}\ [aₙ]\ [a\_{n-1}\ aₙ]) \\\\
+& tₙ = (\operatorname{\mathtt{pair}}\ (\operatorname{\mathtt{snd}}\ t\_{n+1})\ [aₙ \ (\operatorname{\mathtt{snd}}\ t\_{n+1})]) = (\operatorname{\mathtt{pair}}\ \operatorname{\mathtt{nil}}\ [aₙ]) \\\\
+& t\_{n+1} = (\operatorname{\mathtt{pair}}\ \operatorname{\mathtt{nil}}\ \operatorname{\mathtt{nil}})
+\end{aligned}
+
+
 ### Enriching the Calculus {#enriching-the-calculus}
 
 前面在 λ 演算中定义了布尔型和自然数，理论上已经可以构建出所有的程序了。但是为了简洁，这里开始会使用 λNB 作为系统表述，即将前面 untyped arithmetic expression 的内容加进来，将其看作 primitive 的存在。二者可以轻松地进行转换：
@@ -435,130 +465,6 @@ f v w & = (f\ v) w \\\\
 注意 `succ` 本身的语法结构，不能对 church numerals 使用。
 
 使用 λNB 的一个原因是 Church Numerals 的表示和运算太繁杂了，尽管结果和普通的运算等价，但是中间过程却很复杂，并且会影响到求值顺序。如果采用 call-by-value 的方法，那么对于 church numerals 来说不能提前化简数字（因为没有 apply `s` 和 `z`），此时 `scc c1` 和 `c2` 的形式有很大差别。
-
-
-### Recursion {#recursion}
-
-
-#### `omega` {#omega}
-
-前面提到 normal forms 指的是无法继续化简的式子，但是有些 term 是没有 normal form 的，被称为 **diverge**。
-
-**omega** 是一个 divergent combinator：
-
-\\[
-\mathtt{omega} = (\lambda x.x\ x)\ (\lambda x.x\ x);
-\\]
-
-虽然它只有一个 redex，但是进行 reduce 后又得到了一个和原式相同的 `omega`。
-
-
-#### `fix` {#fix}
-
-`omega` 有一个 generalized 的形式，被称为 **fixed-point combinator**，也叫 **call-by-value Y-combinator** 或者 **Z**：
-
-\\[
-\mathtt{fix} = \lambda f. (\lambda x. f\ (\lambda y. x\ x\ y))\ (\lambda x. f\ (\lambda y. x\ x\ y));
-\\]
-
-\\[
-\mathtt{fix}\ f = f\ (\lambda y. (\mathtt{fix}\ f)\ y);
-\\]
-
-使用方法：
-
-\begin{alignat\*}{2}
-  &h &&= \langle \mathrm{body\ containing}\ h \rangle \\\\
-  \rightarrow {}& g &&= \lambda f. \langle \mathrm{body\ containing}\ f \rangle \\\\
-  &h &&= \mathtt{fix}\ g
-\end{alignat\*}
-
-例如求 church numerals 的阶乘：
-
-\begin{aligned}
-  & \mathtt{fac} = \lambda n. \mathtt{if}\ (\mathtt{realeq}\ n\ \mathtt{c}\_0)\ \mathtt{then}\ \mathtt{c}\_1\ \mathtt{else}\ \mathtt{times}\ n\ (\mathtt{fac}\ (\mathtt{prd}\ n)); \\\\
-  \rightarrow\ & g = \lambda f. \lambda n. \mathtt{if}\ (\mathtt{realeq}\ n\ \mathtt{c}\_0)\ \mathtt{then}\ \mathtt{c}\_1\ \mathtt{else}\ \mathtt{times}\ n\ (f\ (\mathtt{prd}\ n)); \\\\
-  & \mathtt{factorial} = \mathtt{fix}\ g;
-\end{aligned}
-
-
-#### `test` vs `if` {#test-vs-if}
-
-前面的 `factorial` 使用的是 `if` 而不是 `test`，是因为在 call-by-value 下，如果要对 `test` 进行 evaluate，则必须要求出其两个分支的内容后才能进一步 reduce，而这样会导致 diverge。
-
-比如要算出 \\(\mathtt{factorial\ c\_0}\\)，那么就必须要求出第二个分支中的 \\(\mathtt{times}\ n\ (\mathtt{f}\ (\mathtt{prd}\ n))\\)，即 \\(\mathtt{times}\ n\ (\mathtt{f}\ c\_0)\\)，就套娃了。
-
-如果要用 `test` ，那么可以将两个 branch 包裹在 dummy lambda-abstraction 下。因为 abstractions 也是 values，所以 call-by-value 可以在进行求值的情况下使用 `test`。
-
-此时 `test` 得到的还是一个 lambda-abstraction，所以要对其进行强制求值，在其后面随便 apply 一个 dummy argument 即可。
-
-\begin{aligned}
-  & g' = \lambda f. \lambda n. \mathtt{test}\ (\mathtt{iszero}\ n)\ (\lambda x. c\_1)\ (\lambda x. (\mathtt{times}\ n\ (f\ (\mathtt{prd}\ n))))\ c\_0; \\\\
-  & \mathtt{factorial'} = \mathtt{fix}\ g';
-\end{aligned}
-
-
-#### `Y` {#y}
-
-除此之外，`fix` 还有一种更简单的形式：
-
-\\[
-Y = \lambda f. (\lambda x. f\ (x\ x))\ (\lambda x. f\ (x\ x));
-\\]
-
-\\[
-Y\ f = f\ (Y\ f);
-\\]
-
-但是它无法在 call-by-value 中使用，因为 \\((x\ x)\\) 不是一个 value，所以会 diverge。但是 `fix` 中的 \\((\lambda y. x\ x\ y)\\) 是一个 value（lambda abstractions 也是 value）。
-
-
-#### 例子 {#例子}
-
--   `churchnat`：将 primitive natural numbers 转换成 church numerals
-
-    \begin{aligned}
-    & \mathtt{cn} = \lambda f. \lambda n. \mathtt{if}\ (\mathtt{iszero}\ n)\ \mathtt{then}\ c\_0\ \mathtt{else}\ \mathtt{scc}\ (f\ (\mathtt{pred}\ n)); \\\\
-    & \mathtt{churchnat} = \mathtt{fix}\ \mathtt{cn};
-    \end{aligned}
-
--   `sumlist`：对 church numerals 的列表求和（这里的 `test` 可以改成 `if`，这样可以去掉 dummy abstractions）
-
-    \begin{aligned}
-    & f' = \lambda f. \lambda l. \mathtt{test}\ (\mathtt{isnil}\ l)\ (\lambda x. c\_0)\ (\lambda x. (\mathtt{plus}\ (\mathtt{head}\ l)\ (f\ (\mathtt{tail}\ l))))\ c\_0); \\\\
-    & \mathtt{sumlist} = \mathtt{fix}\ f' \\\\
-    \end{aligned}
-
-    除了用 `fix` 的写法外，还可以不用 `fix` 实现。因为 List 本身就是一个归纳定义的结构，所以让 `c` 变成一个加号即可，而起点是 \\(c\_0\\)：
-
-    \\[
-      \mathtt{sumlist'} = \lambda l. l\ \mathtt{plus}\ c\_0;
-      \\]
-
-
-#### 求解 `fix` 举例：`factorial` {#求解-fix-举例-factorial}
-
-\begin{aligned}
-    & \mathtt{factorial}\ \mathtt{c}\_3 \\\\
-  = {}& \mathtt{fix}\ g\ \mathtt{c}\_3 \\\\
-  \rightarrow {}& \underline{(\lambda x. g\ (\lambda y. x\ x\ y))\ (\lambda x. g\ (\lambda y. x\ x\ y))}\ \mathtt{c}\_3\ \\\\
-  \rightarrow {}& g\ (\lambda x. g\ (\lambda y. x\ x\ y))\ (\lambda x. g\ (\lambda y. x\ x\ y))\ \mathtt{c}\_3\ \\\\
-  = {}& g\ \mathtt{fct}\ \mathtt{c}\_3 \\\\
-  & \text{where} \quad \mathtt{fct} = \lambda y. (\lambda x. g\ (\lambda y. x\ x\ y))\ (\lambda x. g\ (\lambda y. x\ x\ y))\ y \\\\
-  \rightarrow^\* & (\lambda n. \mathtt{if}\ (\mathtt{realeq}\ n\ \mathtt{c}\_0)\ \mathtt{then}\ \mathtt{c}\_1\ \mathtt{else}\ \mathtt{times}\ \mathtt{c}\_3\ (\mathtt{fct}\ (\mathtt{prd}\ \mathtt{c}\_3)))\ \mathtt{c}\_3 \quad \text{(By def of $g$)}\\\\
-  \rightarrow {}& \mathtt{if}\ (\mathtt{realeq}\ \mathtt{c}\_3\ \mathtt{c}\_0)\ \mathtt{then}\ \mathtt{c}\_1\ \mathtt{else}\ \mathtt{times}\ \mathtt{c}\_3\ (\mathtt{fct}\ (\mathtt{prd}\ \mathtt{c}\_3)) \\\\
-  \rightarrow^\*& \mathtt{times}\ \mathtt{c}\_3\ (\mathtt{fct}\ (\mathtt{prd}\ \mathtt{c}\_3)) \\\\
-  \rightarrow^\*& \mathtt{times}\ \mathtt{c}\_3\ (\mathtt{fct}\ \mathtt{c}\_2') \\\\
-  & \text{note: not valid in call-by-value, $\mathtt{power}\ \mathtt{c}\_3$ should be reduced first} \\\\
-  \rightarrow^\*& \mathtt{times}\ \mathtt{c}\_3\ (g\ \mathtt{fct}\ \mathtt{c}\_2') \\\\
-  \rightarrow^\*& \dots \\\\
-  \rightarrow^\*& \mathtt{times}\ \mathtt{c}\_3\ (\mathtt{times}\ \mathtt{c}\_2'\ (\mathtt{c\_1}'\ \mathtt{c}\_1)) \\\\
-  \rightarrow^\*& \mathtt{c}\_6'
-\end{aligned}
-
-上面的 \\(\mathtt{c}\_n'\\) 是 behavior equivalent 的 \\(c\_n\\)。因为 `pred` 之类的求出来的和 \\(c\_{n-1}\\) 形式并不相同，但是行为是相同的。
-
-观察化简过程，不难发现重点在于 \\(\mathtt{fct}\ n \rightarrow^\*\ g\ \mathtt{fct}\ n\\)。`fct` 是一种 self-replicator，可以复制自身，并将自己作为参数传递给 `g`（when applied to an argument, supplies itself and n as arguments to `g`）。而 `g` 就可以选择要不要继续用 `fct`，用了就能继续递归。
 
 
 ### Representation {#representation}
@@ -586,7 +492,7 @@ Y\ f = f\ (Y\ f);
 
 **(\\(beta\\)-equivalance)**
 
-等价关系 \\[\equiv\_{\beta}\\] 的定义如下：
+等价关系 \\(\equiv\_{\beta}\\) 的定义如下：
 
 -   \\(M \rightarrow\_{\beta} M' \Leftrightarrow M \equiv\_{\beta} M'\\)
 -   \\(\forall M, M \equiv\_{\beta} M'\\)
@@ -594,6 +500,122 @@ Y\ f = f\ (Y\ f);
 -   \\(M \equiv\_{\beta} M' \wedge M' \equiv\_{\beta} M'' \Leftrightarrow M \equiv\_{\beta} M''\\)
 
 </div>
+
+
+## Recursion {#recursion}
+
+
+### `omega` {#omega}
+
+前面提到 normal forms 指的是无法继续化简的式子，但是有些 term 是没有 normal form 的，被称为 **diverge**。
+
+**omega** 是一个 divergent combinator：
+
+\\[
+\mathtt{omega} = (\lambda x.x\ x)\ (\lambda x.x\ x);
+\\]
+
+虽然它只有一个 redex，但是进行 reduce 后又得到了一个和原式相同的 `omega`。
+
+
+### `fix` {#fix}
+
+`omega` 有一个 generalized 的形式，被称为 **fixed-point combinator**，也叫 **call-by-value Y-combinator** 或者 **Z**：
+
+\\[
+\mathtt{fix} = \lambda f. (\lambda x. f\ (\lambda y. x\ x\ y))\ (\lambda x. f\ (\lambda y. x\ x\ y));
+\\]
+
+\\[
+\mathtt{fix}\ f = f\ (\lambda y. (\mathtt{fix}\ f)\ y);
+\\]
+
+使用方法：
+
+\begin{alignat\*}{2}
+  &h &&= \langle \mathrm{body\ containing}\ h \rangle \\\\
+  \rightarrow {}& g &&= \lambda f. \langle \mathrm{body\ containing}\ f \rangle \\\\
+  &h &&= \mathtt{fix}\ g
+\end{alignat\*}
+
+例如求 church numerals 的阶乘：
+
+\begin{aligned}
+  & \mathtt{fac} = \lambda n. \mathtt{if}\ (\mathtt{realeq}\ n\ \mathtt{c}\_0)\ \mathtt{then}\ \mathtt{c}\_1\ \mathtt{else}\ \mathtt{times}\ n\ (\mathtt{fac}\ (\mathtt{prd}\ n)); \\\\
+  \rightarrow\ & g = \lambda f. \lambda n. \mathtt{if}\ (\mathtt{realeq}\ n\ \mathtt{c}\_0)\ \mathtt{then}\ \mathtt{c}\_1\ \mathtt{else}\ \mathtt{times}\ n\ (f\ (\mathtt{prd}\ n)); \\\\
+  & \mathtt{factorial} = \mathtt{fix}\ g;
+\end{aligned}
+
+这里 `factorial` 使用的是 `if` 而不是 `test`，是因为在 call-by-value 下，如果要对 `test` 进行 evaluate，则必须要求出其两个分支的内容后才能进一步 reduce，而这样会导致 diverge。比如要算出 \\(\mathtt{factorial\ c\_0}\\)，那么就必须要求出第二个分支中的 \\(\mathtt{times}\ n\ (\mathtt{f}\ (\mathtt{prd}\ n))\\)，即 \\(\mathtt{times}\ n\ (\mathtt{f}\ c\_0)\\)，就套娃了。
+
+如果要用 `test` ，那么可以将两个 branch 包裹在 dummy lambda-abstraction 下。因为 abstractions 也是 values，所以 call-by-value 可以在进行求值的情况下使用 `test`。此时 `test` 得到的还是一个 lambda-abstraction，所以要对其进行强制求值，在其后面随便 apply 一个 dummy argument 即可。
+
+\begin{aligned}
+  & g' = \lambda f. \lambda n. \mathtt{test}\ (\mathtt{iszero}\ n)\ (\lambda x. c\_1)\ (\lambda x. (\mathtt{times}\ n\ (f\ (\mathtt{prd}\ n))))\ c\_0; \\\\
+  & \mathtt{factorial'} = \mathtt{fix}\ g';
+\end{aligned}
+
+
+### `Y` combinator {#y-combinator}
+
+除此之外，`fix` 还有一种更简单的形式：
+
+\\[
+Y = \lambda f. (\lambda x. f\ (x\ x))\ (\lambda x. f\ (x\ x));
+\\]
+
+\\[
+Y\ f = f\ (Y\ f);
+\\]
+
+但是它无法在 call-by-value 中使用，因为 \\((x\ x)\\) 不是一个 value，所以会 diverge。但是 `fix` 中的 \\((\lambda y. x\ x\ y)\\) 是一个 value（lambda abstractions 也是 value）。
+
+
+### 例子 {#例子}
+
+-   `churchnat`：将 primitive natural numbers 转换成 church numerals
+
+    \begin{aligned}
+    & \mathtt{cn} = \lambda f. \lambda n. \mathtt{if}\ (\mathtt{iszero}\ n)\ \mathtt{then}\ c\_0\ \mathtt{else}\ \mathtt{scc}\ (f\ (\mathtt{pred}\ n)); \\\\
+    & \mathtt{churchnat} = \mathtt{fix}\ \mathtt{cn};
+    \end{aligned}
+
+-   `sumlist`：对 church numerals 的列表求和（这里的 `test` 可以改成 `if`，这样可以去掉 dummy abstractions）
+
+    \begin{aligned}
+    & f' = \lambda f. \lambda l. \mathtt{test}\ (\mathtt{isnil}\ l)\ (\lambda x. c\_0)\ (\lambda x. (\mathtt{plus}\ (\mathtt{head}\ l)\ (f\ (\mathtt{tail}\ l))))\ c\_0); \\\\
+    & \mathtt{sumlist} = \mathtt{fix}\ f' \\\\
+    \end{aligned}
+
+    除了用 `fix` 的写法外，还可以不用 `fix` 实现。因为 List 本身就是一个归纳定义的结构，所以让 `c` 变成一个加号即可，而起点是 \\(c\_0\\)：
+
+    \\[
+      \mathtt{sumlist'} = \lambda l. l\ \mathtt{plus}\ c\_0;
+      \\]
+
+-   求解 `fix` 举例：`factorial`
+
+    \begin{aligned}
+      & \mathtt{factorial}\ \mathtt{c}\_3 \\\\
+    = {}& \mathtt{fix}\ g\ \mathtt{c}\_3 \\\\
+    \rightarrow {}& \underline{(\lambda x. g\ (\lambda y. x\ x\ y))\ (\lambda x. g\ (\lambda y. x\ x\ y))}\ \mathtt{c}\_3\ \\\\
+    \rightarrow {}& g\ (\lambda x. g\ (\lambda y. x\ x\ y))\ (\lambda x. g\ (\lambda y. x\ x\ y))\ \mathtt{c}\_3\ \\\\
+    = {}& g\ \mathtt{fct}\ \mathtt{c}\_3 \\\\
+    & \text{where} \quad \mathtt{fct} = \lambda y. (\lambda x. g\ (\lambda y. x\ x\ y))\ (\lambda x. g\ (\lambda y. x\ x\ y))\ y \\\\
+    \rightarrow^\* & (\lambda n. \mathtt{if}\ (\mathtt{realeq}\ n\ \mathtt{c}\_0)\ \mathtt{then}\ \mathtt{c}\_1\ \mathtt{else}\ \mathtt{times}\ \mathtt{c}\_3\ (\mathtt{fct}\ (\mathtt{prd}\ \mathtt{c}\_3)))\ \mathtt{c}\_3 \quad \text{(By def of $g$)}\\\\
+    \rightarrow {}& \mathtt{if}\ (\mathtt{realeq}\ \mathtt{c}\_3\ \mathtt{c}\_0)\ \mathtt{then}\ \mathtt{c}\_1\ \mathtt{else}\ \mathtt{times}\ \mathtt{c}\_3\ (\mathtt{fct}\ (\mathtt{prd}\ \mathtt{c}\_3)) \\\\
+    \rightarrow^\*& \mathtt{times}\ \mathtt{c}\_3\ (\mathtt{fct}\ (\mathtt{prd}\ \mathtt{c}\_3)) \\\\
+    \rightarrow^\*& \mathtt{times}\ \mathtt{c}\_3\ (\mathtt{fct}\ \mathtt{c}\_2') \\\\
+    & \text{note: not valid in call-by-value, $\mathtt{power}\ \mathtt{c}\_3$ should be reduced first} \\\\
+    \rightarrow^\*& \mathtt{times}\ \mathtt{c}\_3\ (g\ \mathtt{fct}\ \mathtt{c}\_2') \\\\
+    \rightarrow^\*& \dots \\\\
+    \rightarrow^\*& \mathtt{times}\ \mathtt{c}\_3\ (\mathtt{times}\ \mathtt{c}\_2'\ (\mathtt{c\_1}'\ \mathtt{c}\_1)) \\\\
+    \rightarrow^\*& \mathtt{c}\_6'
+    \end{aligned}
+
+    上面的 \\(\mathtt{c}\_n'\\) 是 behavior equivalent 的 \\(c\_n\\)。虽然 `pred` 求出来的结果和 \\(c\_{n-1}\\) 形式并不相同，但是行为相同。
+
+    观察化简过程，不难发现重点在于 \\(\mathtt{fct}\ n \rightarrow^\*\ g\ \mathtt{fct}\ n\\)。`fct` 是一种 self-replicator，可以复制自身，并将自己作为参数传递给 `g`（when applied to an argument, supplies itself and n as arguments to `g`）。而 `g` 就可以选择要不要继续用 `fct`，用了就能继续递归。
 
 
 ## Formalities {#formalities}

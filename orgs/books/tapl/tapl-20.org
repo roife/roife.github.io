@@ -31,42 +31,42 @@
 
 为了定义 =NatList=，需要定义 constructor =nil= 和 =cons=，=isnil= 以及两个 destructor =hd= 和 =tl=。这里利用 variant type（使用的形式为 \( \langle l = t \rangle\ \operatorname{\mathtt{as}}\ T \)）来定义 =NatList=：
 
-#+begin_src
+#+begin_src ocaml
 nil = <nil = unit> as NatList;
--- nil: NatList
+(** nil: NatList *)
 
 cons = λn: Nat. λl: NatList. <cons = {n, l}> as NatList;
--- cons : Nat → NatList → NatList
+(** cons : Nat → NatList → NatList *)
 #+end_src
 
-#+begin_src
+#+begin_src ocaml
 isnil = λl: NatList.
   case l of
     <nil = u> ⇒ true
   | <cons = p> ⇒ false;
--- isnil : NatList → Bool
+(** isnil : NatList → Bool *)
 
 hd = λl: NatList.
   case l of
     <nil = u> ⇒ 0
   | <cons = p> ⇒ p.1;
--- hd : NatList → Nat
+(** hd : NatList → Nat *)
 
 tl = λl: NatList.
   case l of
     <nil = u> ⇒ l
   | <cons = p> ⇒ p.2;
--- tl : NatList → NatList
+(** tl : NatList → NatList *)
 #+end_src
 
 为了不考虑异常，这里将空列表的 =hd= 定义为 =0=，将空列表的 =tl= 定义为空列表。
 
 利用这些定义，可以写一个求和的函数：
 
-#+begin_src
+#+begin_src ocaml
 sumlist = fix (λs: NatList → Nat. λl: NatList.
                 if isnil l then 0 else plus (hd l) (s (tl l)));
--- sumlist : NatList → Nat
+(** sumlist : NatList → Nat *)
 #+end_src
 
 虽然 =NatList= 是一个无穷类型，但是它的所有 terms 都是有穷列表。
@@ -75,92 +75,92 @@ sumlist = fix (λs: NatList → Nat. λl: NatList.
 
 定义一个函数，它会接受一个 =Nat= 然后返回自己。这样的函数可以无限接收参数：
 
-#+begin_src
+#+begin_src ocaml
 Hungry = μA. Nat → A;
 
 f = fix (λf: Nat → Hungry. λn: Nat. f);
--- f : Hungry
+(** f : Hungry *)
 
--- f 0: Hungry;
--- f 0 1: Hungry;
+(** f 0: Hungry; *)
+(** f 0 1: Hungry; *)
 #+end_src
 
 这个函数的变种是 =Stream= 类型，它能接受任意数量的 =unit=，然后返回一个 =Nat= 和一个新的 =Stream=：
 
-#+begin_src
+#+begin_src ocaml
   Stream = μA. Unit → {Nat, A};
 #+end_src
 
 =Stream= 可以定义两个 destructor，分别用于取出 =Nat= 和 =Stream=：
 
-#+begin_src
+#+begin_src ocaml
 hd = λs: Stream. (s unit).1;
--- hd : Stream → Nat
+(** hd : Stream → Nat *)
 
 tl = λs: Stream. (s unit).2;
--- tl : Stream → Stream
+(** tl : Stream → Stream *)
 #+end_src
 
 可以用 =fix= 来构建一个 =Stream=，返回一个无穷递增序列。考虑 =Steam= 实际上是一个函数，它返回这个 =Nat= 和一个 =Nat + 1= 的函数（=Stream=），因此应当写一个函数：每次接受一个 =Nat=，然后利用它构造函数（=Stream=）：
 
-#+begin_src
+#+begin_src ocaml
 upfrom0 = fix (λf: Nat → Stream. λn: Nat. λ_: Unit. {n, f (succ n)}) 0;
--- upfrom0 : Stream
+(** upfrom0 : Stream *)
 #+end_src
 
-#+begin_src
+#+begin_src ocaml
 hd (tl (tl (tl upfrom0)));
--- 3 : Nat
+(** 3 : Nat *)
 #+end_src
 
 =Stream= 可以被扩展成一个 =Process=：接受一个 =Nat=，然后返回一个 =Nat= 和一个新的 =Process=：
 
-#+begin_src
+#+begin_src ocaml
 Process = μA. Nat → {Nat, A};
 #+end_src
 
 例如一个每次返回所有接收到的数字之和的 =Process=：
 
-#+begin_src
+#+begin_src ocaml
 p = fix (λf: Nat → Process. λacc: Nat. λn: Nat.
            let newacc = plus acc n in
              {newacc, f newacc}) 0;
--- p : Process
+(** p : Process *)
 
 curr = λs:Process. (s 0).1;
--- curr : Process → Nat
+(** curr : Process → Nat *)
 
 send = λn: Nat. λs: Process. (s n).2;
--- send : Nat → Process → Process
+(** send : Nat → Process → Process *)
 #+end_src
 
-#+begin_src
+#+begin_src ocaml
 curr (send 20 (send 3 (send 5 p)));
--- 28: Nat
+(** 28: Nat *)
 #+end_src
 
 ** Objects
 
 利用 recursive types 可以定义纯函数式的对象（先前都是使用 =Ref= 定义的）。例如一个 =Counter= 对象，使用 =inc= 方法时会返回一个新的 =Counter=：
 
-#+begin_src
+#+begin_src ocaml
 Counter = μC. {get: Nat, inc: Unit → C};
 #+end_src
 
 可以发现 =Process= 和 =Objects= 的定义很像，唯一的区别是 =Objects= 接收一个 record type 作为 fields，并且方法也是一个 record type。
 
-#+begin_src
+#+begin_src ocaml
 Counter = μC. {get: Nat, inc: Unit → C};
 
 c = let create = fix (λf: {x: Nat} → Counter. λs: {x: Nat}.
                        { get = s.x,
                          inc = λ_: Unit. f {x = succ(s.x)})
     in create {x = 0};
--- c : Counter
+(** c : Counter *)
 
 c1 = c.inc unit;
 c2.get;
--- 1 : Nat
+(** 1 : Nat *)
 #+end_src
 
 ** Recursive values
@@ -189,27 +189,27 @@ c2.get;
 
 首先定义一个类型 \( D \)（此处的定义就是 denotational semantics 中 UTLC 的 universal domains 的 property 定义）：
 
-#+begin_src
+#+begin_src ocaml
 D = μX. X → X;
 #+end_src
 
 定义一个 injection function =lam= 来将 \( D \to D \) 转换为 \( D \)：
 
-#+begin_src
+#+begin_src ocaml
 lam = λf: D → D. f as D;
--- lam : D
+(** lam : D *)
 #+end_src
 
 为了构造 application，只需要将第一个函数展开成函数，然后将第二个函数应用到它上：
 
-#+begin_src
+#+begin_src ocaml
 ap = λf: D. λx: D. f x;
--- ap : D
+(** ap : D *)
 #+end_src
 
 假设 \( M \) 是一个 UTLC 上的 closed term，那么可以用下面的方式构造一个 \( M* : D \) 来表示 \( M \)：
 
-#+begin_src
+#+begin_src ocaml
 x* = x
 
 (λx.M)⋆ = lam (λx: D. M⋆) 
@@ -219,40 +219,40 @@ x* = x
 
 下面是 fix-pointer 的例子：
 
-#+begin_src
+#+begin_src ocaml
 fixD = lam (λf:D.
          ap (lam (λx:D. ap f (ap x x)))
            (lam (λx:D. ap f (ap x x))));
--- fixD : D
+(** fixD : D *)
 #+end_src
 
 此外，可以向这套系统中加入其他类型，例如 =Nat=：
 
-#+begin_src
+#+begin_src ocaml
 D = μX. <nat: Nat, fn: X → X>;
 
 lam = λf:D → D. <fn = f> as D; 
--- lam : (D → D) → D
+(** lam : (D → D) → D *)
 
 ap = λf: D. λa: D.
   case f of
     <nat = n> ⇒ divergeD unit 
   | <fn = f> ⇒ f a;
--- ap : D → D → D
+(** ap : D → D → D *)
 
 suc = λf: D.
   case f of
     <nat = n> ⇒ (<nat = succ n> as D)
   | <fn = f> ⇒ divergeD unit;
--- suc : D → D
+(** suc : D → D *)
 
 zro = <nat = 0> as D;
--- zro : D
+(** zro : D *)
 #+end_src
 
 这里处理了一种异常情况：如果 \( f \) 是一个 =nat=，那么 =ap= 就会返回一个不会停机的函数表示异常。这种检查类似于动态类型语言的*运行时检查*。有趣的是将 =if= 编码进去：
 
-#+begin_src
+#+begin_src ocaml
 D = μX. <nat: Nat, bool: Bool, fn: X → X>;
 
 lam = λf: D → D. <fn = f> as D;
@@ -273,7 +273,7 @@ tru = <bool = true> as D;
 fls = <bool = false> as D;
 
 ifd fls one fls;
--- false 注意这里两个分支返回了不同的类型
+(** false 注意这里两个分支返回了不同的类型 *)
 #+end_src
 
 * Formalities
@@ -323,7 +323,7 @@ Iso-recursive 则将 recursive type 和其展开看作是不同但是可以相�
 
 下面是 iso-recursive 定义的例子：
 
-#+begin_src
+#+begin_src ocaml
 NatList = μX. <nil: Unit, cons: {Nat, X}>;
   
 NLBody = <nil: Unit, cons: {Nat, NatList}>;
@@ -347,7 +347,7 @@ tl = λl: NatList.
   | <cons=p> ⇒ p.2;
 #+end_src
 
-#+begin_src
+#+begin_src ocaml
 fixT =
   λf: T → T.
     (λx: (μA. A → T). f ((unfold [μA. A → T] x) x))

@@ -45,8 +45,8 @@ Single dispatching 强调了方法的首参数比其他参数更加**重要**，
 
 例如对于一对二维点的比较操作：
 
-```nil
--- Point
+```ocaml
+(** Point *)
 self = rhs {
     return self.x == rhs.x && self.y == rhs.y;
 }
@@ -54,8 +54,8 @@ self = rhs {
 
 但是这里的 `self` 和 `rhs` 是对称的，需要保证 `rhs` 也是一个点：
 
-```nil
--- Point
+```ocaml
+(** Point *)
 self = rhs {
     return rhs.equalPoint(self);
 }
@@ -63,7 +63,7 @@ self.equalPoint(rhs) {
     return self.x == rhs.x && self.y == rhs.y;
 }
 
--- Object
+(** Object *)
 self.equalPoint(rhs) {
     return false;
 }
@@ -78,11 +78,11 @@ self.equalPoint(rhs) {
 
 例如前面关于 `equal` 的例子：
 
-```nil
--- equal 的默认实现（不对任何参数进行分派）返回 false：
+```ocaml
+(** equal 的默认实现（不对任何参数进行分派）返回 false： *)
    x = y { return false; }
 
--- 对于 Point 类型的参数，equal 会对参数进行分派：
+(** 对于 Point 类型的参数，equal 会对参数进行分派： *)
 --（v@obj 意味着对参数 v 进行分派，并且仅匹配与 obj 相等或继承自 obj 的实际参数）：
    p1@Point = p2@Point { return p1.x = p2.x && p1.y = p2.y; }
 ```
@@ -94,14 +94,14 @@ self.equalPoint(rhs) {
 
 本章将以一个支持递增和返回当前值的对象为例。这个对象有两个方法：\\(\operatorname{\mathtt{get}}\\) 和 \\(\operatorname{\mathtt{inc}}\\)，分别用于获取当前值和递增当前值，并通过 abstractions 来实现延迟求值：
 
-```nil
+```ocaml
 c = let x = ref 1 in
        { get = λ_:Unit. !x,
          inc = λ_:Unit. x := succ(!x) };
--- c : { get: Unit -> Nat, inc: Unit -> Unit }
+(** c : { get: Unit -> Nat, inc: Unit -> Unit } *)
 
 c.inc unit; c.inc unit; c.get unit;
--- 3: Nat
+(** 3: Nat *)
 ```
 
 可以利用别名来简化这个类型：
@@ -114,12 +114,12 @@ c.inc unit; c.inc unit; c.get unit;
 
 对象可以通过 **object generator**来生成。**Object generator** 是一个函数，接受一些参数，返回一个对象。
 
-```nil
+```ocaml
 newCounter =
   λ_:Unit. let x = ref 1 in
               { get = λ_:Unit. !x,
                 inc = λ_:Unit. x := succ(!x) };
--- newCounter : Unit -> Counter
+(** newCounter : Unit -> Counter *)
 ```
 
 </div>
@@ -131,7 +131,7 @@ OOP 受到欢迎的原因之一是它允许一段代码处理许多不同形状�
 
 例如定义 `ResetCounter`：
 
-```nil
+```ocaml
 ResetCounter = { get: Unit → Nat, inc: Unit → Unit, reset: Unit → Unit };
 ```
 
@@ -142,7 +142,7 @@ ResetCounter = { get: Unit → Nat, inc: Unit → Unit, reset: Unit → Unit };
 
 一个对象可能会有多个实例变量，因此最好将他们打包成一个 record type 一起操作：
 
-```nil
+```ocaml
 c = let r = {x = ref 1} in
       { get = λ_:Unit. !(r.x),
         inc = λ_:Unit. r.x := succ(!(r.x)) };
@@ -168,37 +168,37 @@ Real-world PL 的类包括复杂的功能，包括 `self`、`super`、visibility
 
 为了能扩展 classes 的 fields 和 methods，应该将 `newCounter` 拆分成两部分：一部分定义 method bodies，方法能够通过 representation 访问字段组成的的 record；另一部分生成一个 record 作为 fields，并将其传递给 method bodies 并生成 `counter`。
 
-```nil
+```ocaml
 counterClass =
   λr:CounterRep.
     { get = λ_:Unit. !(r.x),
       inc = λ_:Unit. r.x := succ(!(r.x)) };
--- counterClass : CounterRep → Counter
+(** counterClass : CounterRep → Counter *)
 ```
 
-```nil
+```ocaml
 newCounter =
   λ_:Unit. let r = {x=ref 1} in
              counterClass r;
--- newCounter : Unit → Counter
+(** newCounter : Unit → Counter *)
 ```
 
 这样就可以对类进行扩展，通过 `Counter` 定义 `resetCounter`：
 
-```nil
+```ocaml
 resetCounterClass =
   λr:CounterRep.
     let super = counterClass r in
       { get   = super.get,
         inc   = super.inc,
         reset = λ_:Unit. r.x := 1 };
--- resetCounterClass : CounterRep → ResetCounter
+(** resetCounterClass : CounterRep → ResetCounter *)
 ```
 
-```nil
+```ocaml
 newResetCounter =
   λ_:Unit. let r = {x=ref 1} in resetCounterClass r;
--- newResetCounter : Unit → ResetCounter
+(** newResetCounter : Unit → ResetCounter *)
 ```
 
 `ResetCounterClass` 首先使用 `counterClass` 父对象并绑定到 `super`。然后，它通过从 `super` 复制 `get` 和 `inc`，并为 `reset` 字段提供新函数来构建新对象。由于 `super` 是基于 `r` 构建的，所以这三个方法共享相同的实例变量。
@@ -212,18 +212,18 @@ newResetCounter =
 
 假设这里有一个 `BackupCounter` 类，需要记录一个历史值，后续 `reset` 时会将当前值设置为历史值：
 
-```nil
+```ocaml
 BackupCounter = { get: Unit → Nat, inc: Unit → Unit,
                   reset: Unit → Unit, backup: Unit → Unit };
 ```
 
-```nil
+```ocaml
 BackupCounterRep = { x: Ref Nat, b: Ref Nat };
 ```
 
 类似地让 `BackupCounterClass` 继承自 `ResetCounterClass`：
 
-```nil
+```ocaml
 backupCounterClass =
   λr:BackupCounterRep.
     let super = resetCounterClass r in
@@ -231,7 +231,7 @@ backupCounterClass =
         inc    = super.inc,
         reset = λ_:Unit. r.x := !(r.b),
         backup = λ_:Unit. r.b := !(r.x) };
--- backupCounterClass : BackupCounterRep → BackupCounter
+(** backupCounterClass : BackupCounterRep → BackupCounter *)
 ```
 
 这里需要注意两点：
@@ -248,11 +248,11 @@ backupCounterClass =
 
 例如这里添加一个 `SetCounter` 类，让 `inc` 调用 `self.set` 来实现递增：
 
-```nil
+```ocaml
 SetCounter = { get: Unit → Nat, set: Nat → Unit, inc: Unit → Unit };
 ```
 
-```nil
+```ocaml
 setCounterClass =
   λr:CounterRep.
     fix (
@@ -260,15 +260,15 @@ setCounterClass =
          { get = λ_:Unit. !(r.x),
            set = λi:Nat. r.x := i,
            inc = λ_:Unit. self.set (succ (self.get unit))});
-- setCounterClass : CounterRep → SetCounter
+(** setCounterClass : CounterRep → SetCounter *)
 ```
 
-```nil
+```ocaml
 newSetCounter =
   λ_:Unit.
     let r = {x=ref 1} in
       setCounterClass r;
--- newSetCounter : Unit → SetCounter
+(** newSetCounter : Unit → SetCounter *)
 ```
 
 这个类没有父类，因此不需要 `super`。
@@ -299,36 +299,36 @@ o&.\operatorname{\mathtt{inc}}\ \operatorname{\mathtt{unit}} \\\\
 
 为了实现这个行为，首先我们要将 `fix` 移动到创建对象的地方：
 
-```nil
+```ocaml
 setCounterClass =
   λr:CounterRep.
     λself: SetCounter.
       { get = λ_:Unit. !(r.x),
         set = λi:Nat. r.x := i,
         inc = λ_:Unit. self.set (succ(self.get unit)) };
--- setCounterClass : CounterRep → SetCounter → SetCounter
+(** setCounterClass : CounterRep → SetCounter → SetCounter *)
 ```
 
-```nil
+```ocaml
 newSetCounter =
   λ_:Unit.
     let r = {x=ref 1} in
       fix (setCounterClass r);
--- newSetCounter : Unit → SetCounter
+(** newSetCounter : Unit → SetCounter *)
 ```
 
 移动之后 `setCounterClass` 的签名发生改变：不仅传入了当前的实例变量，还传入了一个 `self`-object。二者都会在对象实例化的时候被提供。这里 `self` 的定义不再是“当前类”，而是“当前对象实例化的类”（有可能是当前类的子类）。
 
 这里以 `instrCounter` 为例，它能够在 `set` 时记录当前的次数：
 
-```nil
+```ocaml
 InstrCounter = { get: Unit → Nat, set: Nat → Unit,
                  inc: Unit → Unit, accesses: Unit → Nat };
 ```
 
 \\[\operatorname{\mathtt{instrCounterRep}} = \\{ x: \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}},\ a: \operatorname{\mathtt{Ref}}\ \operatorname{\mathtt{Nat}} \\}\\]
 
-```nil
+```ocaml
 instrCounterClass =
   λr:InstrCounterRep.
     λself: InstrCounter.
@@ -337,7 +337,7 @@ instrCounterClass =
           set = λi:Nat. (r.a := succ(!(r.a)); super.set i),
           inc = super.inc,
           accesses = λ_:Unit. !(r.a) };
--- instrCounterClass : InstrCounterRep → InstrCounter → InstrCounter
+(** instrCounterClass : InstrCounterRep → InstrCounter → InstrCounter *)
 ```
 
 此处 `instrCounter` 重载了 `set` 方法，但是 `inc` 仍使用父类的方法。当调用 `super.inc` 时，父类的 `inc` 会调用 `self.set`，这里的 `self` 来自于子类，因此会分发到子类的 `set` 方法。
@@ -379,7 +379,7 @@ instrCounterClass =
 
 这里先采用第一种方案，做法是使用 \\(\lambda\ \\\_: \operatorname{\mathtt{Unit}}. t\\) 来包裹 `self`：
 
-```nil
+```ocaml
 setCounterClass =
   λr: CounterState.
     λself: Unit → SetCounter.
@@ -387,15 +387,15 @@ setCounterClass =
         { get = λ_: Unit. !(r.x),
           set = λi: Nat.  r.x := i,
           int = λ_: Unit. (self unit).set (succ ((self unit).get unit)) };
--- setCounterClass : CounterRep → (Unit → SetCounter) → Unit → SetCounter
+(** setCounterClass : CounterRep → (Unit → SetCounter) → Unit → SetCounter *)
 ```
 
-```nil
+```ocaml
 newSetCounter =
   λ_:Unit.
     let r = {x=ref 1} in
       fix (setCounterClass r) unit;
--- newSetCounter : Unit → SetCounter
+(** newSetCounter : Unit → SetCounter *)
 ```
 
 缺点就是这里使用 `self` 都要多写一次 \\(\operatorname{\mathtt{self}}\ \operatorname{\mathtt{unit}}\\)，并且使用所有函数（例如 \\(get\\)）都要传入一个 \\(\operatorname{\mathtt{unit}}\\) 触发执行。
@@ -407,32 +407,32 @@ newSetCounter =
 
 上面的实现中每次使用 `self` 都要计算一次 `(self unit)`，计算开销很大。为了避免这个问题，可以直接将 objects 的 methods 包装在 `Ref` 中：
 
-```nil
+```ocaml
 setCounterClass =
   λr:CounterRep. λself: Ref SetCounter.
     { get = λ_:Unit. !(r.x),
       set = λi:Nat. r.x := i,
       inc = λ_:Unit. (!self).set (succ ((!self).get unit))};
--- setCounterClass : CounterRep → (Ref SetCounter) → SetCounter
+(** setCounterClass : CounterRep → (Ref SetCounter) → SetCounter *)
 ```
 
 使用时先为类方法分配一个 dummy 方法集合，然后在 dummy 集合上构造真实的方法覆盖掉（back-patch），最后返回真实的方法集合：
 
-```nil
+```ocaml
 dummySetCounter =
   { get = λ_:Unit. 0,
     set = λi:Nat. unit,
     inc = λ_:Unit. unit };
--- dummySetCounter : SetCounter
+(** dummySetCounter : SetCounter *)
 ```
 
-```nil
+```ocaml
 newSetCounter =
   λ_:Unit.
     let r = {x=ref 1} in
       let cAux = ref dummySetCounter in
         (cAux := (setCounterClass r cAux); !cAux);
--- newSetCounter : Unit → SetCounter
+(** newSetCounter : Unit → SetCounter *)
 ```
 
 但是这里的问题是 `Ref` 是不变的，在构建子类对象的时候，无法将 `self: Ref SubClass` 传递给 `self: Ref SuperClass`。解决方案是将 `Ref` 替换为 `Source`，因为父类只需要读取子类的方法，而不需要修改，并且 `Source` 是协变的。
@@ -449,7 +449,7 @@ newSetCounter =
 
 为所有对象都加上一个 `id` 字段，然后为对两个变量的 `id` 字段赋予不同的值，检测两个变量的 `id` 字段是否相等即可。
 
-```nil
+```ocaml
 IdCounterRep = {x: Ref Nat, id: Ref (Ref Nat)};
 
 IdCounter = { get: Unit → Nat, inc: Unit → Unit, id: Unit → (Ref Nat) };

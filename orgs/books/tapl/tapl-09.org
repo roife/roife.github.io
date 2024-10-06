@@ -351,7 +351,7 @@ STLC 中的一个 term 是其类型对应的逻辑命题的一个证明。计算
 #+begin_definition
 *(erasure)*
 
-The erasure of a simply typed term t is defined as follows:
+The erasure of a simply typed term \( t \) is defined as follows:
 
 \begin{aligned}
   & \operatorname{erase}(x) &&= x \\

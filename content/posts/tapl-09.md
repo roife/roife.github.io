@@ -415,7 +415,7 @@ STLC 中的一个 term 是其类型对应的逻辑命题的一个证明。计算
 
 \\[\dfrac{\Gamma \vdash M : \tau \rightarrow \tau}{\Gamma \vdash \operatorname{\mathtt{fix}}\ : \tau}\\]
 
-也就是说不终止的证明可以证明任意命题成立。
+也就是说不终止的证明可以证明任意命题成立，所以引入 `fix` 的系统是 inconsistent logic。
 
 
 ## Erasure and Typability {#erasure-and-typability}
@@ -426,7 +426,7 @@ STLC 中的一个 term 是其类型对应的逻辑命题的一个证明。计算
 
 **(erasure)**
 
-The erasure of a simply typed term t is defined as follows:
+The erasure of a simply typed term \\( t \\) is defined as follows:
 
 \begin{aligned}
   & \operatorname{erase}(x) &&= x \\\\
