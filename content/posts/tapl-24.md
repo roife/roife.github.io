@@ -169,6 +169,8 @@ counterADT =
 
 基于 ADT 的编程风格可以极大提高大型系统的可维护性。这样做有几个原因。首先，这种风格限制了对程序的更改范围；其次，它鼓励程序员限制程序各部分之间的依赖关系，并缩短 ADT 的签名；最后，它通过明确的签名迫使程序员考虑设计抽象。
 
+此处定义的 ADT 其实形式上便类似于 `typeclass` 或者 `trait`。在 Scala 中定义 typeclass pattern `F`，然后对 `A` 进行 instantiation 时会得到一个 `F<A>`，这里的 `A` 便是 inner representation type。ADT 中的 abstract type 对应了 trait 中的 `Self`。
+
 这里在定义 ADT 时，会先定义其类型 `counterADT`，然后立即用 `let` 打开它并进行操作，这是使用 ADT 编程的特征。下面一节将基于 existential objects 来进行抽象。
 
 
