@@ -360,6 +360,14 @@ System F 另一个分支是 **rank-2 polymorphism**。将类型表示成一棵�
 
 rank-2 polymorphism 被证明其 type reconstruction 算法复杂度与 prenex polymorphism 相同，并且 rank-3 或更高阶系统上的 type reconstruction 仍然是 undecidable 的。_rank-2_ 的限制并不局限于量词，可以被推广到其他 type constructors。例如 intersection types 也可以定义类似的限制。System F 上的 rank-2 分支与 first-order intersection type system 密切相关，事实上可以证明它们能接受的 lambda terms 范围是相同的。
 
+此外，函数返回值处的 \\( \forall \\) 并不影响判定性，因为有逻辑恒等式：
+
+\\[
+P \to \forall x. Q(x) \iff \forall x. P \to Q(x)
+\\]
+
+说明函数返回值处的 \\( \forall \\) 可以被移动到头部。
+
 
 ## Parametricity {#parametricity}
 
@@ -381,7 +389,7 @@ fls = λX. λt: X. λf: X. f;
 
 换句话说，给定一个参数化多态类型，倘若将行为一致的实例看成相同实例，那所有实例可以从类型里得到。因此想要在实例集合上做证明，那么可以直接在其多态类型上进行证明。
 
-Parametricity 可以看成 abstraction 的对偶。后者对外界隐藏了内部实现；而前者对实现隐藏了外部世界，取决于实现本身。
+Parametricity 可以看成 abstraction 的对偶。前者对内部实现隐藏了外部世界的具体类型，而后者对外界隐藏了内部实现。
 
 
 ## Impredicativity {#impredicativity}
