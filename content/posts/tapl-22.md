@@ -654,6 +654,7 @@ let substConstraints (tyX : string) tyT constr =
     (fun (tyS1, tyS2) -> (substTy tyX tyT tyS1, substTy tyX tyT tyS2))
     constr
 
+(** [tyX1 -> tyT1]...[tyXn -> tyTn] ctx *)
 let substCtx substs ctx =
   List.map (fun (x, tyT) -> (x, applySubsts substs tyT)) ctx
 
@@ -669,7 +670,7 @@ let occurs (tyX : string) tyT =
   in o tyT
 
 let unify substs =
-  let rec u substs = match substs with
+  let rec u = function
       [] -> []
     | (tyS, tyT) :: rest when tyS = tyT -> u substs
     | (tyS, TyMono(x)) :: rest | (TyMono(x), tyS) :: rest ->
@@ -683,19 +684,17 @@ let unify substs =
 
 (** Inference *)
 
+module VarSet = Set.Make(String)
+
 let generalize ctx tyT =
   let rec g ctx = function
-      TyUnit -> []
-    | TyArr(tyT1, tyT2) ->
-       List.fold_right (fun x tyT' -> if List.mem x tyT' then tyT' else x :: tyT')
-         ((g ctx tyT1) @ (g ctx tyT2))
-         []
-    | TyMono(x) -> if List.mem_assoc x ctx then []
-                   else [x]
+      TyUnit -> VarSet.empty
+    | TyArr(tyT1, tyT2) -> VarSet.union (g ctx tyT1) (g ctx tyT2)
+    | TyMono(x) -> if List.mem_assoc x ctx then VarSet.empty else VarSet.singleton x
     | TyPoly(x, tyT) -> raise (Failure "Polymorphic type in generalization")
   in
   let tyVars = g ctx tyT in
-  List.fold_right (fun x tyT' -> TyPoly(x, tyT')) tyVars tyT
+  VarSet.fold (fun x tyT' -> TyPoly(x, tyT')) tyVars tyT
 
 let instantiate tyS =
   let rec f substs tyS = match tyS with
@@ -727,8 +726,7 @@ let infer t =
        let (tyT1, substs1) = infer' ctx t1 in
        let sigmaT1 = unify substs1 in
        let scheme = generalize (substCtx sigmaT1 ctx) (applySubsts sigmaT1 tyT1) in
-       let ctx' = (x, scheme) :: ctx in
-       let (tyT2, substs2) = infer' ctx' t2 in
+       let (tyT2, substs2) = infer' ((x, scheme) :: ctx) t2 in
        (tyT2, List.concat [substs1; substs2])
   in infer' [] t
 
