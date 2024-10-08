@@ -57,7 +57,7 @@ p3 = {*Bool, true} as {∃ X, X};
 #+begin_src ocaml
 p4 = {*Nat, {a = 0, f = λx: Nat. succ(x)}} as {∃ X, {a: X, f: X → Nat}};
 (** p4 : {∃ X, {a:X, f:X→Nat}} *)
-  
+
 let {X, x} = p4 in (x.f x.a);
 (** 1 : Nat *)
 

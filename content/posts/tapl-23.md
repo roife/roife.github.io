@@ -152,6 +152,21 @@ prd2 = λn: CNat. λX. λs: X → X. λz: X.
 ```
 
 
+### Encoding Pairs {#encoding-pairs}
+
+```ocaml
+Pair F S = ∀P. (F → S → P) → P;
+pair = λF. λS. λf: F. λs: S. (λP. λp: F → S → P. p f s);
+(** pair : Pair *)
+
+fst = λF. λS. λp: ∀P. (F → S → P) → P. p tru
+(** fst : ∀F. ∀S. Pair F S → F *)
+
+snd = λF. λS. λp: ∀P. (F → S → P) → P. p fls;
+(** snd : ∀F. ∀S. Pair F S → S *)
+```
+
+
 ### Encoding Lists {#encoding-lists}
 
 `[a, b]` 在 UTLC 中表示为 `λc.λn.c a (c b n)`。设元素类型为 `X` 的列表类型为 `List X`：
