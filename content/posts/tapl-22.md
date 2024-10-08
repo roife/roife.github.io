@@ -263,56 +263,6 @@ If \\(\Gamma \vdash t: T \mid\_\chi C\\), then there is some permutation \\(F\\)
 
 </div>
 
-利用 `gensym` 函数可以实现上面描述的 constraint generation：
-
-```ocaml
-type ty =
-  TyBool
-| TyArr of ty * ty
-| TyId of string
-| TyNat
-
-type constr = (ty * ty) list
-
-type nextuvar = NextUVar of string * uvargenerator
-  and uvargenerator = unit -> nextuvar
-
-let uvargen =
-  let rec f n () = NextUVar ("?X_" ^ string_of_int n, f (n + 1)) in
-  in f 0
-
-let rec recon ctx nextuvar t = match t with
-  | TmVar(fi, i, _) ->
-      let tyT = getTypeFromContext fi ctx i in
-      (tyT, nextuvar, [])
-  | TmAbs(fi, x, tyT1, t2) ->
-      let ctx' = addbinding ctx x (VarBind(tyT1)) in
-      let (tyT2, nextuvar2, constr2) = recon ctx' nextuvar t2 in
-      (TyArr(tyT1, tyT2), nextuvar2, constr2)
-  | TmApp(fi, t1, t2) ->
-      let (tyT1, nextuvar1, constr1) = recon ctx nextuvar t1 in
-      let (tyT2, nextuvar2, constr2) = recon ctx nextuvar1 t2 in
-      let NextUVar(tyX, nextuvar') = nextuvar2() in
-      let newconstr = [(tyT1, TyArr(tyT2, TyId(tyX)))] in
-      (TyId(tyX), nextuvar',
-       List.concat [newconstr; constr1; constr2])
-  | TmZero(fi) -> (TyNat, nextuvar, [])
-  | TmSucc(fi, t1) ->
-      let (tyT1, nextuvar1, constr1) = recon ctx nextuvar t1 in
-      (TyNat, nextuvar1, (tyT1, TyNat) :: constr1)
-  | TmPred(fi, t1) -> (** ... *)
-  | TmIsZero(fi, t1) -> (** ... *)
-  | TmTrue(fi) -> (** ... *)
-  | TmFalse(fi) -> (** ... *)
-  | TmIf(fi, t1, t2, t3) ->
-      let (tyT1, nextuvar1, constr1) = recon ctx nextuvar t1 in
-      let (tyT2, nextuvar2, constr2) = recon ctx nextuvar1 t2 in
-      let (tyT3, nextuvar3, constr3) = recon ctx nextuvar2 t3 in
-      let newconstr = [(tyT1, TyBool); (tyT2, tyT3)] in
-      (tyT3, nextuvar3,
-       List.concat [newconstr; constr1; constr2; constr3])
-```
-
 
 ### Fix {#fix}
 
@@ -337,17 +287,23 @@ let rec recon ctx nextuvar t = match t with
         \return{$[]$}
       \else
         \state Split $C$ into $\\{S = T\\}$ and $C'$
-        \if{$S = T$}
-          \return{$\operatorname{unify}(C')$}
-        \elseif{$S = X \land X \notin \operatorname{FV}(T)$}
-          \return{$\operatorname{unify}([X \mapsto T]C') \circ [X \mapsto T]$}
-        \elseif{$T = X \land X \notin \operatorname{FV}(S)$}
-          \return{$\operatorname{unify}([X \mapsto S]C') \circ [X \mapsto S]$}
-        \elseif{$S = S\_1 \rightarrow S\_2 \land T = T\_1 \rightarrow T\_2$}
-          \return{$\operatorname{unify}(C' \cup \\{S\_1 = T\_1, S\_2 = T\_2\\})$}
-        \else
-          \state $\operatorname{\mathtt{fail}}$
-        \endif
+        \match { (S, T) }
+          \case{ ($t, t$) }
+            \return{$\operatorname{unify}(C')$}
+          \endcase
+          \case{ $(X, t) \mid (t, X)$ }
+            \if{$X \notin \operatorname{FV}(t)$}
+              \return{$\operatorname{unify}([X \mapsto t]C') \circ [X \mapsto t]$}
+            \else
+              \state $\operatorname{\mathtt{fail}}$
+            \endif
+          \endcase
+          \case{ $(S₁ \to S₂, T₁ \to T₂)$ }
+            \return{$\operatorname{unify}(C' \cup \\{S₁ = T₁, S₂ = T₂\\})$}
+          \endcase
+          \otherwise
+            \state $\operatorname{\mathtt{fail}}$
+        \endmatch
       \endif
     \endprocedure
   \end{algorithmic}
@@ -357,9 +313,14 @@ let rec recon ctx nextuvar t = match t with
 
 这个算法不仅可以用于类型系统的 unification，可以用于任何一阶逻辑的 unification 问题。
 
-从算法中可以发现，我们需要在 unification 前保证生成的 constraints 两边都是相同的形式，否则将 fail。
-
 算法中出现的 \\( X \notin FV(T) \\) 与 \\( X \notin FV(S) \\) 称为 **occurs check**，用于避免出现循环替换（例如 \\( X \mapsto X \to X \\)），因为这样的表达式只有在 recursive types 中才有意义。
+
+算法主要处理了三种情况：
+
+-   \\( t = t \\) 直接跳过；
+-   \\( X = t \\) 或 \\( t = X \\) 替换
+-   \\( C(a₁, a₂, \dots, aₙ) = C(b₁, b₂, \dots, bₙ) \\) 生成新约束并递归求解
+-   其他情况返回失败
 
 <div class="definition">
 
@@ -471,7 +432,7 @@ It is decidable whether \\( (\Gamma , t) \\) has a solution under STLC.
 这两种做法有一些微妙的区别：如果将 lambda abstraction 复制多份使用，那么第一种方法会导致每个 lambda abstraction 的类型都相同，而 `CT-AbsInf` 允许每份拷贝有不同的类型，这将引出下面的 let-polymorphism。
 
 
-## Let Polymorphism {#let-polymorphism}
+## Let Polymorphism and Hindley-Milner Type System {#let-polymorphism-and-hindley-milner-type-system}
 
 **多态性（Polymorphism）** 是一种程序机制，其使得一部分代码在不同的上下文中不同的类型下使用，从而达到复用的目的。前面展示的类型重建算法提供了一种实现多态的方法，它使得在 let-bound 中绑定的隐式标注的 lambda-abstractions 在不同的类型下被重用，称为 **let-polymorphism**（也可以叫做 **ML-style** 或者 **Damas-Milner polymorphism**）。包含 let-polymorphism 的 STLC 也称为 **hindley-milner type system**，Algorithm W 是 HM 系统中最致命的类型推导算法。
 
@@ -545,7 +506,7 @@ let x = <utter garbage> in 5
 \\]
 
 
-### Type schemes {#type-schemes}
+### Type schemes and Algorithm W {#type-schemes-and-algorithm-w}
 
 上面的方案的另一个问题是：在 body 中多次使用绑定的变量时，每次出现都需要重新计算绑定 \\( t₁ \\) 的类型。在原来的方案中，只需要检查两件事：\\( t₁ \\) 的类型，以及将 \\( t₁ \\) 加上 context 后 \\( t₂ \\) 的类型。但是更改后的方案将 \\( t₂ \\) 中所有的 \\( x \\) 替换为 \\( t₁ \\)，如果出现 let 绑定时多重嵌套，那么这个检查的复杂度将会是指数级的：
 
@@ -565,7 +526,7 @@ let a = <complex code> in
 2.  使用 unification 算法找到 \\( C₁ \\) 的 principal solution \\( \sigma \\)，并得到 principal type \\( \sigma \Gamma \vdash \sigma S = T₁ \\)；
 3.  将 \\( T₁ \\) 中的所有类型变量**泛化**（generalize）。如果剩下的类型变量是 \\( X₁, X₂, \dots Xₙ \\)，那么将其写作 \\( \forall X₁ \dots Xₙ. T₁ \\) 作为 **principal type scheme**；
     -   这里需要注意不要泛化在 context 中出现的变量，因为他们实际上对应了一个类型约束。例如 \\( \lambda f: X \to X. \lambda x: X. \operatorname{\mathtt{let}}\ g = f\ \operatorname{\mathtt{in}}\ g(x) \\)，这里不应该泛化 \\( X \\)；
-4.  在上下文中记录 type scheme \\( x : \forall X₁ \dots Xₙ. T₁ \\)，并且开始检查 body \\( t₂ \\)。此时上下文会给每个自由变量关联一个 type scheme 而非单纯 type。
+4.  在 context 中记录 type scheme \\( x : \forall X₁ \dots Xₙ. T₁ \\)，并且开始检查 body \\( t₂ \\)。此时上下文会给每个自由变量关联一个 type scheme 而非单纯 type。
 5.  每次在 body 中遇到 \\( x \\) 时，先查找其 type scheme \\( \forall X₁ \dots Xₙ. T₁ \\)，然后生成新的类型变量 \\( Y₁ \dots Yₙ \\) 并用它们实例化 type scheme，从而得到 \\( [X₁ \mapsto Y₁, \dots, Xₙ \mapsto Yₙ] T₁ \\) 作为 \\( x \\) 的类型。
 
 这就是 **Algorithm W**。Algorithm W 一般是线性的，但是其最坏复杂度仍然是指数级的：
@@ -635,3 +596,154 @@ let r = ref (λx. x) in
 那么能不能将其放在 \\( \operatorname{\mathtt{ref}} \\) 中呢？如果能做到，那么在赋值 `(λx: Nat. succ x)` 时就会出现错误（因为无法将 `Int -> Int` 赋值给 `r`）。
 
 事实上在下一章 System F 中可以看到如果允许这么做，那么这个类型系统将是 rank-N polymorphism 的，其上的类型推导是 undecidable 的。因此这是 let-polymorphism 放弃表达力而换取可判定性的结果。
+
+
+## Implementation of Algorithm W {#implementation-of-algorithm-w}
+
+```ocaml
+type ty =
+  TyUnit
+| TyArr of ty * ty
+| TyMono of string
+| TyPoly of string * ty
+
+type term =
+  TmUnit
+| TmVar of string
+| TmAbs of string * ty option * term
+| TmApp of term * term
+| TmLet of string * term * term
+
+(** Ctx *)
+type context = (string * ty) list
+type constraints = (ty * ty) list
+
+let getTypeFromContext ctx name =
+  try Some (List.assoc name ctx)
+  with Not_found -> None
+
+(** New Variable Generator*)
+let fresh =
+  let i = ref 0 in
+  fun () ->
+  let i' = "?X_" ^ (string_of_int !i) in
+  incr i;
+  i'
+
+(** Substitution *)
+
+(** [tyX -> tyT] tyS *)
+let substTy (tyX : string) tyT tyS =
+  let rec f = function
+      TyUnit -> TyUnit
+    | TyArr(tyS1, tyS2) -> TyArr(f tyS1, f tyS2)
+    | TyMono(x) -> if x = tyX then tyT else TyMono(x)
+    | TyPoly(x, tyS) -> if x = tyX
+                        then raise (Failure "Name conflicts with Poly")
+                        else TyPoly(x, f tyS)
+  in f tyS
+
+(** [tyX1 -> tyT1]...[tyXn -> tyTn] tyS *)
+let applySubsts substs tyS =
+  List.fold_left (fun tyS (tyX, tyT) -> substTy tyX tyT tyS)
+    tyS (List.rev substs)
+
+(** [tyX -> tyT] C *)
+let substConstraints (tyX : string) tyT constr =
+  List.map
+    (fun (tyS1, tyS2) -> (substTy tyX tyT tyS1, substTy tyX tyT tyS2))
+    constr
+
+let substCtx substs ctx =
+  List.map (fun (x, tyT) -> (x, applySubsts substs tyT)) ctx
+
+(** Unification *)
+
+let occurs (tyX : string) tyT =
+  let rec o = function
+      TyUnit -> false
+    | TyArr(tyT1, tyT2) -> o tyT1 || o tyT2
+    | TyMono(x) -> x = tyX
+    | TyPoly(x, tyT1) -> if x = tyX then raise (Failure "Name conflicts with Poly")
+                         else o tyT1
+  in o tyT
+
+let unify substs =
+  let rec u substs = match substs with
+      [] -> []
+    | (tyS, tyT) :: rest when tyS = tyT -> u substs
+    | (tyS, TyMono(x)) :: rest | (TyMono(x), tyS) :: rest ->
+       if occurs x tyS then raise (Failure "Occurs check")
+       else List.append (u (substConstraints x tyS rest))
+              [(x, tyS)]
+    | (TyArr(tyS1, tyS2), TyArr(tyT1, tyT2)) :: rest ->
+       u ((tyS1, tyT1) :: (tyS2, tyT2) :: rest)
+    | _ -> raise (Failure "Unification failed")
+  in u substs
+
+(** Inference *)
+
+let generalize ctx tyT =
+  let rec g ctx = function
+      TyUnit -> []
+    | TyArr(tyT1, tyT2) ->
+       List.fold_right (fun x tyT' -> if List.mem x tyT' then tyT' else x :: tyT')
+         ((g ctx tyT1) @ (g ctx tyT2))
+         []
+    | TyMono(x) -> if List.mem_assoc x ctx then []
+                   else [x]
+    | TyPoly(x, tyT) -> raise (Failure "Polymorphic type in generalization")
+  in
+  let tyVars = g ctx tyT in
+  List.fold_right (fun x tyT' -> TyPoly(x, tyT')) tyVars tyT
+
+let instantiate tyS =
+  let rec f substs tyS = match tyS with
+      TyPoly(x, tyT) ->
+       let y = TyMono(fresh ()) in
+       f ((x, y) :: substs) tyT
+    | _ -> applySubsts substs tyS
+  in f [] tyS
+
+let infer t =
+  let rec infer' ctx = function
+      TmUnit -> (TyUnit, [])
+    | TmVar(x) -> (match getTypeFromContext ctx x with
+                     Some(tyT) -> (instantiate tyT, [])
+                   | None -> raise (Failure ("Unbound variable " ^ x)))
+    | TmAbs(x, tyX, t) ->
+       let tyX' = (match tyX with
+                     Some(tyX) -> tyX
+                   | None -> TyMono(fresh ())) in
+       let (tyT, substs) = infer' ((x, tyX') :: ctx) t in
+       (TyArr(tyX', tyT), substs)
+    | TmApp(t1, t2) ->
+       let (tyT1, substs1) = infer' ctx t1 in
+       let (tyT2, substs2) = infer' ctx t2 in
+       let tyRet = TyMono(fresh ()) in
+       let newSubst = [(tyT1, TyArr(tyT2, tyRet))] in
+       (tyRet, List.concat [substs1; substs2; newSubst])
+    | TmLet(x, t1, t2) ->
+       let (tyT1, substs1) = infer' ctx t1 in
+       let sigmaT1 = unify substs1 in
+       let scheme = generalize (substCtx sigmaT1 ctx) (applySubsts sigmaT1 tyT1) in
+       let ctx' = (x, scheme) :: ctx in
+       let (tyT2, substs2) = infer' ctx' t2 in
+       (tyT2, List.concat [substs1; substs2])
+  in infer' [] t
+
+(** Pretty print type *)
+let pp ty =
+  let rec f = function
+      TyUnit -> "Unit"
+    | TyArr(ty1, ty2) -> "(" ^ (f ty1) ^ " -> " ^ (f ty2) ^ ")"
+    | TyMono(x) -> x
+    | TyPoly(x, ty) -> "forall " ^ x ^ ". " ^ (f ty)
+  in f ty
+
+let ppinfer t =
+  let (ty, substs) = infer t in
+  let sigmaT1 = unify substs in
+  let scheme = generalize (substCtx sigmaT1 []) (applySubsts sigmaT1 ty) in
+  pp scheme;;
+```

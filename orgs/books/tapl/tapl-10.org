@@ -26,7 +26,7 @@ type binding =
       bind
     with Failure _ ->
       error fi ("Variable lookup failure: offset")
-  
+
   let getTypeFromContext fi ctx i =
     match getbinding fi ctx i with
         VarBind(tyT) -> tyT
