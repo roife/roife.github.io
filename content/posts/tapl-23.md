@@ -7,7 +7,7 @@ tags = ["类型系统", "程序语言理论"]
 draft = false
 +++
 
-上一章提到包含类型变量的表达式在检查时可以有一个 _forall_ 的视角：将类型变量保持抽象，将它替换成任意类型都保证这个表达式是 well-typed 的。这样使得同一份代码可以复用。这就是常见的**泛型**，也就是本章要讨论的 niversal types。
+上一章提到包含类型变量的表达式在检查时可以有一个 _forall_ 的视角：将类型变量保持抽象，将它替换成任意类型都保证这个表达式是 well-typed 的。这样使得同一份代码可以复用。这就是常见的**泛型**，也就是本章要讨论的 universal types。
 
 
 ## Varieties of Polymorphism {#varieties-of-polymorphism}
