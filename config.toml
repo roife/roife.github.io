@@ -83,6 +83,10 @@ comment = true
 katex = true
 toc = true
 
+[services]
+[services.rss]
+limit = 10
+
 [params.sidebar]
 enable = false
 gravatarEmail = ""

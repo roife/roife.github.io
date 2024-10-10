@@ -16,13 +16,13 @@
 
 - *Ad-hoc polymorphism*：它允许一个值在被视作不同的类型时有不同的行为。
 
-  + 最常见的 ad-hoc polymorphism 就是重载（*overloading*），即同一个函数名可以对应多个不同的实现，编译器根据参数选择合适的实现。将函数重载进行推广，则得到了 multi-method dispatch，其在 \( \lambda_\& \) 中被形式化。
+  + 最常见的 ad-hoc polymorphism 就是重载（*overloading*），即同一个函数名可以对应多个不同的实现，编译器根据参数选择实现。将函数重载进行推广，则得到了 multi-method dispatch，其在 \( \lambda_\& \) 中被形式化。
 
   + 另一种强大的 ad-hoc polymorphism 是 *intensional polymorphism*。它允许在运行时进行一些受限的类型运算。Intensional polymorphism 是 tag-free garbage collection、unboxed function arguments、polymorphic marshaling、flattened data structures 等高级特性的基础。
 
   + 还有一种高级的 ad-hoc polymorphism 可以通过 =typecase=（类似 Java 中的 =instanceof=）实现，它允许在运行时对类型进行任意的模式匹配。
 
-- *Subtype polymorphism*：即前面提到的 subtyping，它允许选择性地忽略部分类型信息（例如将子类型的值看作父类型使用）。
+- *Subtype polymorphism*：即前面提到的 subtyping，它允许选择性地忽略部分类型信息（例如将子类型的值看作父类型使用），有时也称为 *inclusion polymorphism*。
 
 这些多态并非互斥，编程语言可以支持其中的多种形式。
 
@@ -366,11 +366,11 @@ fls = λX. λt: X. λf: X. f;
 
 可以发现 =CBool= 的定义与 =tru= 和 =fls= 的定义高度对称。其中 \( \forall X \) 与 \( \lambda X \) 相对，\( X \to X \to _ \) 与 \( \lambda t: X. \lambda f: X \) 相对，\( \to X \) 与 \( t / f \) 相对。由于返回值是 \( X \)，因此这里要么返回 \( t \)，要么返回 \( f \)。可以看出多态程序与它们的类型高度相关（尽管可以构建其他 =CBool= 的 term，但是它们的行为都与 =tru= 和 =fls= 等价）。
 
-*Parametricity* 表明被实例化的多态程序的行为满足某种统一的模式，这种模式与其多态类型有关。从多态类型中就可以观察它被实例化后的各种程序，其行为取决于（实例化前的）类型。这正好与 ad-hoc polymorphism 相反，因为后者的行为取决于实例化后的类型。
+*Parametricity* 表明被实例化的多态程序的行为满足某种统一的模式，这种模式与其多态类型有关。从多态类型中就可以观察它被实例化后的各种程序，无论其传入什么类型，函数的行为都是统一的。这正好与 ad-hoc polymorphism 相反，因为后者的行为取决于实例化后的类型，不同类型的参数所执行的行为可能截然不同。
 
 换句话说，给定一个参数化多态类型，倘若将行为一致的实例看成相同实例，那所有实例可以从类型里得到。因此想要在实例集合上做证明，那么可以直接在其多态类型上进行证明。
 
-Parametricity 可以看成 abstraction 的对偶。前者对内部实现隐藏了外部世界的具体类型，而后者对外界隐藏了内部实现。
+Parametricity 可以看成 abstraction 的对偶。前者对函数内部实现隐藏了外部世界调用时的具体类型，而后者对外界隐藏了内部实现。
 
 * Impredicativity
 

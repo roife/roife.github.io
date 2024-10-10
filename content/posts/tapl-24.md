@@ -28,7 +28,7 @@ Existential types 记作 \\( \\{ \exists x, T\\} \\) 并不比 universal types �
 
 ### Analogy with Packages or Modules {#analogy-with-packages-or-modules}
 
-一个 existential type 的 value 形如 \\( \\{\*S, t\\} \\)，此处 \\( \* \\) 用作和 tuples 间的区分。另一种记法是 \\( \operatorname{\mathtt{pack}}\ X = S\ \operatorname{\mathtt{with}}\ t \\)。一个有用的直觉是将其看作带有一个隐藏的 type component 和一个隐藏的 term component 的 _package_ 或者 _module_。其中，类型 \\( S \\) 称为 **hidden representation type** 或 **witness type**。
+一个 existential type 的 value 形如 \\( \\{\*S, t\\} \\)，此处 \\( \* \\) 用作和 tuples 间的区分。另一种记法是 \\( \operatorname{\mathtt{pack}}\ X = S\ \operatorname{\mathtt{with}}\ t \\)。一个有用的直觉是将其看作带有一个隐藏的 type component 和一个隐藏的 term component 的 _package_ 或者 _module_。其中，类型 \\( S \\) 称为 **hidden representation type** 或 **witness type**。从这可以看出，existential types 和 OCaml 中的 abstract module 有着密切关联。
 
 例如 package \\( p = \\{ \*\operatorname{\mathtt{Nat}}, \\{a = 5, f = \lambda x: \operatorname{\mathtt{Nat}}. \operatorname{\mathtt{succ}}(x)\\} \\} \\) 的类型为 \\( \\{ \exists X, \\{a: X, f : X \to X\\}\\} \\)。其中 type component 是 \\( \operatorname{\mathtt{Nat}} \\)，value component 是一个 record，包括 \\( a \\) 和 \\( f \\)。同时，这个 package \\( p \\) 也具有类型 \\( \\{ \exists X, \\{a : X, f : X \to \operatorname{\mathtt{Nat}}\\}\\} \\)。
 
@@ -169,7 +169,7 @@ counterADT =
 
 基于 ADT 的编程风格可以极大提高大型系统的可维护性。这样做有几个原因。首先，这种风格限制了对程序的更改范围；其次，它鼓励程序员限制程序各部分之间的依赖关系，并缩短 ADT 的签名；最后，它通过明确的签名迫使程序员考虑设计抽象。
 
-此处定义的 ADT 其实形式上便类似于 `typeclass` 或者 `trait`。在 Scala 中定义 typeclass pattern `F`，然后对 `A` 进行 instantiation 时会得到一个 `F<A>`，这里的 `A` 便是 inner representation type。ADT 中的 abstract type 对应了 trait 中的 `Self`。
+此处定义的 ADT 其实形式上便类似于 `typeclass` 或者 `trait`。在 Scala 中定义 typeclass pattern `F`，然后对 `A` 进行 instantiation 时会得到一个 `F<A>`，这里的 `A` 便是 inner representation type。ADT 中的 abstract type 对应了 trait 中的 `Self`。二者的区别在于每次使用 existential types 时需要显式地进行 instantiation，传入类型以及内部字段；而使用 `typeclass` 或者 `trait` 这个过程是自动完成的。
 
 这里在定义 ADT 时，会先定义其类型 `counterADT`，然后立即用 `let` 打开它并进行操作，这是使用 ADT 编程的特征。下面一节将基于 existential objects 来进行抽象。
 
