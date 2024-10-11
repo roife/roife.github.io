@@ -90,8 +90,8 @@ let tymap onvar c tyT =
   let rec walk c tyT = match tyT with
       TyArr(tyT1,tyT2) -> TyArr(walk c tyT1,walk c tyT2)
     | TyVar(x,n) -> onvar c x n
-      | TyAll(tyX,tyT2) -> TyAll(tyX,walk (c+1) tyT2)
-      | TySome(tyX,tyT2) -> TySome(tyX,walk (c+1) tyT2)
+    | TyAll(tyX,tyT2) -> TyAll(tyX,walk (c+1) tyT2)
+    | TySome(tyX,tyT2) -> TySome(tyX,walk (c+1) tyT2)
   in walk c tyT
 
 let typeShiftAbove d c tyT =
