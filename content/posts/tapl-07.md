@@ -18,7 +18,7 @@ type term =
   | TmApp of term * term
 ```
 
-为了方便调试，还可以增加三个 refinement：
+为了方便调试，还可以增加三个优化：
 
 1.  `info` 用来保存 parse 的信息（例如行号等），方便错误提示
 2.  对于变量，可以增加一个 `int` 表示 context 的总长度，用来检验 shift 是否正确

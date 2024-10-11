@@ -86,7 +86,7 @@ The *\(d\)-place shift* of a term \(t\) above cutoff \(c\), written \(\uparrow^d
         k+d & \text{if $k \ge c$}
     \end{cases}\\
 &\uparrow^d_c(\lambda. t_1) &&= \lambda. \uparrow^d_{c+1} (t_1) \\
-&\uparrow^d_c(\lambda. t_1\ t_2) &&={} \uparrow^d_c(\lambda. t_1)\ \uparrow^d_c(\lambda. t_2)
+&\uparrow^d_c(\lambda. t_1\ t_2) &&={} \uparrow^d_c(\lambda. t_1)\ \uparrow^d_c(t_2)
 \end{alignat*}
 
 \(\uparrow^d_0 (t)\) 可以记作 \(\uparrow^d (t)\)

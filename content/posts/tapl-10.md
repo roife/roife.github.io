@@ -12,7 +12,7 @@ draft = false
 
 ## Contexts {#contexts}
 
-在 untyped λ 演算中使用了 `context` 记录上下文，当时使用的 `binding` 只有一个空的 constructor `NameBind`。此处为了记录类型，使用了一个新的 constructor `VarBind` 来携带类型。原来的 `NameBind` 仍然保留，用于解析和打印（此时不关心类型）。
+在 untyped λ 演算中使用了 `context` 记录上下文，当时使用的 `binding` 只有一个空的 constructor `NameBind`。此处为了记录类型，使用了一个新的 constructor `VarBind` 来携带类型。原来的 `NameBind` 仍然保留，用于解析和打印（因为此时不关心类型）。
 
 ```ocaml
 type binding =
