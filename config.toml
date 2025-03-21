@@ -137,6 +137,10 @@ url = "https://inuebisu.cn/"
 name = "EvalExec"
 url = "https://evex.one/"
 
+[[params.friends]]
+name = "Integral"
+url = "https://blog.i7.homes/"
+
 [params.utterances]
 enable = true
 repo = "roife/roife.github.io"
