@@ -141,6 +141,10 @@ url = "https://evex.one/"
 name = "Integral"
 url = "https://blog.i7.homes/"
 
+[[params.friends]]
+name = "PLuckyA (sponsor)"
+url = "https://github.com/Plucky923/"
+
 [params.utterances]
 enable = true
 repo = "roife/roife.github.io"
