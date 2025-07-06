@@ -89,7 +89,7 @@ Mem2Reg 的算法过程和构建 SSA 的过程非常像，分为两个阶段：
 
 1. LLVM 假设所有的局部变量都连续地在函数*入口基本块的头部*使用 =alloca= 进行声明（见函数 =promoteMemoryToRegister()=）
 2. 找到这些 =alloca= 指令中那些 promotable 的指令。所谓 promotable，即满足下面的条件：
-   - 这个 =alloca= 的 users 中有 =volatile= 指令
+   - 这个 =alloca= 的 users 中没有 =volatile= 指令
    - 这个指令直接用于 =load= 和 =store=（即没有使用过地址，也没有对地址进行计算）
    - 具体看函数 =isAllocaPromotable()= 的判断
 3. 分析 =alloca= 的定义使用信息，执行一些优化，（见函数 =PromoteMem2Reg::run()=）
@@ -133,7 +133,7 @@ Mem2Reg 的算法过程和构建 SSA 的过程非常像，分为两个阶段：
     \state $allocas \gets$ a set of allocas to be promoted
     \state $allocaDefs \gets$ a dict consisting of alloca and a set of bbs for its corresp. stores
     \state
-    \state \comment{\textbf{Stage 1: placing $\phi$s}}
+    \state \comment{\textbf{Stage 1: Placing $\phi$s}}
     \state \comment {$newPhis$ is a dict consisting of new $\phi$ and its corresp. alloca}
     \state $newPhis \gets \emptyset$
     \for {$alloca \in allocas$}

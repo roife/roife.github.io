@@ -367,7 +367,7 @@ It is decidable whether \( (\Gamma , t) \) has a solution under STLC.
 
 * Let Polymorphism and Hindley-Milner Type System
 
-*多态性（Polymorphism）* 是一种程序机制，其使得一部分代码在不同的上下文中不同的类型下使用，从而达到复用的目的。前面展示的类型重建算法提供了一种实现多态的方法，它使得在 let-bound 中绑定的隐式标注的 lambda-abstractions 在不同的类型下被重用，称为 *let-polymorphism*（也可以叫做 *ML-style* 或者 *Damas-Milner polymorphism*）。包含 let-polymorphism 的 STLC 也称为 *hindley-milner type system*，Algorithm W 是 HM 系统中最致命的类型推导算法。
+*多态性（Polymorphism）* 是一种程序机制，其使得一部分代码在不同的上下文中不同的类型下使用，从而达到复用的目的。前面展示的类型重建算法提供了一种实现多态的方法，它使得在 let-bound 中绑定的隐式标注的 lambda-abstractions 在不同的类型下被重用，称为 *let-polymorphism*（也可以叫做 *ML-style* 或者 *Damas-Milner polymorphism*）。包含 let-polymorphism 的 STLC 也称为 *hindley-milner type system*，Algorithm W 是 HM 系统中最知名的类型推导算法。
 
 下面是 let-polymorphism 的一个例子：
 

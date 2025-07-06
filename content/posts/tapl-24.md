@@ -275,7 +275,7 @@ Strong binary operations 则必须在内部实现。此时的问题是，尽管�
 (\exists x. P(x)) \to Q \iff \forall x. P(x) \to Q
 \\]
 
-也就是说，如果将 \\( \exists \\) 置于函数参数中，那么它就等价于将 \\( \forall \\) 置于整个函数签名前。这点通常会用在 existential types 的实现中，因为后者可以通过 monomorphization 得到更好的性能。
+如果把 universal types 对应 type erasure，那么 existential types 对应 monomorphization，而这个恒等式说明二者可以互相转换。
 
 类似 universal types，函数返回值处的 \\( \exists \\) 也可以也可以移动到头部：
 

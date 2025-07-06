@@ -5,7 +5,7 @@ theme = "pupi"
 themesDir = "themes"
 
 copyright = ""
-paginate = 10
+pagination.pagerSize = 10
 languageCode = "zh-cn"
 defaultContentLanguage = "zh-cn"
 

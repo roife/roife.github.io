@@ -1,0 +1,155 @@
+#    -*- mode: org -*-
+
+
+Archived entries from file /Users/roife/code/roife.github.io/orgs/books/introduction-to-models-of-computation/recursive-functions.org
+
+
+* 数论函数
+
+#+begin_definition
+*(数论函数)*
+
+设 \(\mathbb{N} = \{0, 1, 2, 3, \dots\}\) 为全体自然数之集。
+
+若 \(f : \mathbb{N}^k \rightarrow \mathbb{N}\), \(k \in \mathbb{N}^+\) 为全函数，则 \(f\) 被称为 \(k\) 元数论全函数 (total number-theoretic function)，简称数论函数(number-theoretic function)。若 \(f\) 为函数且 \(\operatorname{dom}(f) \subseteq \mathbb{N}\), \(\operatorname{ran}(f) \subseteq \mathbb{N}\)，则 \(f\) 被称为部分数论函数(partial number-theoretic function)。
+#+end_definition
+
+#+begin_definition
+*(本原函数)* 以下三类数论函数被称为*本原函数（initial function）*：
+
+- 零函数 \(Z : \mathbb{N} \rightarrow \mathbb{N}\)，\(\forall z \in \mathbb{N}. Z(z) = 0\)；
+- 后继函数 \(S : \mathbb{N} \rightarrow \mathbb{N}\)，\(\forall z \in \mathbb{N}. S(z) = z + 1\)；
+- 投影函数 \(P^n_i : \mathbb{N}^n \rightarrow \mathbb{N}\)，\(\forall x_1, \dots, x_n \in \mathbb{N}\)，其中 \(n \in \mathbb{N}^+ \wedge 1 \leq i \leq n\)，则 \(P^n_i(x_1, \dots, x_n) = x_i\)。
+
+本原函数类记作 \(\mathcal{IF}\)。
+#+end_definition
+
+#+begin_definition
+设 \(n \in \mathbb{N}^+\)，可以将序列 \(x_1, x_2, \dots, x_n\) 简记为 \(\vec{x}\)。
+#+end_definition
+
+#+begin_definition
+*(函数的复合)*
+
+设 \(m, n \in \mathbb{N}^+\)，\(f : \mathbb{N}^m \rightarrow \mathbb{N}\)，\(g : \mathbb{N}^n \rightarrow \mathbb{N}\)，其中 \(i = 1, 2, \dots, m\)。函数 \(f\) 和 \(g_1, g_2, \dots, g_m\) 的复合 \(\operatorname{Comp}^n_m[f, g_1, g_2, \dots, g_m]\) 为 \(n\) 元数论函数 \(h : \mathbb{N}^n \rightarrow \mathbb{N}\)，定义为
+\[h(\vec{x}) = g(f(\vec{x}_1, \vec{x}_2, \dots, \vec{x}_m)).\]
+若 \(m = 1\)，则 \(\operatorname{Comp}^n_1[f, g]\) 可简记为 \(f \circ g\)。
+#+end_definition
+
+-------
+
+#+begin_definition
+*(有界迭加算子)*
+
+设 \( k \in \mathbb{N}, f: \mathbb{N}^{k+1} \to \mathbb{N} \) 的 \( k+1 \) 元函数是数论全函数，函数 \( f \) 的*有界迭加（bounded sum）* \(\sum_{i=0}^{n} [f(i, \vec{x})] \) 是 \( k+1 \) 元数论全函数 \( g: \mathbb{N}^{k+1} \to \mathbb{N} \)，定义为
+
+\[
+g(n, \vec{x}) = f(0, \vec{x}) + f(1, \vec{x}) + \cdots + f(n, \vec{x}).
+\]
+
+\( \sum [ \cdot ] \) 称为迭加算子，且称 \( g(n, \vec{x}) = \sum_{i=0}^{n} [f(i, \vec{x})] \) 由 \( f \) 经过有界迭加算子而得。
+#+end_definition
+
+#+begin_definition
+*(有界迭乘算子)*
+
+设 \( k \in \mathbb{N}, f: \mathbb{N}^{k+1} \to \mathbb{N} \) 的 \( k+1 \) 元函数是数论全函数，函数 \( f \) 的*有界迭乘*（bounded product） \( \prod_{i=0}^{n} [f(i, \vec{x})] \)，这是一个 \(k+1\) 元数论全函数 \(h: \mathbb{N}^{k+1} \to \mathbb{N}\)，定义如下：
+
+\[
+h(n, \vec{x}) = f(0, \vec{x}) \cdot f(1, \vec{x}) \cdot \cdots \cdot f(n, \vec{x}).
+\]
+
+这里，\( \prod [\cdot] \) 表示迭乘算子，且称 \( h(n, \vec{x}) = \prod_{i=0}^{n} [f(i, \vec{x})] \) 由 \( f \) 经过有界迭乘算子而得。
+#+end_definition
+
+------
+
+#+begin_definition
+*(有界 \(\mu\)-算子)*
+
+
+设 \( k \in \mathbb{N} \), \( f: \mathbb{N}^{k+1} \rightarrow \mathbb{N} \) 为 \( k+1 \) 元数论全函数，\( \mu x \le n. [f(x, \vec{y})] \) 为 \( k \) 元 \( 1 \) 算论全函数 \( g: \mathbb{N}^k \rightarrow \mathbb{N} \), 定义为
+
+\[g(n, \vec{y}) = \begin{cases} 
+\min \{ x : 0 \le x \le n \land f(x, \vec{y})=0 \}, & \exists 0 \le x \le n. f(x, \vec{y}) = 0, \\
+n, & \text{else}.
+\end{cases}
+\]
+
+其中 \( \mu x \le n. [f(x, \vec{y})] \) 有时也记作 \( \min x \le n. [f(x, \vec{y})] \). \( \mu x \le n. [ \cdot ] \) 称为有界 \( \mu \)-算子。且称 \(g(n, \vec{y}) = \mu x \le n. [f(x, \vec{y})]\) 由 \(f\) 经有界 \(\mu\)-算子而得。
+#+end_definition
+
+#+begin_definition
+*(有界 \(\operatorname{\mathrm{max}}\) 算子)*
+
+设 \( k \in \mathbb{N} \), \( f: \mathbb{N}^{k+1} \rightarrow \mathbb{N} \) 为 \( k+1 \) 元数论全函数，\( \text{max} \, x \le n. [f(x, \vec{y})] \) 为 \( k \) 元 \( 1 \) 算论全函数 \( g: \mathbb{N}^k \rightarrow \mathbb{N} \), 定义为
+
+\[g(n, \vec{y}) = \begin{cases} 
+\max \{ x : 0 \le x \le n \land f(x, \vec{y})=0 \}, & \exists 0 \le x \le n. f(x, \vec{y}) = 0, \\
+0, & \text{else}.
+\end{cases}
+\]
+
+其中 \( \operatorname{\mathrm{max}} \, x \le n. [f(x, \vec{y})] \) 有时也记作 \( \max x \le n. [f(x, \vec{y})] \). \( \operatorname{\mathrm{max}} \, x \le n. [ \cdot ] \) 称为有界max算子。且称 \(g(n, \vec{y}) = \operatorname{\mathrm{max}} \, x \le n. [f(x, \vec{y})]\) 由 \(f\) 经有界 \(\operatorname{\mathrm{max}}\) 算子而得。
+#+end_definition
+
+有界 \(\mu\)-算子寻找的是使得 \(f(x, \vec{y})=0\) 的最小的 \(x\) 值，而有界max算子寻找的是这样的最大 \(x\) 值。如果没有任何\(x\)值使得\(f(x, \vec{y})=0\)，那么分别返回终止的边界。
+
+------------------------
+
+#+begin_definition
+*(基本函数)*
+
+基本函数（basic functions）类 \(\mathcal{BF}\) 是满足以下条件的最小函数集合:
+
+- \(\mathcal{IF} \subseteq \mathcal{BF}\)；
+- \(\mathcal{BF}\) 对于复合封闭，即对于任意的 \(m, n \in \mathbb{N}^+\)，\(f : \mathbb{N}^m \rightarrow \mathbb{N}\)，\(g_1, g_2, \dots, g_m : \mathbb{N}^n \rightarrow \mathbb{N}\)，若 \(f, g_1, g_2, \dots, g_m \in \mathcal{BF}\)，则 \(\operatorname{Comp}[f, g_1, g_2, \dots, g_m] \in \mathcal{BF}\)。
+#+end_definition
+
+即 \(\mathcal{BF}\) 是 \(\mathcal{IF}\) 在函数复合下的闭包：
+
+#+begin_fact
+\(\mathcal{BF} = \{ A : \mathcal{IF} \subseteq A \land \text{$A$ is closed under composition}\}\).
+#+end_fact
+
+#+begin_theorem
+设 \(f\) 为数论函数，\(f \in \mathcal{BF}\) 下当且仅当存在数论函数序列 \(f_0, f_1, \dots, f_n\)，使得 \(f = f_n\)，且对于 \(0 \leq i \leq n\)，\(f_i\) 满足下述条件之一:
+
+- \(f_i \in \mathcal{IF}\)；或
+- 存在 \(k, m > 0\) 及 \(i_0, i_1, \dots, i_k < i\) 之间（允许某个 \(i_u = i_v\)），使得 \(f_{i0} : \mathbb{N}^m \rightarrow \mathbb{N}\)，\(f_{i_1}, \dots, f_{i_k} : \mathbb{N}^m \rightarrow \mathbb{N}\)
+
+  \[f_i = \operatorname{\mathrm{Comp}}^m_k[f_{i_0}, f_{i_1}, \dots, f_{i_k}]\]
+
+  即由其前 \(k+1\) 个函数 \(f_{i_0}, f_{i_1}, \dots, f_{i_k}\) 复合而来。
+
+函数序列 \(f_0, f_1, \dots, f_n\) 被称为基本函数 \(f\) 的构造过程。注意，\(f\) 的构造过程可能不唯一。
+
+设 \(f\) 的最短构造过程为 \(f_0, f_1, \dots, f_n\)，则 \(n\) 被称为 \(f\) 的构造长度。
+#+end_theorem
+#+begin_proof
+设
+
+\[ \mathcal{BF} = \{ f : f \text{ is constructed with } f_0, \ldots, f_n \}. \]
+
+欲证 \( \mathcal{BF}' = \mathcal{BF} \)，只需证 \( \mathcal{BF} \subseteq \mathcal{BF}' \) 且 \( \mathcal{BF}' \subseteq \mathcal{BF} \)。
+
+易见 \( \mathcal{IF} \subseteq \mathcal{BF}' \) 且 \( \mathcal{BF}' \) 对于复合封闭，因此 \( \mathcal{BF} \subseteq \mathcal{BF}' \)。
+
+设 \( A \) 为一个满足 \( \mathcal{IF} \subseteq A \) 且对于复合封闭的集合，下面证 \( \mathcal{BF}' \subseteq A \)：
+
+设 \( f \in \mathcal{BF} \)，对 \( f \) 的构造长度 \( n \) 作归纳证明 \( f \in A \):
+- 当 \( n = 0 \) 时，由 \( f \in \mathcal{IF} \)，故 \( f \in A \)。
+- 设 \( \forall n \le k. f_n \in A \)。当 \( n = k + 1 \) 时，设 \( f \) 的最短构造过程为 \( f_0, \ldots, f_{k}, f_{k+1} \)，则有两种情况：
+  + 若 \( f_{k+1} \in \mathcal{IF} \)，则 \( f_{k+1} \in A \)；
+  + 若 \( f_{k+1} \) 由其前 \( s+1 \) 函数 \( f_{n_0}, f_{n_1}, \ldots, f_{n_s} \) 复合而得。其中 \(f_{n_0} : \mathbb{N}^k \rightarrow \mathbb{N}\) 且 \(f_{n_1}, \dots, f_{n_s} : \mathbb{N}^m \rightarrow \mathbb{N}\)。
+
+    由归纳假设对任意的 \( 0 \leq i \leq k \)，存在一构造过程 \( f_0, f_1, \ldots, f_k \)，故 \( f \in A \)，因为 \( A \) 对复合封闭，所以
+
+\[ f_{k + 1} = \operatorname{Comp}^{m}_{s} [f_{n_0}, f_{n_1}, \ldots, f_{n_s}] \in A \]
+
+综上所述，若 \( f \in \mathcal{BF}' \)，则 \( f \in A \)，因此 \( \mathcal{BF}' \subseteq A \)。由 \(A\) 的任意性知 \( \mathcal{BF}' \subseteq \mathcal{BF} \)。
+
+故 \( \mathcal{BF} = \mathcal{BF}' \)。
+#+end_proof
+
+根据上述定理，要证明 \(f \in \mathcal{BF}\)，只需作出 \(f\) 的构造过程。
